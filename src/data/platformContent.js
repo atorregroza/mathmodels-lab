@@ -1213,6 +1213,7 @@ export const platformSupports = [
 
 export const navigationItems = [
   { label: 'Inicio', to: '/', end: true },
-  { label: 'Ruta de estudio', to: '/ruta-ib', end: true },
+  { label: 'Unidades', to: '/ruta-ib', end: true },
   { label: 'Laboratorios', to: '/laboratorios', end: false },
+  { label: 'Investigar', to: '/exploraciones/bloque-1', end: false },
 ]

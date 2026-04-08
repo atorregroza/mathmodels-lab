@@ -407,26 +407,102 @@ export const DerivaHomePage = () => {
           </div>
         </motion.div>
 
-        {/* ── CREDITS (condensed) ── */}
-        <motion.div {...fadeIn} className="mt-14 rounded-[1.8rem] border border-ink/8 bg-white/70 p-6">
-          <div className="flex flex-wrap items-center gap-6 md:flex-nowrap">
-            <div className="flex-1">
+        {/* ── ABOUT SECTION — visually separated ── */}
+        <div className="mt-20 border-t border-ink/8 pt-14">
+
+        <motion.div {...fadeIn} className="overflow-hidden rounded-[2rem] border border-ink/12 bg-paper shadow-[0_12px_35px_rgba(18,23,35,0.08)]">
+          <div className="grid md:grid-cols-[1fr_auto]">
+            <div className="p-6 md:p-8">
               <p className="section-kicker">Dirección y autoría</p>
-              <p className="mt-3 font-display text-2xl font-semibold tracking-[-0.02em]">Astrid Torregroza Olivero</p>
-              <p className="mt-1 text-sm text-ink/65">Lic. en Matemáticas y Física · Concepto, dirección pedagógica y visión curricular.</p>
-              <a href="https://www.linkedin.com/in/astrid-torregroza/" target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 text-xs text-ink/40 transition-colors hover:text-ink/65">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                LinkedIn
-              </a>
+              <h2 className="mt-3 font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-ink">
+                Astrid Torregroza Olivero
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-ink/65">
+                Licenciada en Matemáticas y Física. Concepto, dirección pedagógica y visión curricular de MathModels Lab.
+              </p>
+              <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <a href="https://www.linkedin.com/in/astrid-torregroza/" target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-ink/5 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ink/10">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-[#0A66C2]"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    LinkedIn
+                  </a>
+                  <a href="https://portafolio.astridto.com/" target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-ink/15 bg-ink/5 px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-ink/10">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-graph">
+                      <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+                    </svg>
+                    Portafolio
+                  </a>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {['Modelación matemática', 'IA aplicada', 'Claude Code'].map((tag) => (
-                <span key={tag} className="rounded-full border border-ink/10 bg-paper px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-ink/55">{tag}</span>
-              ))}
+            <div className="flex items-center px-8 pb-6 md:pb-8 md:pt-8">
+              <div className="space-y-2 text-right">
+                <p className="text-sm font-semibold text-ink/70">Modelación matemática escolar</p>
+                <p className="text-sm font-semibold text-ink/70">IA aplicada a la educación</p>
+                <p className="text-[0.78rem] leading-6 text-ink/45">GPT · Codex · Claude Code · Grok</p>
+              </div>
             </div>
           </div>
         </motion.div>
 
+        {/* ── ECOSYSTEM ── */}
+        <motion.div {...fadeIn} className="mt-14">
+          <p className="section-kicker">Conoce más</p>
+          <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
+            Otros espacios donde trabajo.
+          </h2>
+
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            <a href="https://laolibero.com" target="_blank" rel="noopener noreferrer"
+              className="group rounded-[1.6rem] border border-signal/15 bg-signal/5 p-5 transition-all hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(255,107,53,0.1)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-signal/15 text-signal">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </div>
+              <h3 className="mt-3 font-display text-lg font-semibold">La Olimpiada</h3>
+              <p className="mt-1 text-sm leading-6 text-ink/62">Olimpiadas iberoamericanas de cálculo mental para estudiantes.</p>
+              <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-signal transition-transform group-hover:translate-x-1">
+                laolibero.com
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </span>
+            </a>
+
+            <div className="rounded-[1.6rem] border border-aqua/15 bg-aqua/5 p-5">
+              <img src="/images/logo-maryam-math.png" alt="Maryam Math" className="h-10 object-contain object-left" />
+              <h3 className="mt-3 font-display text-lg font-semibold">Maryam Math Academy</h3>
+              <p className="mt-1 text-sm leading-6 text-ink/62">Plataforma educativa con recursos, blog y formación docente en matemáticas.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a href="https://maryam.academy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-aqua transition-transform hover:translate-x-1">
+                  maryam.academy
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+                </a>
+                <span className="text-ink/20">·</span>
+                <a href="https://www.instagram.com/maryammath_academy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-rose transition-transform hover:translate-x-1">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>
+                  Instagram
+                </a>
+              </div>
+            </div>
+
+            <a href="https://maryam.academy/index.php?pag=blog&accion=inicio" target="_blank" rel="noopener noreferrer"
+              className="group rounded-[1.6rem] border border-graph/15 bg-graph/5 p-5 transition-all hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(34,197,160,0.1)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-graph/15 text-graph">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+              </div>
+              <h3 className="mt-3 font-display text-lg font-semibold">Blog Maryam Math</h3>
+              <p className="mt-1 text-sm leading-6 text-ink/62">Artículos, reflexiones pedagógicas y recursos para docentes y estudiantes de matemáticas.</p>
+              <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-graph transition-transform group-hover:translate-x-1">
+                maryam.academy/blog
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+              </span>
+            </a>
+          </div>
+        </motion.div>
+
+        </div>
       </div>
     </section>
   )

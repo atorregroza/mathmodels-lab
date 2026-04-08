@@ -46,26 +46,6 @@ export const PlatformShell = ({ children }) => {
                 {item.label}
               </NavLink>
             ))}
-            <button
-              onClick={() => setCalcOpen(v => !v)}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${calcOpen ? 'bg-ink text-paper' : 'text-ink/72 hover:bg-white/65 hover:text-ink'}`}
-              aria-label={calcOpen ? 'Cerrar calculadora' : 'Abrir calculadora'}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="4" y="2" width="16" height="20" rx="2" />
-                <line x1="8" y1="6" x2="16" y2="6" />
-                <line x1="8" y1="10" x2="8" y2="10.01" />
-                <line x1="12" y1="10" x2="12" y2="10.01" />
-                <line x1="16" y1="10" x2="16" y2="10.01" />
-                <line x1="8" y1="14" x2="8" y2="14.01" />
-                <line x1="12" y1="14" x2="12" y2="14.01" />
-                <line x1="16" y1="14" x2="16" y2="14.01" />
-                <line x1="8" y1="18" x2="8" y2="18.01" />
-                <line x1="12" y1="18" x2="12" y2="18.01" />
-                <line x1="16" y1="18" x2="16" y2="18.01" />
-              </svg>
-              Calculadora
-            </button>
           </nav>
 
           {/* Mobile hamburger */}
