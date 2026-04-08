@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useId, useMemo } from 'react'
 import { motion, AnimatePresence, useDragControls } from 'framer-motion'
+import { StatsMode } from './StatsMode'
 
 /* ── expression parser (safe, no eval) ─────────────────────────── */
 
@@ -356,7 +357,7 @@ function MiniGraph({ functions, xRange }) {
 /* ── main component ─────────────────────────────────────────── */
 
 export function ScientificCalculator({ open, onToggle }) {
-  const [mode, setMode] = useState('calc') // 'calc' | 'graph'
+  const [mode, setMode] = useState('calc') // 'calc' | 'graph' | 'stats'
   const [expr, setExpr] = useState('')
   const [history, setHistory] = useState('')
   const [showSci, setShowSci] = useState(true)
@@ -405,7 +406,7 @@ export function ScientificCalculator({ open, onToggle }) {
 
   // keyboard support
   useEffect(() => {
-    if (!open || mode === 'graph') return
+    if (!open || mode === 'graph' || mode === 'stats') return
     const handler = (e) => {
       if (e.key === 'Escape') { onToggle(); return }
       if (e.key === 'Enter') {
@@ -517,6 +518,7 @@ export function ScientificCalculator({ open, onToggle }) {
               <div className="flex gap-1 rounded-full bg-white/6 p-0.5">
                 {modeBtn('calc', 'Calc')}
                 {modeBtn('graph', 'Gráfica')}
+                {modeBtn('stats', 'Stats')}
               </div>
               {mode === 'calc' && (
                 <button
@@ -528,7 +530,7 @@ export function ScientificCalculator({ open, onToggle }) {
               )}
             </div>
 
-            {mode === 'calc' ? (
+            {mode === 'calc' && (
               <>
                 {/* display */}
                 <div className="border-b border-white/8 px-5 py-4">
@@ -589,7 +591,9 @@ export function ScientificCalculator({ open, onToggle }) {
                   ))}
                 </div>
               </>
-            ) : (
+            )}
+
+            {mode === 'graph' && (
               /* ── GRAPH MODE ── */
               <div className="flex flex-col">
                 {/* graph canvas */}
@@ -673,6 +677,8 @@ export function ScientificCalculator({ open, onToggle }) {
                 </div>
               </div>
             )}
+
+            {mode === 'stats' && <StatsMode />}
           </motion.div>
         )}
       </AnimatePresence>

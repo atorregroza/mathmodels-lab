@@ -21,6 +21,14 @@ import { OptimizationLab } from '../components/features/OptimizationLab'
 import { VolumeSurfaceLab } from '../components/features/VolumeSurfaceLab'
 import { ContainerFillingLab } from '../components/features/ContainerFillingLab'
 import { ConicsModelingLab } from '../components/features/ConicsModelingLab'
+import { NormalDistributionLab } from '../components/features/NormalDistributionLab'
+import { DiceSimulatorLab } from '../components/features/DiceSimulatorLab'
+import { RegressionContextLab } from '../components/features/RegressionContextLab'
+import { BinomialDistributionLab } from '../components/features/BinomialDistributionLab'
+import { CentralLimitLab } from '../components/features/CentralLimitLab'
+import { HeightsStatisticsLab } from '../components/features/HeightsStatisticsLab'
+import { ReactionTimeLab } from '../components/features/ReactionTimeLab'
+import { ExamScoresLab } from '../components/features/ExamScoresLab'
 import { labs, units } from '../data/platformContent'
 import { usePageMeta } from '../hooks/usePageMeta'
 
@@ -68,6 +76,14 @@ export const LabPage = () => {
     volumeSurface: VolumeSurfaceLab,
     containerFilling: ContainerFillingLab,
     conics: ConicsModelingLab,
+    normalDistribution: NormalDistributionLab,
+    diceSimulator: DiceSimulatorLab,
+    regressionContext: RegressionContextLab,
+    binomialDistribution: BinomialDistributionLab,
+    centralLimit: CentralLimitLab,
+    heightsStatistics: HeightsStatisticsLab,
+    reactionTime: ReactionTimeLab,
+    examScores: ExamScoresLab,
   }
   const Component = componentMap[lab.componentKey]
 
