@@ -104,7 +104,7 @@ export const SliderField = ({ id, label, value, min, max, step, suffix = '', nat
           </span>
         )}
       </label>
-      <span className="font-display text-2xl text-ink">
+      <span className="font-display tabular-nums text-2xl text-ink">
         {formatSliderValue(value, step)}{suffix}
       </span>
     </div>
@@ -130,7 +130,7 @@ export const MetricCard = ({ label, value, detail, className = '', valueClassNam
       <p className={`text-[0.64rem] uppercase leading-5 tracking-[0.16em] ${dark ? 'text-paper/45' : 'text-ink/48'}`}>{label}</p>
       <div className="mt-3">
         <p
-          className={`font-display ${dark ? 'text-paper' : 'text-ink'} ${
+          className={`font-display tabular-nums ${dark ? 'text-paper' : 'text-ink'} ${
             isTextualValue
               ? 'break-words text-[1.35rem] leading-[1.08]'
               : 'whitespace-nowrap text-[1.9rem] leading-none'

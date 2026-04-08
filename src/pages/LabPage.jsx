@@ -18,6 +18,9 @@ import { PatternLab } from '../components/features/PatternLab'
 import { FibonacciLab } from '../components/features/FibonacciLab'
 import { TrajectoryCalculusLab } from '../components/features/TrajectoryCalculusLab'
 import { OptimizationLab } from '../components/features/OptimizationLab'
+import { VolumeSurfaceLab } from '../components/features/VolumeSurfaceLab'
+import { ContainerFillingLab } from '../components/features/ContainerFillingLab'
+import { ConicsModelingLab } from '../components/features/ConicsModelingLab'
 import { labs, units } from '../data/platformContent'
 import { usePageMeta } from '../hooks/usePageMeta'
 
@@ -62,6 +65,9 @@ export const LabPage = () => {
     fibonacci: FibonacciLab,
     trajectory: TrajectoryCalculusLab,
     optimization: OptimizationLab,
+    volumeSurface: VolumeSurfaceLab,
+    containerFilling: ContainerFillingLab,
+    conics: ConicsModelingLab,
   }
   const Component = componentMap[lab.componentKey]
 
