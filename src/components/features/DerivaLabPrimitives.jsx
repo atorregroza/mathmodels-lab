@@ -57,7 +57,7 @@ const renderMathExpression = (expression) => {
 export const LabCard = ({ title, children, dark = false, className = '' }) => (
   <div className={`${dark ? 'border-white/10 bg-ink text-paper' : 'border-ink/10 bg-white text-ink'} rounded-[1.6rem] border p-5 ${className}`}>
     {title && (
-      <p className={`text-[0.66rem] uppercase tracking-[0.28em] ${dark ? 'text-paper/45' : 'text-ink/45'}`}>
+      <p className={`text-[0.72rem] uppercase tracking-[0.22em] font-semibold ${dark ? 'text-paper/60' : 'text-ink/55'}`}>
         {title}
       </p>
     )}
@@ -74,7 +74,7 @@ export const ModelCard = ({
   className = '',
 }) => (
   <div className={`${dark ? 'border-white/10 bg-white/6 text-paper' : 'border-ink/10 bg-paper text-ink'} overflow-x-auto rounded-[1.2rem] border px-4 py-4 ${className}`}>
-    <p className={`text-[0.68rem] uppercase tracking-[0.2em] ${dark ? 'text-paper/45' : 'text-ink/48'}`}>{title}</p>
+    <p className={`text-[0.72rem] uppercase tracking-[0.2em] font-semibold ${dark ? 'text-paper/60' : 'text-ink/55'}`}>{title}</p>
     <div className={`mt-2 min-w-max whitespace-nowrap ${dark ? 'text-paper' : 'text-ink'}`}>
       <div className="text-[1.02rem] font-semibold md:text-[1.1rem]">{renderMathExpression(expression)}</div>
     </div>
@@ -94,9 +94,9 @@ const formatSliderValue = (value, step) => {
 }
 
 export const SliderField = ({ id, label, value, min, max, step, suffix = '', natural = false, onChange }) => (
-  <div className="rounded-[1.3rem] border border-ink/10 bg-white/82 p-4">
+  <div className="rounded-[1.3rem] border border-ink/12 bg-white/95 p-4 shadow-[0_4px_12px_rgba(18,23,35,0.04)]">
     <div className="flex items-center justify-between gap-4">
-      <label htmlFor={id} className="flex items-center gap-2 text-sm font-semibold text-ink">
+      <label htmlFor={id} className="flex items-center gap-2 text-[0.9rem] font-semibold text-ink">
         {label}
         {natural && (
           <span className="rounded-full border border-ink/14 bg-ink/6 px-2 py-0.5 font-mono text-[0.62rem] font-normal text-ink/55 tracking-wide">
@@ -127,7 +127,7 @@ export const MetricCard = ({ label, value, detail, className = '', valueClassNam
 
   return (
     <div className={`rounded-[1.3rem] border p-4 ${dark ? 'border-white/10 bg-white/6' : 'border-ink/10 bg-white'} ${className}`}>
-      <p className={`text-[0.64rem] uppercase leading-5 tracking-[0.16em] ${dark ? 'text-paper/45' : 'text-ink/48'}`}>{label}</p>
+      <p className={`text-[0.7rem] uppercase leading-5 tracking-[0.16em] font-semibold ${dark ? 'text-paper/60' : 'text-ink/55'}`}>{label}</p>
       <div className="mt-3">
         <p
           className={`font-display tabular-nums ${dark ? 'text-paper' : 'text-ink'} ${
@@ -139,7 +139,7 @@ export const MetricCard = ({ label, value, detail, className = '', valueClassNam
           {displayValue}
         </p>
       </div>
-      <p className={`mt-3 text-sm leading-7 ${dark ? 'text-paper/70' : 'text-ink/66'}`}>{detail}</p>
+      <p className={`mt-3 text-sm leading-7 ${dark ? 'text-paper/75' : 'text-ink/70'}`}>{detail}</p>
     </div>
   )
 }
@@ -163,10 +163,10 @@ export const CartesianFrame = ({
   const padding = 28
   const scaleX = (value) => padding + (((value - xMin) / ((xMax - xMin) || 1)) * (width - (padding * 2)))
   const scaleY = (value) => height - padding - (((value - yMin) / ((yMax - yMin) || 1)) * (height - (padding * 2)))
-  const axisStroke = dark ? 'rgba(255,255,255,0.40)' : 'rgba(18,23,35,0.28)'
-  const gridStrokeX = dark ? 'rgba(255,255,255,0.07)' : 'rgba(18,23,35,0.08)'
-  const gridStrokeY = dark ? 'rgba(255,255,255,0.10)' : 'rgba(18,23,35,0.10)'
-  const tickFill = dark ? 'rgba(255,255,255,0.72)' : 'rgba(18,23,35,0.68)'
+  const axisStroke = dark ? 'rgba(255,255,255,0.55)' : 'rgba(18,23,35,0.35)'
+  const gridStrokeX = dark ? 'rgba(255,255,255,0.10)' : 'rgba(18,23,35,0.12)'
+  const gridStrokeY = dark ? 'rgba(255,255,255,0.10)' : 'rgba(18,23,35,0.12)'
+  const tickFill = dark ? 'rgba(255,255,255,0.80)' : 'rgba(18,23,35,0.72)'
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className={className}>
@@ -193,7 +193,7 @@ export const CartesianFrame = ({
         <g key={`xt-${tick}`}>
           <line x1={scaleX(tick)} y1={scaleY(0) - 4} x2={scaleX(tick)} y2={scaleY(0) + 4} stroke={axisStroke} strokeWidth="1" />
           {Math.abs(tick) > 0.001 && (
-            <text x={scaleX(tick)} y={scaleY(0) + 16} fill={tickFill} fontSize="10" textAnchor="middle">
+            <text x={scaleX(tick)} y={scaleY(0) + 16} fill={tickFill} fontSize="11" textAnchor="middle">
               {xTickFormatter ? xTickFormatter(tick) : tick}
             </text>
           )}
@@ -203,7 +203,7 @@ export const CartesianFrame = ({
         <g key={`yt-${tick}`}>
           <line x1={scaleX(0) - 4} y1={scaleY(tick)} x2={scaleX(0) + 4} y2={scaleY(tick)} stroke={axisStroke} strokeWidth="1" />
           {Math.abs(tick) > 0.001 && (
-            <text x={scaleX(0) - 8} y={scaleY(tick) + 4} fill={tickFill} fontSize="10" textAnchor="end">
+            <text x={scaleX(0) - 8} y={scaleY(tick) + 4} fill={tickFill} fontSize="11" textAnchor="end">
               {yTickFormatter ? yTickFormatter(tick) : tick}
             </text>
           )}

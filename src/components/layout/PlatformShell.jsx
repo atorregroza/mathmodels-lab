@@ -26,11 +26,11 @@ export const PlatformShell = ({ children }) => {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 md:px-8">
           <NavLink to="/" className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-ink/15 bg-ink text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-paper shadow-[0_18px_50px_rgba(18,23,35,0.18)]">
-              IB
+              ML
             </span>
             <div>
               <p className="font-display text-xl font-bold leading-none">MathModels Lab</p>
-              <p className="hidden text-xs uppercase tracking-[0.28em] text-ink/55 sm:block">Matemáticas IB</p>
+              <p className="hidden text-xs uppercase tracking-[0.28em] text-ink/55 sm:block">Matemáticas</p>
             </div>
           </NavLink>
 

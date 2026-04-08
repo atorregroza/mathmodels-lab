@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { labs, units } from '../data/platformContent'
+import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 const fadeIn = {
@@ -15,8 +16,8 @@ export const LabsLibraryPage = () => {
 
   usePageMeta({
     title: 'Laboratorios | MathModels Lab',
-    description: 'Biblioteca de simuladores para estudiar Matemáticas: Análisis y Enfoques con experiencias interactivas y descarga de datos.',
-    keywords: 'laboratorios, simuladores, matemáticas IB, análisis y enfoques, funciones, cálculo',
+    description: 'Biblioteca de simuladores interactivos de modelación matemática con experiencias manipulables y descarga de datos.',
+    keywords: 'laboratorios, simuladores, modelación matemática, funciones, cálculo, estadística',
     image: '/og-image.png',
   })
 
@@ -53,15 +54,17 @@ export const LabsLibraryPage = () => {
         <div className="mt-10 grid gap-5 xl:grid-cols-2">
           {availableLabs.map((lab) => {
             const unit = units.find((item) => item.id === lab.unitId)
+            const colors = getUnitColors(lab.unitId)
 
             return (
               <motion.article
                 key={lab.id}
                 {...fadeIn}
-                className="rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_22px_60px_rgba(18,23,35,0.07)]"
+                className={`rounded-[2rem] border border-ink/10 border-l-4 ${colors.border.replace('/20', '')} bg-white/82 p-6 shadow-[0_22px_60px_rgba(18,23,35,0.07)]`}
               >
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-ink px-3 py-1 text-xs uppercase tracking-[0.18em] text-paper">
+                  <span className={`flex items-center gap-2 rounded-full ${colors.bg} px-3 py-1 text-xs uppercase tracking-[0.18em] ${colors.text}`}>
+                    <span className={`inline-block h-2 w-2 rounded-full ${colors.dot}`} />
                     {unit?.shortTitle || 'Unidad'}
                   </span>
                   <span className="rounded-full border border-signal/25 bg-signal/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-signal">
@@ -81,7 +84,7 @@ export const LabsLibraryPage = () => {
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
                     to={`/laboratorios/${lab.id}`}
-                    className="inline-flex items-center gap-2 rounded-full bg-signal px-5 py-3 text-sm font-semibold text-white"
+                    className={`inline-flex items-center gap-2 rounded-full ${colors.dot} px-5 py-3 text-sm font-semibold text-white`}
                   >
                     Abrir
                   </Link>

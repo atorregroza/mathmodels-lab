@@ -21,6 +21,8 @@ import { OptimizationLab } from '../components/features/OptimizationLab'
 import { VolumeSurfaceLab } from '../components/features/VolumeSurfaceLab'
 import { ContainerFillingLab } from '../components/features/ContainerFillingLab'
 import { ConicsModelingLab } from '../components/features/ConicsModelingLab'
+import { TrigTransformationsLab } from '../components/features/TrigTransformationsLab'
+import { TrigModelingLab } from '../components/features/TrigModelingLab'
 import { NormalDistributionLab } from '../components/features/NormalDistributionLab'
 import { DiceSimulatorLab } from '../components/features/DiceSimulatorLab'
 import { RegressionContextLab } from '../components/features/RegressionContextLab'
@@ -30,6 +32,7 @@ import { HeightsStatisticsLab } from '../components/features/HeightsStatisticsLa
 import { ReactionTimeLab } from '../components/features/ReactionTimeLab'
 import { ExamScoresLab } from '../components/features/ExamScoresLab'
 import { labs, units } from '../data/platformContent'
+import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 const fadeIn = {
@@ -42,6 +45,7 @@ export const LabPage = () => {
   const { labId } = useParams()
   const lab = labs.find((item) => item.id === labId)
   const unit = units.find((item) => item.id === lab?.unitId)
+  const colors = getUnitColors(lab?.unitId)
 
   usePageMeta({
     title: lab ? `${lab.title} | MathModels Lab` : 'Laboratorio | MathModels Lab',
@@ -76,6 +80,8 @@ export const LabPage = () => {
     volumeSurface: VolumeSurfaceLab,
     containerFilling: ContainerFillingLab,
     conics: ConicsModelingLab,
+    trigTransformations: TrigTransformationsLab,
+    trigModeling: TrigModelingLab,
     normalDistribution: NormalDistributionLab,
     diceSimulator: DiceSimulatorLab,
     regressionContext: RegressionContextLab,
@@ -99,7 +105,7 @@ export const LabPage = () => {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               to={`/unidades/${lab.unitId}`}
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper"
+              className={`inline-flex items-center gap-2 rounded-full ${colors.bg} ${colors.text} border ${colors.border} px-5 py-3 text-sm font-semibold`}
             >
               Volver a la unidad
             </Link>
@@ -107,7 +113,7 @@ export const LabPage = () => {
               to="/ruta-ib"
               className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
             >
-              Ver Ruta IB
+              Ver ruta de estudio
             </Link>
           </div>
         </motion.div>
@@ -115,11 +121,14 @@ export const LabPage = () => {
         <div className="mt-10 space-y-8">
           <motion.div {...fadeIn} className="grid gap-4 lg:grid-cols-[1.02fr_0.98fr]">
             <div className="rounded-[1.8rem] border border-ink/10 bg-white/78 p-6 shadow-[0_22px_55px_rgba(18,23,35,0.07)]">
-              <p className="section-kicker">Uso sugerido</p>
+              <p className="section-kicker flex items-center gap-2">
+                <span className={`inline-block h-2 w-2 rounded-full ${colors.dot}`} />
+                Uso sugerido
+              </p>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 {lab.howToUse.map((step, index) => (
-                  <div key={step} className="rounded-[1.2rem] border border-ink/8 bg-paper px-4 py-4">
-                    <p className="text-[0.7rem] uppercase tracking-[0.24em] text-ink/45">Paso {index + 1}</p>
+                  <div key={step} className={`rounded-[1.2rem] border-l-2 ${colors.border.replace('/20', '')} border border-ink/8 bg-paper px-4 py-4`}>
+                    <p className={`text-[0.7rem] uppercase tracking-[0.24em] ${colors.text}`}>Paso {index + 1}</p>
                     <p className="mt-2 text-sm leading-6 text-ink/68">{step}</p>
                   </div>
                 ))}
@@ -152,7 +161,7 @@ export const LabPage = () => {
               </div>
               <Link
                 to={`/unidades/${unit?.id}`}
-                className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper"
+                className={`inline-flex items-center gap-2 rounded-full ${colors.dot} px-5 py-3 text-sm font-semibold text-white`}
               >
                 Ver secuencia de la unidad
               </Link>

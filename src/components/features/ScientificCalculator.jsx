@@ -460,7 +460,7 @@ export function ScientificCalculator({ open, onToggle }) {
   const modeBtn = (m, label) => (
     <button
       onClick={() => setMode(m)}
-      className={`flex-1 rounded-full py-1.5 text-[0.65rem] font-semibold uppercase tracking-wider transition-colors ${mode === m ? 'bg-aqua/20 text-aqua' : 'text-paper/40 hover:text-paper/60'}`}
+      className={`flex-1 rounded-full px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-wider transition-colors ${mode === m ? 'bg-aqua/20 text-aqua' : 'text-paper/45 hover:text-paper/65'}`}
     >
       {label}
     </button>
@@ -515,7 +515,7 @@ export function ScientificCalculator({ open, onToggle }) {
               onPointerDown={(e) => dragControls.start(e)}
               className="flex cursor-grab items-center justify-between gap-3 border-b border-white/8 px-4 py-2.5 active:cursor-grabbing"
             >
-              <div className="flex gap-1 rounded-full bg-white/6 p-0.5">
+              <div className="flex gap-2 rounded-full bg-white/6 p-1">
                 {modeBtn('calc', 'Calc')}
                 {modeBtn('graph', 'Gráfica')}
                 {modeBtn('stats', 'Stats')}

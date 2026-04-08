@@ -28,7 +28,7 @@ export const seoConfig = {
   about: {
     title: 'Astrid Torregroza - Organizadora Olimpiada de Cálculo Mental',
     description: 'Conoce a Astrid Torregroza, organizadora de la Olimpiada Iberoamericana de Cálculo Mental y CEO de Maryam Math Academy. Oportunidades de colaboración educativa.',
-    keywords: 'Astrid Torregroza, Maryam Math Academy, educación matemáticas, método Singapur, IB matemáticas, colaboración educativa',
+    keywords: 'Astrid Torregroza, Maryam Math Academy, educación matemáticas, método Singapur, matemáticas internacionales, colaboración educativa',
     path: '/about',
     image: '/og-image.png',
   },

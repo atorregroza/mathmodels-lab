@@ -8,8 +8,41 @@
   --color-signal: #ff6b35;
   --color-aqua: #5096ff;
   --color-graph: #22c5a0;
+  --color-violet: #8b5cf6;
+  --color-rose: #f43f5e;
 
   --font-display: "Outfit", sans-serif;
   --font-body: "Poppins", sans-serif;
   --font-accent: "Montserrat", sans-serif;
+}
+
+/* ── Global readability ── */
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Section kicker label ── */
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: color-mix(in srgb, var(--color-ink) 58%, transparent);
+}
+
+.section-kicker::before {
+  content: '';
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background: var(--color-signal);
+  flex-shrink: 0;
 }

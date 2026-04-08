@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { units } from '../data/platformContent'
+import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 const fadeIn = {
@@ -11,9 +12,9 @@ const fadeIn = {
 
 export const StudyRoutePage = () => {
   usePageMeta({
-    title: 'Ruta IB | MathModels Lab',
-    description: 'Recorrido por unidades para estudiar Matemáticas: Análisis y Enfoques con laboratorios interactivos.',
-    keywords: 'ruta IB, unidades, análisis y enfoques, laboratorios',
+    title: 'Ruta de estudio | MathModels Lab',
+    description: 'Recorrido por unidades para estudiar matemáticas con laboratorios interactivos de modelación.',
+    keywords: 'ruta de estudio, unidades, modelación matemática, laboratorios',
     image: '/og-image.png',
   })
 
@@ -21,7 +22,7 @@ export const StudyRoutePage = () => {
     <section className="px-5 pb-24 pt-10 md:px-8 md:pb-28 md:pt-16">
       <div className="mx-auto max-w-7xl">
         <motion.div {...fadeIn} className="max-w-4xl">
-          <p className="section-kicker">Ruta IB</p>
+          <p className="section-kicker">Ruta de estudio</p>
           <h1 className="mt-4 font-display text-[clamp(2.8rem,7vw,5.8rem)] font-bold leading-[0.94] tracking-[-0.05em]">
             Un recorrido pensado para que cada unidad tenga sentido antes de pasar a la siguiente.
           </h1>
@@ -31,17 +32,24 @@ export const StudyRoutePage = () => {
         </motion.div>
 
         <div className="mt-12 space-y-5">
-          {units.map((unit, index) => (
+          {units.map((unit, index) => {
+            const colors = getUnitColors(unit.id)
+            return (
             <motion.article
               key={unit.id}
               {...fadeIn}
-              className="grid gap-5 rounded-[2rem] border border-ink/10 bg-white/78 p-6 shadow-[0_22px_60px_rgba(18,23,35,0.07)] lg:grid-cols-[auto_1fr_auto] lg:items-start"
+              className={`grid gap-5 rounded-[2rem] border border-ink/10 border-l-4 ${colors.border.replace('/20', '')} bg-white/78 p-6 shadow-[0_22px_60px_rgba(18,23,35,0.07)] lg:grid-cols-[auto_1fr_auto] lg:items-start`}
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-ink/12 bg-paper font-display text-2xl font-bold">
+              <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${colors.bg} font-display text-2xl font-bold ${colors.text}`}>
                 {index + 1}
               </div>
               <div>
-                <h2 className="font-display text-[2rem] font-semibold tracking-[-0.03em]">{unit.title}</h2>
+                <div className="flex items-center gap-2">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={colors.text}>
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                  <h2 className="font-display text-[2rem] font-semibold tracking-[-0.03em]">{unit.title}</h2>
+                </div>
                 <p className="mt-3 text-base leading-7 text-ink/68">{unit.overview}</p>
                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
                   <div className="rounded-[1.2rem] bg-paper px-4 py-4">
@@ -76,7 +84,8 @@ export const StudyRoutePage = () => {
                 </Link>
               </div>
             </motion.article>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
