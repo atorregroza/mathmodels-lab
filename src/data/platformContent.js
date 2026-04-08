@@ -503,13 +503,19 @@ export const labs = [
     id: 'optimizacion-visible',
     title: 'Optimización visible',
     unitId: 'analisis',
-    status: 'planned',
+    status: 'available',
     audience: 'Estudiantes y docentes de Análisis',
-    purpose: 'Haría visible cómo cambian una cantidad objetivo y sus restricciones hasta identificar máximos, mínimos y decisiones óptimas.',
-    contextSummary: 'Se modelarían problemas con restricciones reales para justificar el óptimo.',
-    howToUse: [],
-    teacherUse: 'Permitirá estudiar extremos, criterios de optimización y validez del dominio con una lectura visual fuerte.',
-    componentKey: 'planned',
+    purpose: 'Hace visible cómo cambian una cantidad objetivo y sus restricciones hasta identificar máximos, mínimos y decisiones óptimas.',
+    contextSummary: 'Se modelan problemas clásicos de optimización geométrica: caja de volumen máximo, corral contra pared, cable cruzando río y cono inscrito en esfera.',
+    howToUse: [
+      'Elige un problema de optimización.',
+      'Mueve el parámetro libre y observa cómo cambia la figura.',
+      'Identifica visualmente el máximo o mínimo en la gráfica.',
+      'Compara tu estimación con el valor óptimo calculado.',
+      'Descarga los datos para seguir trabajando.',
+    ],
+    teacherUse: 'Permite estudiar extremos, criterios de optimización y validez del dominio con una lectura visual fuerte. Los 4 problemas cubren maximización y minimización.',
+    componentKey: 'optimization',
   },
 ]
 
@@ -899,7 +905,7 @@ export const explorationBlocks = [
     ],
     deliverable: {
       title: 'Planeación inicial de exploración',
-      description: 'El bloque debe terminar en un documento base para seguir trabajando fuera de Deriva Lab, no en un producto final cerrado.',
+      description: 'El bloque debe terminar en un documento base para seguir trabajando fuera de MathModels Lab, no en un producto final cerrado.',
       sections: [
         'Tema o fenómeno elegido',
         'Pregunta inicial de exploración',
@@ -918,13 +924,13 @@ export const platformSupports = [
   {
     id: 'scientific-calculator',
     title: 'Calculadora científica desplegable',
-    status: 'planned',
-    purpose: 'Debe poder abrirse dentro de la plataforma cuando el estudiante o el docente necesiten comprobar valores, razones trigonométricas, potencias, logaritmos o cálculos auxiliares sin salir del laboratorio.',
+    status: 'active',
+    purpose: 'Se abre dentro de la plataforma cuando el estudiante o el docente necesiten comprobar valores, razones trigonométricas, potencias, logaritmos o cálculos auxiliares sin salir del laboratorio.',
   },
 ]
 
 export const navigationItems = [
-  { label: 'Inicio', to: '/deriva-lab', end: true },
+  { label: 'Inicio', to: '/', end: true },
   { label: 'Ruta IB', to: '/ruta-ib', end: true },
   { label: 'Laboratorios', to: '/laboratorios', end: false },
 ]

@@ -14,7 +14,7 @@ export const LabsLibraryPage = () => {
   const plannedLabs = labs.filter((lab) => lab.status === 'planned')
 
   usePageMeta({
-    title: 'Laboratorios | Deriva Lab',
+    title: 'Laboratorios | MathModels Lab',
     description: 'Biblioteca de simuladores para estudiar Matemáticas: Análisis y Enfoques con experiencias interactivas y descarga de datos.',
     keywords: 'laboratorios, simuladores, matemáticas IB, análisis y enfoques, funciones, cálculo',
     image: '/og-image.png',

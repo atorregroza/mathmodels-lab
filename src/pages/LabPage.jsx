@@ -17,6 +17,7 @@ import { MotionTrackingLab } from '../components/features/MotionTrackingLab'
 import { PatternLab } from '../components/features/PatternLab'
 import { FibonacciLab } from '../components/features/FibonacciLab'
 import { TrajectoryCalculusLab } from '../components/features/TrajectoryCalculusLab'
+import { OptimizationLab } from '../components/features/OptimizationLab'
 import { labs, units } from '../data/platformContent'
 import { usePageMeta } from '../hooks/usePageMeta'
 
@@ -32,9 +33,9 @@ export const LabPage = () => {
   const unit = units.find((item) => item.id === lab?.unitId)
 
   usePageMeta({
-    title: lab ? `${lab.title} | Deriva Lab` : 'Laboratorio | Deriva Lab',
-    description: lab ? lab.purpose : 'Laboratorio interactivo dentro de Deriva Lab.',
-    keywords: lab && unit ? `${lab.title}, ${unit.title}, laboratorio` : 'laboratorio, Deriva Lab',
+    title: lab ? `${lab.title} | MathModels Lab` : 'Laboratorio | MathModels Lab',
+    description: lab ? lab.purpose : 'Laboratorio interactivo dentro de MathModels Lab.',
+    keywords: lab && unit ? `${lab.title}, ${unit.title}, laboratorio` : 'laboratorio, MathModels Lab',
     image: '/og-image.png',
   })
 
@@ -60,6 +61,7 @@ export const LabPage = () => {
     patterns: PatternLab,
     fibonacci: FibonacciLab,
     trajectory: TrajectoryCalculusLab,
+    optimization: OptimizationLab,
   }
   const Component = componentMap[lab.componentKey]
 

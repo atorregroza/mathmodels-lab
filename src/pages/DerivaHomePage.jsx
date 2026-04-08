@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { complementaryRoutes, labs, platformSupports, units } from '../data/platformContent'
+import { labs, units } from '../data/platformContent'
 import { usePageMeta } from '../hooks/usePageMeta'
 
 const fadeIn = {
@@ -9,273 +9,275 @@ const fadeIn = {
   transition: { duration: 0.55, ease: 'easeOut' },
 }
 
+const stagger = {
+  animate: { transition: { staggerChildren: 0.08 } },
+}
+
+const slideUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
+}
+
+const UNIT_COLORS = {
+  'aritmetica-algebra': { bg: 'bg-signal/8', border: 'border-signal/20', text: 'text-signal', dot: 'bg-signal' },
+  'funciones': { bg: 'bg-aqua/8', border: 'border-aqua/20', text: 'text-aqua', dot: 'bg-aqua' },
+  'analisis': { bg: 'bg-graph/8', border: 'border-graph/20', text: 'text-graph', dot: 'bg-graph' },
+  'geometria-trigonometria': { bg: 'bg-signal/8', border: 'border-signal/20', text: 'text-signal', dot: 'bg-signal' },
+  'estadistica-probabilidad': { bg: 'bg-aqua/8', border: 'border-aqua/20', text: 'text-aqua', dot: 'bg-aqua' },
+}
+
 export const DerivaHomePage = () => {
   const availableLabs = labs.filter((lab) => lab.status === 'available')
+  const featuredLabs = availableLabs.slice(0, 6)
   const activeUnits = units.filter((unit) => unit.status === 'active')
-  const observatoryLab = labs.find((lab) => lab.id === 'seguimiento-movimiento')
 
   usePageMeta({
-    title: 'Inicio | Deriva Lab',
-    description: 'Plataforma de modelación matemática para Matemáticas: Análisis y Enfoques del IB.',
-    keywords: 'Deriva Lab, modelación matemática, IB, análisis y enfoques, simuladores',
+    title: 'MathModels Lab — Laboratorios interactivos para Matemáticas IB',
+    description: 'Laboratorios interactivos de modelación matemática para Matemáticas: Análisis y Enfoques del IB.',
+    keywords: 'MathModels Lab, modelación matemática, IB, análisis y enfoques, simuladores, laboratorios interactivos',
     image: '/og-image.png',
   })
 
   return (
-    <section className="px-5 pb-24 pt-10 md:px-8 md:pb-28 md:pt-16">
+    <section className="px-5 pb-24 pt-10 md:px-8 md:pb-28 md:pt-14">
       <div className="mx-auto max-w-7xl">
-        <motion.div {...fadeIn} className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
+
+        {/* ── HERO ── */}
+        <motion.div {...fadeIn} className="grid items-center gap-8 xl:grid-cols-[1.15fr_0.85fr]">
           <div>
-            <p className="section-kicker">Deriva Lab</p>
-            <h1 className="mt-4 font-display text-[clamp(3rem,7vw,6.2rem)] font-bold leading-[0.92] tracking-[-0.05em]">
-              Modelación matemática para estudiar con más sentido, más rigor y más contexto.
+            <p className="section-kicker">MathModels Lab · Matemáticas IB</p>
+            <h1 className="mt-4 font-display text-[clamp(2.6rem,6vw,5.4rem)] font-bold leading-[0.92] tracking-[-0.04em]">
+              Explora las matemáticas con tus propias manos.
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-ink/74">
-              La plataforma organiza laboratorios interactivos, rutas por unidad IB y problemas de modelación para que estudiantes y docentes puedan explorar, interpretar y justificar matemáticamente lo que ocurre.
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/70">
+              Laboratorios interactivos para Análisis y Enfoques. Mueve sliders, observa gráficas y descubre cómo funcionan las funciones.
             </p>
-            <div className="mt-7 inline-flex items-center gap-2 rounded-full border border-signal/20 bg-signal/8 px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-signal">
-              Capa observacional activa
-            </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/ruta-ib"
-                className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper"
-              >
-                Entrar por Ruta IB
-              </Link>
-              <Link
-                to="/laboratorios"
-                className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
-              >
-                Ver laboratorios
-              </Link>
-            </div>
+            <p className="mt-4 font-display text-xl font-semibold tracking-[-0.02em] text-signal">
+              Explora, modela y justifica.
+            </p>
           </div>
-
-          <div className="rounded-[2rem] border border-ink/10 bg-ink p-6 text-paper shadow-[0_30px_85px_rgba(18,23,35,0.18)]">
-            <p className="section-kicker text-paper/55">Cómo se recorre</p>
-            <div className="mt-5 space-y-4">
-              <div className="rounded-[1.2rem] border border-white/10 bg-white/6 px-4 py-4">
-                <p className="text-sm font-semibold">1. Entra por una unidad o por un laboratorio</p>
-                <p className="mt-2 text-sm leading-6 text-paper/74">La plataforma permite recorrer contenidos del IB o abrir directamente una experiencia específica.</p>
-              </div>
-              <div className="rounded-[1.2rem] border border-white/10 bg-white/6 px-4 py-4">
-                <p className="text-sm font-semibold">2. Explora, modela e interpreta</p>
-                <p className="mt-2 text-sm leading-6 text-paper/74">Cada laboratorio combina escena, gráfica, expresión, lectura guiada y, cuando hace falta, descarga de datos.</p>
-              </div>
-              <div className="rounded-[1.2rem] border border-white/10 bg-white/6 px-4 py-4">
-                <p className="text-sm font-semibold">3. Extiende hacia investigación</p>
-                <p className="mt-2 text-sm leading-6 text-paper/74">La misma lógica de modelación puede crecer hacia exploraciones matemáticas y trabajos más largos.</p>
-              </div>
-            </div>
+          <div className="hidden overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(18,23,35,0.15)] xl:block">
+            <img
+              src="/images/hero-students.png"
+              alt="Estudiantes trabajando con laptops en un laboratorio de matemáticas"
+              className="aspect-[3/4] w-full object-cover object-top"
+              loading="eager"
+            />
           </div>
         </motion.div>
 
-        {observatoryLab && (
-          <motion.div
-            {...fadeIn}
-            className="mt-10 rounded-[2.2rem] border border-ink/10 bg-white/84 p-6 shadow-[0_26px_72px_rgba(18,23,35,0.08)] md:p-8"
+        {/* ── ROLE CARDS ── */}
+        <motion.div {...fadeIn} className="mt-10 grid gap-4 md:grid-cols-2">
+          <Link
+            to="/laboratorios"
+            className="group rounded-[1.8rem] border border-aqua/20 bg-aqua/6 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(80,150,255,0.12)]"
           >
-            <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-              <div className="rounded-[1.8rem] border border-ink/10 bg-ink p-6 text-paper shadow-[0_24px_70px_rgba(18,23,35,0.16)]">
-                <p className="section-kicker text-paper/48">Modelación desde la observación</p>
-                <h2 className="mt-3 font-display text-[clamp(2.2rem,4.4vw,4.1rem)] font-semibold leading-[0.96] tracking-[-0.04em]">
-                  {observatoryLab.title}
-                </h2>
-                <p className="mt-4 max-w-2xl text-base leading-7 text-paper/74">
-                  Esta capa lleva la plataforma más allá del graficador: parte de una escena, sigue un objeto, convierte fotogramas en datos y reconstruye un modelo que sí nace del fenómeno.
-                </p>
-                <div className="mt-6 grid gap-3 md:grid-cols-3">
-                  <div className="rounded-[1.2rem] border border-white/10 bg-white/6 px-4 py-4">
-                    <p className="text-[0.68rem] uppercase tracking-[0.22em] text-paper/44">1. Observa</p>
-                    <p className="mt-2 text-sm leading-6 text-paper/78">La escena muestra caída libre, lanzamiento horizontal u oblicuo.</p>
-                  </div>
-                  <div className="rounded-[1.2rem] border border-white/10 bg-white/6 px-4 py-4">
-                    <p className="text-[0.68rem] uppercase tracking-[0.22em] text-paper/44">2. Sigue</p>
-                    <p className="mt-2 text-sm leading-6 text-paper/78">El punto seguido se transforma en tabla con tiempo, x(t) e y(t).</p>
-                  </div>
-                  <div className="rounded-[1.2rem] border border-white/10 bg-white/6 px-4 py-4">
-                    <p className="text-[0.68rem] uppercase tracking-[0.22em] text-paper/44">3. Modela</p>
-                    <p className="mt-2 text-sm leading-6 text-paper/78">La lectura final compara fenómeno, datos y funciones recuperadas.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid gap-4">
-                <div className="rounded-[1.6rem] border border-ink/10 bg-paper p-5">
-                  <p className="section-kicker">Por qué importa</p>
-                  <p className="mt-3 text-base leading-7 text-ink/72">
-                    Aquí la modelación no empieza en la fórmula, sino en lo que realmente se mueve. Eso permite hablar con más rigor de componente horizontal, componente vertical, ajuste, error y elección del modelo.
-                  </p>
-                </div>
-                <div className="rounded-[1.6rem] border border-ink/10 bg-paper p-5">
-                  <p className="section-kicker">Uso en clase</p>
-                  <p className="mt-3 text-base leading-7 text-ink/72">
-                    Funciona como puente entre observación, recolección de datos, representación gráfica e interpretación matemática. Es una base natural para crecer hacia la futura capa de video real y seguimiento más fino.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  <Link
-                    to="/laboratorios/seguimiento-movimiento"
-                    className="inline-flex items-center gap-2 rounded-full bg-signal px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(255,107,53,0.2)]"
-                  >
-                    Abrir observatorio
-                  </Link>
-                  <Link
-                    to="/unidades/funciones"
-                    className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
-                  >
-                    Ver secuencia de Funciones
-                  </Link>
-                </div>
-              </div>
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-aqua/15 text-aqua">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>
+              </span>
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Soy estudiante</h2>
             </div>
-          </motion.div>
-        )}
+            <p className="mt-3 text-sm leading-6 text-ink/65">
+              Quiero explorar, practicar y entender mejor los temas de Matemáticas IB con simuladores interactivos.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-aqua transition-transform group-hover:translate-x-1">
+              Ver laboratorios
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </Link>
 
-        <motion.div {...fadeIn} className="mt-10 grid gap-5 md:grid-cols-3">
-          <article className="rounded-[1.8rem] border border-ink/10 bg-white/78 p-6 shadow-[0_20px_55px_rgba(18,23,35,0.06)]">
-            <p className="section-kicker">Unidades activas</p>
-            <p className="mt-4 font-display text-5xl font-semibold tracking-[-0.04em]">{activeUnits.length}</p>
-            <p className="mt-3 text-sm leading-6 text-ink/66">Ya tienen ruta de estudio y laboratorios disponibles para comenzar.</p>
-          </article>
-          <article className="rounded-[1.8rem] border border-ink/10 bg-white/78 p-6 shadow-[0_20px_55px_rgba(18,23,35,0.06)]">
-            <p className="section-kicker">Laboratorios activos</p>
-            <p className="mt-4 font-display text-5xl font-semibold tracking-[-0.04em]">{availableLabs.length}</p>
-            <p className="mt-3 text-sm leading-6 text-ink/66">Pueden usarse en clase, explorarse de forma autónoma y descargar datos para seguir trabajando.</p>
-          </article>
-          <article className="rounded-[1.8rem] border border-ink/10 bg-white/78 p-6 shadow-[0_20px_55px_rgba(18,23,35,0.06)]">
-            <p className="section-kicker">Rutas de investigación</p>
-            <p className="mt-4 font-display text-5xl font-semibold tracking-[-0.04em]">{complementaryRoutes.length}</p>
-            <p className="mt-3 text-sm leading-6 text-ink/66">Preparan el paso desde el laboratorio breve hacia exploraciones y monografías matemáticas.</p>
-          </article>
+          <Link
+            to="/ruta-ib"
+            className="group rounded-[1.8rem] border border-graph/20 bg-graph/6 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(34,197,160,0.12)]"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-graph/15 text-graph">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+              </span>
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Soy docente</h2>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-ink/65">
+              Quiero preparar clases con simuladores alineados al programa IB y rutas secuenciadas por unidad.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-graph transition-transform group-hover:translate-x-1">
+              Ver ruta por unidad
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </span>
+          </Link>
         </motion.div>
 
-        <motion.div {...fadeIn} className="mt-10 rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="max-w-3xl">
-              <p className="section-kicker">Herramientas transversales</p>
-              <h2 className="mt-3 font-display text-[clamp(1.9rem,4vw,3.2rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                Apoyos que deben aparecer cuando el trabajo matemático lo requiera.
-              </h2>
-            </div>
-          </div>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {platformSupports.map((support) => (
-              <article key={support.id} className="rounded-[1.5rem] border border-ink/10 bg-paper/78 px-5 py-5">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="font-display text-2xl tracking-[-0.03em]">{support.title}</h3>
-                  <span className="rounded-full bg-ink/8 px-3 py-1 text-xs uppercase tracking-[0.16em] text-ink/55">
-                    Próximamente
-                  </span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-ink/68">{support.purpose}</p>
-              </article>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div {...fadeIn} className="mt-10 rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
-          <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
+        {/* ── FEATURED LABS GRID ── */}
+        <motion.div {...fadeIn} className="mt-14">
+          <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="section-kicker">Dirección y autoría</p>
-              <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.5rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                Una plataforma de modelación matemática con visión pedagógica propia.
+              <p className="section-kicker">Laboratorios listos</p>
+              <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
+                Elige uno y empieza a explorar.
               </h2>
-              <p className="mt-4 text-base leading-7 text-ink/68">
-                Deriva Lab es una plataforma elaborada con inteligencia artificial, con desarrollo asistido específicamente por Codex, para construir experiencias de modelación matemática con sentido curricular, rigor conceptual y uso real en el aula.
-              </p>
             </div>
-
-            <div className="rounded-[1.6rem] border border-ink/10 bg-paper px-5 py-5">
-              <p className="text-[0.68rem] uppercase tracking-[0.2em] text-ink/48">Créditos</p>
-              <p className="mt-4 font-display text-3xl tracking-[-0.03em] text-ink">Astrid Torregroza Olivero</p>
-              <p className="mt-2 text-sm font-semibold text-ink/78">Lic. en Matemáticas y Física</p>
-              <p className="mt-4 text-sm leading-6 text-ink/66">
-                Concepto, dirección pedagógica, visión curricular y orientación académica de la plataforma.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <span className="rounded-full border border-ink/10 bg-white px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-ink/62">Matemáticas IB</span>
-                <span className="rounded-full border border-ink/10 bg-white px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-ink/62">IA aplicada</span>
-                <span className="rounded-full border border-ink/10 bg-white px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-ink/62">Claude Code</span>
-                <span className="rounded-full border border-ink/10 bg-white px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-ink/62">Codex</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div {...fadeIn} className="mt-10 grid gap-8 xl:grid-cols-[1.04fr_0.96fr]">
-          <div className="rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="max-w-2xl">
-                <p className="section-kicker">Unidades IB</p>
-                <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.6rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                  La plataforma se organiza siguiendo la secuencia del curso.
-                </h2>
-              </div>
-              <Link
-                to="/ruta-ib"
-                className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-paper px-4 py-2.5 text-sm font-semibold text-ink"
-              >
-                Abrir ruta
-              </Link>
-            </div>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              {units.map((unit) => (
-                <article key={unit.id} className="rounded-[1.4rem] border border-ink/10 bg-paper/72 px-4 py-4">
-                  <div className="flex flex-wrap items-start gap-2">
-                    <h3 className="flex-1 font-display text-2xl tracking-[-0.03em]">{unit.title}</h3>
-                    <span className={`shrink-0 rounded-full px-3 py-1 text-xs uppercase tracking-[0.16em] ${unit.status === 'active' ? 'border border-signal/25 bg-signal/10 text-signal' : 'bg-white text-ink/55'}`}>
-                      {unit.status === 'active' ? 'Activa' : 'En preparación'}
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-ink/66">{unit.overview}</p>
-                </article>
-              ))}
-            </div>
+            <Link
+              to="/laboratorios"
+              className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink/30"
+            >
+              Ver los {availableLabs.length} laboratorios
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
           </div>
 
-          <div className="rounded-[2rem] border border-ink/10 bg-paper p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
-            <p className="section-kicker">Rutas de investigación</p>
-            <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-              Modelación para evaluación interna y monografía.
-            </h2>
-            <div className="mt-6 space-y-4">
-              {complementaryRoutes.map((route) => (
-                <article key={route.id} className="rounded-[1.4rem] border border-ink/10 bg-white px-4 py-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-display text-2xl tracking-[-0.03em]">{route.title}</h3>
-                    <span className="rounded-full bg-ink/8 px-3 py-1 text-xs uppercase tracking-[0.16em] text-ink/55">
-                      Próximamente
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-ink/68">{route.purpose}</p>
-                  <p className="mt-3 text-sm leading-6 text-ink/58">{route.description}</p>
-                  {route.blocks?.length ? (
-                    <div className="mt-4 grid gap-3">
-                      {route.blocks.map((block) => (
-                        <div key={block.id} className="rounded-[1.15rem] border border-ink/8 bg-paper/72 px-4 py-4">
-                          <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">{block.title}</p>
-                          <p className="mt-2 font-semibold text-ink">{block.subtitle}</p>
-                          <p className="mt-2 text-sm leading-6 text-ink/62">{block.description}</p>
-                          {route.id === 'exploracion-matematica' && block.id === 'exploraciones-modelacion' ? (
-                            <Link
-                              to="/exploraciones/bloque-1"
-                              className="mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-sm font-semibold text-paper"
-                            >
-                              Ver estructura del bloque
-                            </Link>
-                          ) : null}
-                        </div>
-                      ))}
+          <motion.div {...stagger} className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {featuredLabs.map((lab) => {
+              const unit = units.find((u) => u.id === lab.unitId)
+              const colors = UNIT_COLORS[lab.unitId] || UNIT_COLORS['analisis']
+              return (
+                <motion.article
+                  key={lab.id}
+                  {...slideUp}
+                  className="group overflow-hidden rounded-[1.6rem] border border-ink/10 bg-white shadow-[0_8px_30px_rgba(18,23,35,0.06)] transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(18,23,35,0.1)]"
+                >
+                  {/* color preview band */}
+                  <div className={`relative flex h-28 items-center justify-center ${colors.bg}`}>
+                    <div className="flex items-center gap-3 opacity-40">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={colors.text}>
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                      </svg>
+                      <span className={`font-display text-lg font-semibold ${colors.text}`}>{unit?.shortTitle || unit?.title}</span>
                     </div>
-                  ) : null}
-                </article>
+                  </div>
+                  {/* content */}
+                  <div className="p-5">
+                    <div className="flex items-center gap-2">
+                      <span className={`h-2 w-2 rounded-full ${colors.dot}`} />
+                      <span className="text-[0.65rem] uppercase tracking-[0.18em] text-ink/50">{unit?.title}</span>
+                    </div>
+                    <h3 className="mt-2 font-display text-xl font-semibold tracking-[-0.02em]">{lab.title}</h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink/60">{lab.purpose}</p>
+                    <Link
+                      to={`/laboratorios/${lab.id}`}
+                      className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-signal transition-transform group-hover:translate-x-1"
+                    >
+                      Explorar
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </Link>
+                  </div>
+                </motion.article>
+              )
+            })}
+          </motion.div>
+        </motion.div>
+
+        {/* ── STUDENTS IMAGE BAND ── */}
+        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] shadow-[0_20px_60px_rgba(18,23,35,0.1)]">
+          <img
+            src="/images/students-collab.png"
+            alt="Estudiantes trabajando con tablets y gráficas en el aula"
+            className="h-64 w-full object-cover object-[center_70%] md:h-80"
+            loading="lazy"
+          />
+        </motion.div>
+
+        {/* ── FOR TEACHERS ── */}
+        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-graph/15 bg-graph/5">
+          <div className="grid xl:grid-cols-[1fr_0.5fr]">
+          <div className="p-6 md:p-8">
+          <p className="section-kicker text-graph">Para docentes</p>
+          <h2 className="mt-3 max-w-3xl font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
+            Cada laboratorio incluye una guía de uso en clase.
+          </h2>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+              </div>
+              <h3 className="mt-3 font-display text-lg font-semibold">Alineado con el programa IB</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/62">Cada lab se conecta con una unidad del curso de Análisis y Enfoques, NM y NS.</p>
+            </div>
+            <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              </div>
+              <h3 className="mt-3 font-display text-lg font-semibold">Rutas secuenciadas</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/62">Las unidades tienen rutas de aprendizaje que guían el orden natural de los laboratorios.</p>
+            </div>
+            <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+              <h3 className="mt-3 font-display text-lg font-semibold">Datos descargables</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/62">Los estudiantes pueden exportar tablas en CSV para seguir trabajando fuera de la plataforma.</p>
+            </div>
+          </div>
+          <Link
+            to="/ruta-ib"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-graph px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(34,197,160,0.2)]"
+          >
+            Ver ruta completa por unidad
+          </Link>
+          </div>
+          <div className="hidden xl:block">
+            <img
+              src="/images/teacher-student.jpg"
+              alt="Docente y estudiantes analizando un simulador matemático"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+          </div>
+        </motion.div>
+
+        {/* ── UNITS OVERVIEW ── */}
+        <motion.div {...fadeIn} className="mt-14">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="section-kicker">Unidades IB</p>
+              <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
+                Organizado siguiendo el curso.
+              </h2>
+            </div>
+            <Link to="/ruta-ib" className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-paper px-4 py-2.5 text-sm font-semibold text-ink">
+              Abrir ruta
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {units.map((unit) => {
+              const colors = UNIT_COLORS[unit.id] || UNIT_COLORS['analisis']
+              const unitLabs = availableLabs.filter((l) => l.unitId === unit.id)
+              return (
+                <Link
+                  key={unit.id}
+                  to={unit.status === 'active' ? `/unidades/${unit.id}` : '/ruta-ib'}
+                  className={`group rounded-[1.6rem] border p-5 transition-all hover:-translate-y-1 ${colors.border} ${colors.bg}`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-display text-xl font-semibold tracking-[-0.02em]">{unit.title}</h3>
+                    <span className={`shrink-0 rounded-full px-3 py-1 text-[0.65rem] uppercase tracking-[0.16em] ${unit.status === 'active' ? `${colors.border} ${colors.bg} ${colors.text}` : 'bg-ink/6 text-ink/45'}`}>
+                      {unit.status === 'active' ? `${unitLabs.length} labs` : 'Próximamente'}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-ink/60">{unit.overview}</p>
+                </Link>
+              )
+            })}
+          </div>
+        </motion.div>
+
+        {/* ── CREDITS (condensed) ── */}
+        <motion.div {...fadeIn} className="mt-14 rounded-[1.8rem] border border-ink/8 bg-white/70 p-6">
+          <div className="flex flex-wrap items-center gap-6 md:flex-nowrap">
+            <div className="flex-1">
+              <p className="section-kicker">Dirección y autoría</p>
+              <p className="mt-3 font-display text-2xl font-semibold tracking-[-0.02em]">Astrid Torregroza Olivero</p>
+              <p className="mt-1 text-sm text-ink/65">Lic. en Matemáticas y Física · Concepto, dirección pedagógica y visión curricular.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {['Matemáticas IB', 'IA aplicada', 'Claude Code'].map((tag) => (
+                <span key={tag} className="rounded-full border border-ink/10 bg-paper px-3 py-1.5 text-xs uppercase tracking-[0.14em] text-ink/55">{tag}</span>
               ))}
             </div>
           </div>
         </motion.div>
+
       </div>
     </section>
   )

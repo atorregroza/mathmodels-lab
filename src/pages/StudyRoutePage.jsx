@@ -11,7 +11,7 @@ const fadeIn = {
 
 export const StudyRoutePage = () => {
   usePageMeta({
-    title: 'Ruta IB | Deriva Lab',
+    title: 'Ruta IB | MathModels Lab',
     description: 'Recorrido por unidades para estudiar Matemáticas: Análisis y Enfoques con laboratorios interactivos.',
     keywords: 'ruta IB, unidades, análisis y enfoques, laboratorios',
     image: '/og-image.png',

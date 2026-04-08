@@ -177,9 +177,9 @@ export const ExplorationBlockPage = () => {
   const [copied, setCopied] = useState(false)
 
   usePageMeta({
-    title: block ? `${block.title} | Exploraciones | Deriva Lab` : 'Exploraciones | Deriva Lab',
-    description: block ? block.overview : 'Bloque de exploraciones matemáticas dentro de Deriva Lab.',
-    keywords: block ? `${block.title}, exploraciones matemáticas, Deriva Lab` : 'exploraciones matemáticas, Deriva Lab',
+    title: block ? `${block.title} | Exploraciones | MathModels Lab` : 'Exploraciones | MathModels Lab',
+    description: block ? block.overview : 'Bloque de exploraciones matemáticas dentro de MathModels Lab.',
+    keywords: block ? `${block.title}, exploraciones matemáticas, MathModels Lab` : 'exploraciones matemáticas, MathModels Lab',
     image: '/og-image.png',
   })
 
@@ -214,7 +214,7 @@ export const ExplorationBlockPage = () => {
   )
 
   if (!block) {
-    return <Navigate to="/deriva-lab" replace />
+    return <Navigate to="/" replace />
   }
 
   const currentPrompts = linePrompts[selectedLine?.id] ?? linePrompts['modelacion-funcional']
@@ -310,7 +310,7 @@ export const ExplorationBlockPage = () => {
           <p className="mt-6 max-w-4xl text-lg leading-8 text-ink/72">{block.overview}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              to="/deriva-lab"
+              to="/"
               className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper"
             >
               Volver a inicio

@@ -14,8 +14,8 @@ export const UnitPage = () => {
   const unit = units.find((item) => item.id === unitId)
 
   usePageMeta({
-    title: unit ? `${unit.title} | Deriva Lab` : 'Unidad | Deriva Lab',
-    description: unit ? `${unit.title}: propósito, forma de estudio y laboratorios asociados dentro de la plataforma.` : 'Unidad de estudio dentro de Deriva Lab.',
+    title: unit ? `${unit.title} | MathModels Lab` : 'Unidad | MathModels Lab',
+    description: unit ? `${unit.title}: propósito, forma de estudio y laboratorios asociados dentro de la plataforma.` : 'Unidad de estudio dentro de MathModels Lab.',
     keywords: unit ? `${unit.title}, IB, matemáticas, laboratorio` : 'IB, matemáticas, laboratorio',
     image: '/og-image.png',
   })
