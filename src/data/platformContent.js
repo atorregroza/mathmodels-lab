@@ -1215,5 +1215,9 @@ export const navigationItems = [
   { label: 'Inicio', to: '/', end: true },
   { label: 'Unidades', to: '/ruta-ib', end: true },
   { label: 'Laboratorios', to: '/laboratorios', end: false },
-  { label: 'Investigar', to: '/exploraciones/bloque-1', end: false },
+  { label: 'Modelar', to: '/modelacion', end: true },
+  { label: 'Investigar', submenu: [
+    { label: 'Exploración', to: '/exploraciones/bloque-1', description: 'Investigación guiada con datos y modelos' },
+    { label: 'Monografía', to: '/monografias', description: 'Investigación extendida (próximamente)', disabled: true },
+  ]},
 ]
