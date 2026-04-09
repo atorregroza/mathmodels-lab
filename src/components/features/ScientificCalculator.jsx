@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect, useId, useMemo } from 'react'
 import { motion, AnimatePresence, useDragControls } from 'framer-motion'
 import { StatsMode } from './StatsMode'
+import { DistMode } from './DistMode'
 
 /* ── expression parser (safe, no eval) ─────────────────────────── */
 
@@ -357,7 +358,7 @@ function MiniGraph({ functions, xRange }) {
 /* ── main component ─────────────────────────────────────────── */
 
 export function ScientificCalculator({ open, onToggle }) {
-  const [mode, setMode] = useState('calc') // 'calc' | 'graph' | 'stats'
+  const [mode, setMode] = useState('calc') // 'calc' | 'graph' | 'stats' | 'dist'
   const [expr, setExpr] = useState('')
   const [history, setHistory] = useState('')
   const [showSci, setShowSci] = useState(true)
@@ -406,7 +407,7 @@ export function ScientificCalculator({ open, onToggle }) {
 
   // keyboard support
   useEffect(() => {
-    if (!open || mode === 'graph' || mode === 'stats') return
+    if (!open || mode === 'graph' || mode === 'stats' || mode === 'dist') return
     const handler = (e) => {
       if (e.key === 'Escape') { onToggle(); return }
       if (e.key === 'Enter') {
@@ -508,7 +509,7 @@ export function ScientificCalculator({ open, onToggle }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.97 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="fixed right-4 top-20 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-[1.6rem] border border-white/10 bg-ink text-paper shadow-[0_28px_80px_rgba(0,0,0,0.45)] md:right-8"
+            className="fixed right-4 top-20 z-50 w-[min(22rem,calc(100vw-2rem))] max-h-[calc(100vh-6rem)] overflow-y-auto overflow-x-hidden rounded-[1.6rem] border border-white/10 bg-ink text-paper shadow-[0_28px_80px_rgba(0,0,0,0.45)] md:right-8"
           >
             {/* header — drag handle + mode toggle */}
             <div
@@ -517,8 +518,9 @@ export function ScientificCalculator({ open, onToggle }) {
             >
               <div className="flex gap-2 rounded-full bg-white/6 p-1">
                 {modeBtn('calc', 'Calc')}
-                {modeBtn('graph', 'Gráfica')}
+                {modeBtn('graph', 'Graf')}
                 {modeBtn('stats', 'Stats')}
+                {modeBtn('dist', 'Dist')}
               </div>
               {mode === 'calc' && (
                 <button
@@ -679,6 +681,8 @@ export function ScientificCalculator({ open, onToggle }) {
             )}
 
             {mode === 'stats' && <StatsMode />}
+
+            {mode === 'dist' && <DistMode />}
           </motion.div>
         )}
       </AnimatePresence>

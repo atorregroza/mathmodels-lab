@@ -37,14 +37,47 @@ export const PlatformShell = ({ children }) => {
           {/* Desktop nav */}
           <nav className="hidden items-center gap-3 md:flex">
             {navigationItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) => `rounded-full px-4 py-2 text-sm font-semibold transition-colors ${isActive ? 'bg-ink text-paper' : 'text-ink/72 hover:bg-white/65 hover:text-ink'}`}
-              >
-                {item.label}
-              </NavLink>
+              item.submenu ? (
+                <div key={item.label} className="relative group">
+                  <button className="rounded-full px-4 py-2 text-sm font-semibold text-ink/72 transition-colors hover:bg-white/65 hover:text-ink">
+                    {item.label}
+                    <svg className="ml-1 inline-block h-3 w-3 opacity-50" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 5l3 3 3-3"/></svg>
+                  </button>
+                  <div className="pointer-events-none absolute left-0 top-full pt-2 opacity-0 transition-all group-hover:pointer-events-auto group-hover:opacity-100">
+                    <div className="min-w-[14rem] rounded-xl border border-ink/10 bg-white p-1.5 shadow-[0_12px_40px_rgba(18,23,35,0.12)]">
+                      {item.submenu.map((sub) => (
+                        sub.disabled ? (
+                          <span key={sub.to} className="flex flex-col rounded-lg px-3 py-2.5 text-ink/30">
+                            <span className="flex items-center gap-2 text-sm font-semibold">
+                              {sub.label}
+                              <span className="rounded-full bg-signal/15 px-1.5 py-0 text-[0.5rem] font-bold text-signal/70">pronto</span>
+                            </span>
+                            <span className="text-[0.7rem] text-ink/25">{sub.description}</span>
+                          </span>
+                        ) : (
+                          <NavLink
+                            key={sub.to}
+                            to={sub.to}
+                            className={({ isActive }) => `flex flex-col rounded-lg px-3 py-2.5 transition-colors ${isActive ? 'bg-ink/5' : 'hover:bg-ink/4'}`}
+                          >
+                            <span className="text-sm font-semibold text-ink/80">{sub.label}</span>
+                            <span className="text-[0.7rem] text-ink/45">{sub.description}</span>
+                          </NavLink>
+                        )
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) => `rounded-full px-4 py-2 text-sm font-semibold transition-colors ${isActive ? 'bg-ink text-paper' : 'text-ink/72 hover:bg-white/65 hover:text-ink'}`}
+                >
+                  {item.label}
+                </NavLink>
+              )
             ))}
           </nav>
 
@@ -74,29 +107,41 @@ export const PlatformShell = ({ children }) => {
             >
               <nav className="flex flex-col gap-1 px-5 py-4">
                 {navigationItems.map((item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={({ isActive }) => `rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${isActive ? 'bg-ink text-paper' : 'text-ink/72 hover:bg-white/65'}`}
-                  >
-                    {item.label}
-                  </NavLink>
+                  item.submenu ? (
+                    <div key={item.label} className="flex flex-col">
+                      <span className="px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-widest text-ink/40">
+                        {item.label}
+                      </span>
+                      {item.submenu.map((sub) => (
+                        sub.disabled ? (
+                          <span key={sub.to} className="flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold text-ink/30">
+                            {sub.label}
+                            <span className="rounded-full bg-signal/15 px-1.5 py-0.5 text-[0.5rem] font-bold text-signal/70">pronto</span>
+                          </span>
+                        ) : (
+                          <NavLink
+                            key={sub.to}
+                            to={sub.to}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={({ isActive }) => `rounded-xl px-6 py-2.5 text-sm font-semibold transition-colors ${isActive ? 'bg-ink text-paper' : 'text-ink/72 hover:bg-white/65'}`}
+                          >
+                            {sub.label}
+                          </NavLink>
+                        )
+                      ))}
+                    </div>
+                  ) : (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      end={item.end}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={({ isActive }) => `rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${isActive ? 'bg-ink text-paper' : 'text-ink/72 hover:bg-white/65'}`}
+                    >
+                      {item.label}
+                    </NavLink>
+                  )
                 ))}
-                <button
-                  onClick={() => { setCalcOpen(v => !v); setMobileMenuOpen(false) }}
-                  className="flex items-center gap-2 rounded-xl px-4 py-3 text-left text-sm font-semibold text-ink/72 transition-colors hover:bg-white/65"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="4" y="2" width="16" height="20" rx="2" />
-                    <line x1="8" y1="6" x2="16" y2="6" />
-                    <line x1="8" y1="10" x2="8" y2="10.01" />
-                    <line x1="12" y1="10" x2="12" y2="10.01" />
-                    <line x1="16" y1="10" x2="16" y2="10.01" />
-                  </svg>
-                  Calculadora
-                </button>
               </nav>
             </motion.div>
           )}
