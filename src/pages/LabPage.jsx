@@ -31,6 +31,8 @@ import { CentralLimitLab } from '../components/features/CentralLimitLab'
 import { HeightsStatisticsLab } from '../components/features/HeightsStatisticsLab'
 import { ReactionTimeLab } from '../components/features/ReactionTimeLab'
 import { ExamScoresLab } from '../components/features/ExamScoresLab'
+import { LinearMotionLab } from '../components/features/LinearMotionLab'
+import { RelatedRatesLab } from '../components/features/RelatedRatesLab'
 import { labs, units } from '../data/platformContent'
 import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -90,6 +92,8 @@ export const LabPage = () => {
     heightsStatistics: HeightsStatisticsLab,
     reactionTime: ReactionTimeLab,
     examScores: ExamScoresLab,
+    'linear-motion': LinearMotionLab,
+    'related-rates': RelatedRatesLab,
   }
   const Component = componentMap[lab.componentKey]
 
