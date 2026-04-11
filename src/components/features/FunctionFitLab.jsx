@@ -7,12 +7,16 @@ const datasets = [
     id: 'medication',
     label: 'Concentración de medicamento',
     context: 'La concentración disminuye con el tiempo tras una dosis.',
+    xName: 'Tiempo (horas)',
+    yName: 'Concentración (mg/L)',
     points: [[0, 9.2], [1, 7.1], [2, 5.8], [3, 4.9], [4, 4.1], [5, 3.6], [6, 3.1]],
   },
   {
     id: 'delivery',
     label: 'Costo de entrega',
     context: 'El costo cambia con la distancia y un cargo base.',
+    xName: 'Distancia (km)',
+    yName: 'Costo ($)',
     points: [[0, 2], [1, 3.4], [2, 4.8], [3, 6.1], [4, 7.6], [5, 8.9], [6, 10.3]],
   },
 ]
@@ -20,31 +24,31 @@ const datasets = [
 const models = {
   linear: {
     label: 'Lineal',
-    generalModel: 'y = ax + b',
-    parameterSet: 'a, b ∈ R',
+    generalModel: 'f(x) = ax + b',
+    parameterSet: 'a, b ∈ ℝ',
     params: { a: 1.3, b: 2.1 },
     fn: (x, p) => (p.a * x) + p.b,
-    formula: (p) => `y = ${format(p.a)}x ${p.b >= 0 ? '+' : '-'} ${format(Math.abs(p.b))}`,
+    formula: (p) => `f(x) = ${format(p.a)}x ${p.b >= 0 ? '+' : '-'} ${format(Math.abs(p.b))}`,
     controls: [{ key: 'a', label: 'Pendiente a', min: -3, max: 4, step: 0.05 }, { key: 'b', label: 'Intercepto b', min: -4, max: 12, step: 0.05 }],
   },
   quadratic: {
     label: 'Cuadrático',
-    generalModel: 'y = ax² + bx + c',
-    parameterSet: 'a, b, c ∈ R',
+    generalModel: 'f(x) = ax² + bx + c',
+    parameterSet: 'a, b, c ∈ ℝ',
     conditions: 'a ≠ 0',
     params: { a: 0.1, b: 0.3, c: 3.6 },
     fn: (x, p) => (p.a * x * x) + (p.b * x) + p.c,
-    formula: (p) => `y = ${format(p.a)}x² ${p.b >= 0 ? '+' : '-'} ${format(Math.abs(p.b))}x ${p.c >= 0 ? '+' : '-'} ${format(Math.abs(p.c))}`,
+    formula: (p) => `f(x) = ${format(p.a)}x² ${p.b >= 0 ? '+' : '-'} ${format(Math.abs(p.b))}x ${p.c >= 0 ? '+' : '-'} ${format(Math.abs(p.c))}`,
     controls: [{ key: 'a', label: 'Coeficiente a', min: -1.5, max: 1.5, step: 0.02 }, { key: 'b', label: 'Coeficiente b', min: -4, max: 4, step: 0.05 }, { key: 'c', label: 'Coeficiente c', min: -4, max: 12, step: 0.05 }],
   },
   exponential: {
     label: 'Exponencial',
-    generalModel: 'y = ae^(kx) + c',
-    parameterSet: 'a, k, c ∈ R',
+    generalModel: 'f(x) = a·eᵏˣ + c',
+    parameterSet: 'a, k, c ∈ ℝ',
     conditions: 'a ≠ 0',
     params: { a: 8.5, k: -0.2, c: 1.2 },
     fn: (x, p) => (p.a * Math.exp(p.k * x)) + p.c,
-    formula: (p) => `y = ${format(p.a)}e^(${format(p.k)}x) ${p.c >= 0 ? '+' : '-'} ${format(Math.abs(p.c))}`,
+    formula: (p) => `f(x) = ${format(p.a)}·e^(${format(p.k)}x) ${p.c >= 0 ? '+' : '-'} ${format(Math.abs(p.c))}`,
     controls: [{ key: 'a', label: 'Escala a', min: -12, max: 12, step: 0.05 }, { key: 'k', label: 'Tasa k', min: -1, max: 1, step: 0.02 }, { key: 'c', label: 'Traslación c', min: -4, max: 6, step: 0.05 }],
   },
 }
@@ -100,6 +104,8 @@ export const FunctionFitLab = () => {
                   yMax={Math.max(...points.map((point) => point.y), ...curve.map((point) => point.y)) * 1.15}
                   xTicks={[0, 1, 2, 3, 4, 5, 6]}
                   yTicks={[0, 2, 4, 6, 8, 10, 12]}
+                  xLabel={dataset.xName}
+                  yLabel={dataset.yName}
                   className="w-full h-auto aspect-[5/4] overflow-hidden rounded-[1.1rem]"
                 >
                   {({ scaleX, scaleY }) => (

@@ -157,6 +157,8 @@ export const CartesianFrame = ({
   yTicks = [],
   xTickFormatter,
   yTickFormatter,
+  xLabel = '',
+  yLabel = '',
   className = 'w-full h-auto overflow-visible rounded-[1.3rem]',
 }) => {
   const clipId = useId().replace(/:/g, '')
@@ -221,6 +223,18 @@ export const CartesianFrame = ({
       <g clipPath={`url(#${clipId})`}>
         {children({ scaleX, scaleY, padding, width, height })}
       </g>
+
+      {xLabel && (
+        <text x={width / 2} y={height - 2} fill={tickFill} fontSize="11" textAnchor="middle" fontWeight="600" opacity="0.7">
+          {xLabel}
+        </text>
+      )}
+      {yLabel && (
+        <text x={8} y={height / 2} fill={tickFill} fontSize="11" textAnchor="middle" fontWeight="600" opacity="0.7"
+          transform={`rotate(-90, 8, ${height / 2})`}>
+          {yLabel}
+        </text>
+      )}
     </svg>
   )
 }

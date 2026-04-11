@@ -10,21 +10,21 @@ const scenarios = [
     label: 'Escalera deslizante',
     context: 'Una escalera se desliza por una pared: la base se aleja y la cima baja.',
     equation: 'x² + y² = L²',
-    relation: 'dy/dt = -(x/y)·(dx/dt)',
+    relation: 'dy/dt = −(x/y)·(dx/dt)',
   },
   {
     id: 'cone',
     label: 'Cono llenándose',
     context: 'Agua entra en un cono invertido a tasa constante. ¿Qué tan rápido sube el nivel?',
-    equation: 'V = ⅓π(R/H)²h³',
-    relation: 'dh/dt = dV/dt / [π(R/H)²h²]',
+    equation: 'V = ⅓·π·(R/H)²·h³',
+    relation: 'dh/dt = (dV/dt) / [π·(R/H)²·h²]',
   },
   {
     id: 'lighthouse',
     label: 'Faro giratorio',
     context: 'Un faro gira y su haz barre una costa recta. La velocidad del punto de luz se dispara.',
-    equation: 'x = d·tan(θ)',
-    relation: 'dx/dt = d·sec²(θ)·(dθ/dt)',
+    equation: 'x = d·tan θ',
+    relation: 'dx/dt = d·sec²θ·(dθ/dt)',
   },
 ]
 
@@ -176,8 +176,7 @@ const ConeScene = ({ time, dvdt, coneR, coneH }) => {
             <line x1={cx + topRpx} y1={topY} x2={cx} y2={vertexY} stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
             {/* Top ellipse (open mouth) — back half dashed */}
             <ellipse cx={cx} cy={topY} rx={topRpx} ry={ellipseRy} fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeDasharray="5 4" />
-            <ellipse cx={cx} cy={topY} rx={topRpx} ry={ellipseRy} fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" strokeDasharray="200 0" clipPath="url(#top-front)" />
-            {/* Top ellipse front half (solid) */}
+            {/* Top ellipse front half (solid arc) */}
             <path d={`M ${cx - topRpx} ${topY} A ${topRpx} ${ellipseRy} 0 0 0 ${cx + topRpx} ${topY}`} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" />
 
             {/* Water surface ellipse */}
