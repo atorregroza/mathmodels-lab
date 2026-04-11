@@ -355,9 +355,22 @@ function PredictionTool({ model, xs, xName, yName }) {
 /* ── Manual parameter sliders ────────────────────────── */
 
 function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
+  // Build a function from params
+  const buildFn = useCallback((params) => {
+    if (!model) return () => 0
+    switch (model.id) {
+      case 'linear': return (x) => params.a + params.b * x
+      case 'quadratic': return (x) => params.a * x * x + params.b * x + params.c
+      case 'exponential': return (x) => params.a * Math.exp(params.b * x)
+      case 'power': return (x) => params.a * Math.pow(x, params.b)
+      case 'logarithmic': return (x) => params.a + params.b * Math.log(x)
+      case 'sinusoidal': return (x) => params.a * Math.sin(params.b * x + params.c) + params.d
+      default: return model.fn
+    }
+  }, [model])
+
   const [manualParams, setManualParams] = useState(() => {
     if (!startRandom || !model) return null
-    // Start with randomized params so the student has to find the fit
     const randomized = {}
     for (const key of Object.keys(model.params)) {
       const v = model.params[key]
@@ -373,20 +386,14 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
   const paramKeys = Object.keys(model.params)
   const currentParams = showBest ? model.params : (manualParams || model.params)
 
-  // Build a function from manual params
-  const buildFn = (params) => {
-    switch (model.id) {
-      case 'linear': return (x) => params.a + params.b * x
-      case 'quadratic': return (x) => params.a * x * x + params.b * x + params.c
-      case 'exponential': return (x) => params.a * Math.exp(params.b * x)
-      case 'power': return (x) => params.a * Math.pow(x, params.b)
-      case 'logarithmic': return (x) => params.a + params.b * Math.log(x)
-      case 'sinusoidal': return (x) => params.a * Math.sin(params.b * x + params.c) + params.d
-      default: return model.fn
-    }
-  }
-
   const currentFn = buildFn(currentParams)
+
+  // Notify parent of curve on mount and when params change
+  const isFirstRender = useRef(true)
+  if (isFirstRender.current && onParamsChange && manualParams) {
+    isFirstRender.current = false
+    Promise.resolve().then(() => onParamsChange(buildFn(manualParams)))
+  }
   const currentR2 = computeR2(xs, ys, currentFn)
   const bestR2 = model.r2
 
