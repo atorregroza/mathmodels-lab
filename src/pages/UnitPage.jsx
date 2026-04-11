@@ -4,6 +4,7 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { labs, units } from '../data/platformContent'
 import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { Breadcrumb } from '../components/layout/PlatformShell'
 
 const fadeIn = {
   initial: { opacity: 0 },
@@ -37,8 +38,12 @@ export const UnitPage = () => {
     .filter((step) => step.lab)
 
   return (
-    <section className="px-5 pb-24 pt-10 md:px-8 md:pb-28 md:pt-16">
-      <div className="mx-auto max-w-7xl">
+    <section className="px-5 pb-24 pt-4 md:px-8 md:pb-28 md:pt-6">
+      <Breadcrumb items={[
+        { label: 'Unidades', to: '/secuencia' },
+        { label: unit.shortTitle || unit.title },
+      ]} />
+      <div className="mx-auto max-w-7xl mt-6">
         <motion.div {...fadeIn} className="max-w-4xl">
           <p className="section-kicker flex items-center gap-2">
             <span className={`inline-block h-2 w-2 rounded-full ${colors.dot}`} />

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { ModelingSpace } from '../components/features/ModelingSpace'
+import { Breadcrumb } from '../components/layout/PlatformShell'
 
 export function ModelacionPage() {
   usePageMeta({
@@ -14,10 +15,14 @@ export function ModelacionPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="mx-auto max-w-5xl px-4 py-10 md:px-8 md:py-16"
+      className="mx-auto max-w-5xl px-4 py-4 md:px-8 md:py-6"
     >
+      <Breadcrumb items={[
+        { label: 'Inicio', to: '/' },
+        { label: 'Espacio de Modelación' },
+      ]} />
       {/* header */}
-      <div className="mb-8">
+      <div className="mb-8 mt-6">
         <p className="mb-3 flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-ink/55">
           <span className="h-2 w-2 rounded-full bg-signal" />
           Espacio de Modelación

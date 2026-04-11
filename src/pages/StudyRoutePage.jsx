@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { units } from '../data/platformContent'
 import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
+import { Breadcrumb } from '../components/layout/PlatformShell'
 
 const fadeIn = {
   initial: { opacity: 0 },
@@ -19,8 +20,12 @@ export const StudyRoutePage = () => {
   })
 
   return (
-    <section className="px-5 pb-24 pt-10 md:px-8 md:pb-28 md:pt-16">
-      <div className="mx-auto max-w-7xl">
+    <section className="px-5 pb-24 pt-4 md:px-8 md:pb-28 md:pt-6">
+      <Breadcrumb items={[
+        { label: 'Inicio', to: '/' },
+        { label: 'Unidades' },
+      ]} />
+      <div className="mx-auto max-w-7xl mt-6">
         <motion.div {...fadeIn} className="max-w-4xl">
           <p className="section-kicker">Secuencia de estudio</p>
           <h1 className="mt-4 font-display text-[clamp(2.8rem,7vw,5.8rem)] font-bold leading-[0.94] tracking-[-0.05em]">

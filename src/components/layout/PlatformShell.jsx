@@ -1,8 +1,28 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { navigationItems } from '../../data/platformContent'
 import { ScientificCalculator } from '../features/ScientificCalculator'
+
+export function Breadcrumb({ items }) {
+  if (!items?.length) return null
+  return (
+    <nav className="mx-auto max-w-7xl px-5 pt-4 md:px-8" aria-label="Breadcrumb">
+      <ol className="flex flex-wrap items-center gap-1.5 text-xs text-ink/45">
+        {items.map((item, i) => (
+          <li key={i} className="flex items-center gap-1.5">
+            {i > 0 && <span className="text-ink/25">›</span>}
+            {item.to ? (
+              <Link to={item.to} className="transition-colors hover:text-signal">{item.label}</Link>
+            ) : (
+              <span className="font-medium text-ink/65">{item.label}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
 
 export const PlatformShell = ({ children }) => {
   const currentYear = new Date().getFullYear()
