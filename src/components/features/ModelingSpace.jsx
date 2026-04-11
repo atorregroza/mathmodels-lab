@@ -354,7 +354,7 @@ function PredictionTool({ model, xs, xName, yName }) {
 
 /* ── Manual parameter sliders ────────────────────────── */
 
-function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
+function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false, showChart = false, xLabel = '', yLabel = '' }) {
   // Build a function from params
   const buildFn = useCallback((params) => {
     if (!model) return () => 0
@@ -439,6 +439,13 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
 
   return (
     <div className="rounded-xl border border-ink/10 bg-white p-4 space-y-3">
+      {/* Live chart — curve moves as student adjusts sliders */}
+      {showChart && (
+        <DataChart xs={xs} ys={ys}
+          fittedModels={[{ ...model, fn: currentFn, id: 'manual', r2: currentR2 }]}
+          selectedModelId="manual" xLabel={xLabel} yLabel={yLabel} dark={false} />
+      )}
+
       <div className="flex items-center justify-between">
         <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">
           {showBest ? 'Mejor ajuste' : 'Ajusta la curva a los datos'}
@@ -1204,11 +1211,8 @@ export function ModelingSpace() {
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
 
-                      {/* Chart showing data points — no pre-fitted curve */}
-                      <DataChart xs={xs} ys={ys} fittedModels={[]} selectedModelId={null} xLabel={xName} yLabel={yName} dark={false} />
-
-                      {/* Manual sliders — start random, no R² until verify */}
-                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom />
+                      {/* Sliders with live chart — curve moves in real time */}
+                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom showChart xLabel={xName} yLabel={yName} />
                     </div>
                   )}
                 </>
