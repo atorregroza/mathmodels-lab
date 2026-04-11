@@ -25,13 +25,16 @@ export const PlatformShell = ({ children }) => {
       <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/88 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 md:px-8">
           <NavLink to="/" className="flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
-            <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-ink/15 bg-ink text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-paper shadow-[0_18px_50px_rgba(18,23,35,0.18)]">
-              ML
+            <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl shadow-[0_18px_50px_rgba(18,23,35,0.18)]">
+              <svg viewBox="0 0 48 48" className="h-full w-full" aria-hidden="true">
+                <rect width="48" height="48" rx="12" fill="#121723"/>
+                <path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36"
+                      fill="none" stroke="#22c5a0" strokeWidth="3" strokeLinecap="round"/>
+                <line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" strokeWidth="1.5" strokeLinecap="round" opacity="0.75"/>
+                <circle cx="17.5" cy="9" r="3" fill="#ff6b35"/>
+              </svg>
             </span>
-            <div>
-              <p className="font-display text-xl font-bold leading-none">MathModels Lab</p>
-              <p className="hidden text-xs uppercase tracking-[0.28em] text-ink/55 sm:block">Matemáticas</p>
-            </div>
+            <p className="font-display text-xl font-bold leading-none">MathModels Lab</p>
           </NavLink>
 
           {/* Desktop nav */}
@@ -43,7 +46,7 @@ export const PlatformShell = ({ children }) => {
                     {item.label}
                     <svg className="ml-1 inline-block h-3 w-3 opacity-50" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 5l3 3 3-3"/></svg>
                   </button>
-                  <div className="pointer-events-none absolute left-0 top-full pt-2 opacity-0 transition-all group-hover:pointer-events-auto group-hover:opacity-100">
+                  <div className="invisible pointer-events-none absolute left-0 top-full pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:pointer-events-auto group-hover:opacity-100">
                     <div className="min-w-[14rem] rounded-xl border border-ink/10 bg-white p-1.5 shadow-[0_12px_40px_rgba(18,23,35,0.12)]">
                       {item.submenu.map((sub) => (
                         sub.disabled ? (

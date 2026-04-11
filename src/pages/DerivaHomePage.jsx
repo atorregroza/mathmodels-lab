@@ -106,7 +106,7 @@ export const DerivaHomePage = () => {
           </Link>
 
           <Link
-            to="/ruta-ib"
+            to="/secuencia"
             className="group rounded-[1.8rem] border border-graph/20 bg-graph/6 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(34,197,160,0.12)]"
           >
             <div className="flex items-center gap-3">
@@ -116,10 +116,10 @@ export const DerivaHomePage = () => {
               <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Soy docente</h2>
             </div>
             <p className="mt-3 text-sm leading-6 text-ink/65">
-              Quiero preparar clases con simuladores alineados a currículos internacionales y rutas secuenciadas por unidad.
+              Quiero preparar clases con simuladores alineados a programas internacionales y secuencias por unidad.
             </p>
             <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-graph transition-transform group-hover:translate-x-1">
-              Ver ruta por unidad
+              Ver secuencia por unidad
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </span>
           </Link>
@@ -208,14 +208,14 @@ export const DerivaHomePage = () => {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
               </div>
               <h3 className="mt-3 font-display text-lg font-semibold">Alineado con currículos internacionales</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/62">Cada lab se conecta con una unidad curricular alineada con programas internacionales de matemáticas de nivel medio y avanzado.</p>
+              <p className="mt-2 text-sm leading-6 text-ink/62">Cada lab se conecta con una unidad alineada con programas internacionales de matemáticas de nivel medio y avanzado.</p>
             </div>
             <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
               </div>
-              <h3 className="mt-3 font-display text-lg font-semibold">Rutas secuenciadas</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/62">Las unidades tienen rutas de aprendizaje que guían el orden natural de los laboratorios.</p>
+              <h3 className="mt-3 font-display text-lg font-semibold">Secuencias por unidad</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/62">Las unidades tienen secuencias de aprendizaje que guían el orden natural de los laboratorios.</p>
             </div>
             <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
@@ -226,10 +226,10 @@ export const DerivaHomePage = () => {
             </div>
           </div>
           <Link
-            to="/ruta-ib"
+            to="/secuencia"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-graph px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(34,197,160,0.2)]"
           >
-            Ver ruta completa por unidad
+            Ver secuencia completa
           </Link>
           </div>
           <div className="hidden xl:block">
@@ -247,13 +247,13 @@ export const DerivaHomePage = () => {
         <motion.div {...fadeIn} className="mt-14">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <p className="section-kicker">Unidades curriculares</p>
+              <p className="section-kicker">Unidades</p>
               <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
                 Organizado siguiendo el curso.
               </h2>
             </div>
-            <Link to="/ruta-ib" className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-paper px-4 py-2.5 text-sm font-semibold text-ink">
-              Abrir ruta
+            <Link to="/secuencia" className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-paper px-4 py-2.5 text-sm font-semibold text-ink">
+              Ver secuencia
             </Link>
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -263,13 +263,13 @@ export const DerivaHomePage = () => {
               return (
                 <Link
                   key={unit.id}
-                  to={unit.status === 'active' ? `/unidades/${unit.id}` : '/ruta-ib'}
+                  to={`/unidades/${unit.id}`}
                   className={`group rounded-[1.6rem] border p-5 transition-all hover:-translate-y-1 ${colors.border} ${colors.bg}`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <h3 className="font-display text-xl font-semibold tracking-[-0.02em]">{unit.title}</h3>
-                    <span className={`shrink-0 rounded-full px-3 py-1 text-[0.65rem] uppercase tracking-[0.16em] ${unit.status === 'active' ? `${colors.border} ${colors.bg} ${colors.text}` : 'bg-ink/6 text-ink/45'}`}>
-                      {unit.status === 'active' ? `${unitLabs.length} labs` : 'Próximamente'}
+                    <span className={`shrink-0 rounded-full border px-3 py-1 text-[0.65rem] uppercase tracking-[0.16em] ${colors.border} ${colors.bg} ${colors.text}`}>
+                      {unitLabs.length} labs
                     </span>
                   </div>
                   <p className="mt-3 text-sm leading-6 text-ink/60">{unit.overview}</p>
@@ -351,46 +351,69 @@ export const DerivaHomePage = () => {
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
+                    {/* Científica: función f(x) con raíz y exponente */}
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/>
+                      <path d="M5 21c1-4 2-8 4-12s3-6 5-6"/><path d="M3 14h8"/><path d="M17 3v4h4"/><circle cx="18" cy="17" r="3"/>
                     </svg>
                   </div>
-                  <h3 className="mt-3 font-display text-lg font-semibold">Modo científico</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">Trigonometría, logaritmos, potencias, raíces, factorial y constantes como pi y e.</p>
+                  <h3 className="mt-3 font-display text-lg font-semibold">Científica</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/62">Trigonometría, logaritmos, potencias, raíces, factorial y constantes.</p>
                 </div>
                 <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
+                    {/* Gráfica: ejes con curva suave tipo sen(x) */}
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/><path d="M21 5c0 1.66-4 3-9 3S3 6.66 3 5s4-3 9-3 9 1.34 9 3"/>
+                      <path d="M3 21V3"/><path d="M3 21h18"/><path d="M5 16c2-6 4-10 7-10s5 12 7 6"/>
                     </svg>
                   </div>
-                  <h3 className="mt-3 font-display text-lg font-semibold">Modo estadístico</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">Media, desviación estándar, regresión lineal y probabilidades binomial y normal.</p>
+                  <h3 className="mt-3 font-display text-lg font-semibold">Gráfica</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/62">Hasta 5 funciones simultáneas con rango ajustable.</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
+                    {/* Estadística: histograma con barras */}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="14" width="4" height="7" rx="0.5"/><rect x="10" y="8" width="4" height="13" rx="0.5"/><rect x="17" y="4" width="4" height="17" rx="0.5"/>
+                    </svg>
+                  </div>
+                  <h3 className="mt-3 font-display text-lg font-semibold">Estadística</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/62">Media, desviación estándar, histograma, scatter y regresión lineal.</p>
+                </div>
+                <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
+                    {/* Distribuciones: curva de campana (normal) */}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 20c1 0 3-1 5-3s3-6 5-12c2 6 3 10 5 12s4 3 5 3"/><line x1="2" y1="20" x2="22" y2="20"/>
+                    </svg>
+                  </div>
+                  <h3 className="mt-3 font-display text-lg font-semibold">Distribuciones</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink/62">Normal y binomial: densidad, acumulada e inversa.</p>
                 </div>
               </div>
             </div>
-            <div className="hidden items-center justify-center rounded-r-[2rem] bg-gradient-to-b from-aqua/10 to-aqua/5 p-6 xl:flex">
+            <div className="hidden items-center justify-center rounded-r-[2rem] bg-gradient-to-b from-aqua/10 to-aqua/5 p-8 xl:flex">
               {/* Stylized calculator mockup */}
-              <div className="w-56 overflow-hidden rounded-2xl border border-white/10 bg-ink text-paper shadow-[0_20px_60px_rgba(18,23,35,0.35)]">
+              <div className="w-72 overflow-hidden rounded-2xl border border-white/10 bg-ink text-paper shadow-[0_20px_60px_rgba(18,23,35,0.35)]">
                 {/* Mode tabs */}
-                <div className="flex gap-1.5 border-b border-white/8 px-3 py-2.5">
-                  <span className="rounded-full bg-aqua/20 px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-wider text-aqua">Calc</span>
-                  <span className="rounded-full px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-wider text-white/30">Gráfica</span>
-                  <span className="rounded-full px-2.5 py-1 text-[0.58rem] font-bold uppercase tracking-wider text-white/30">Stats</span>
+                <div className="flex gap-1.5 border-b border-white/8 px-3 py-3">
+                  <span className="rounded-full bg-aqua/20 px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-aqua">Calc</span>
+                  <span className="rounded-full px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-white/30">Graf</span>
+                  <span className="rounded-full px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-white/30">Stats</span>
+                  <span className="rounded-full px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-white/30">Dist</span>
                 </div>
                 {/* Display */}
-                <div className="border-b border-white/6 px-4 py-3">
-                  <p className="text-right font-mono text-[0.65rem] text-white/40">sen(π/6) + ln(e²)</p>
-                  <p className="mt-1 text-right font-mono text-2xl font-light text-white">2.5</p>
+                <div className="border-b border-white/6 px-5 py-4">
+                  <p className="text-right font-mono text-xs text-white/40">sen(π/6) + ln(e²)</p>
+                  <p className="mt-1.5 text-right font-mono text-3xl font-light text-white">2.5</p>
                 </div>
                 {/* Button grid */}
-                <div className="grid grid-cols-5 gap-1.5 p-2.5">
+                <div className="grid grid-cols-5 gap-2 p-3">
                   {['sen','cos','tan','ln','π',
                     '7','8','9','÷','(',
                     '4','5','6','×',')',
                     '1','2','3','−','xⁿ',
                     '0','.','±','+','='].map((btn) => (
-                    <span key={btn} className={`flex h-8 items-center justify-center rounded-lg text-[0.62rem] font-semibold ${
+                    <span key={btn} className={`flex h-10 items-center justify-center rounded-lg text-[0.7rem] font-semibold ${
                       btn === '=' ? 'bg-aqua text-white' :
                       ['sen','cos','tan','ln','π','xⁿ'].includes(btn) ? 'bg-white/8 text-aqua' :
                       ['÷','×','−','+','(',')'].includes(btn) ? 'bg-white/8 text-signal' :
@@ -399,7 +422,7 @@ export const DerivaHomePage = () => {
                   ))}
                 </div>
                 {/* Footer hint */}
-                <div className="border-t border-white/6 px-3 py-2 text-center text-[0.52rem] text-white/30">
+                <div className="border-t border-white/6 px-4 py-2.5 text-center text-[0.58rem] text-white/30">
                   Disponible en toda la plataforma
                 </div>
               </div>
@@ -418,7 +441,7 @@ export const DerivaHomePage = () => {
                 Astrid Torregroza Olivero
               </h2>
               <p className="mt-2 text-sm leading-7 text-ink/65">
-                Licenciada en Matemáticas y Física. Concepto, dirección pedagógica y visión curricular de MathModels Lab.
+                Licenciada en Matemáticas y Física. Concepto, dirección pedagógica y visión de MathModels Lab.
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
                   <a href="https://www.linkedin.com/in/astrid-torregroza/" target="_blank" rel="noopener noreferrer"
