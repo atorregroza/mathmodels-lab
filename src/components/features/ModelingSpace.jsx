@@ -546,7 +546,7 @@ function DiagnosticPanel({ model, xs, ys, xName, yName }) {
   return (
     <div className="space-y-3">
       {/* Metrics with explanations */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
           <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">R²</p>
           <p className={`font-display text-2xl font-bold ${model.r2 < 0 ? 'text-rose' : 'text-ink'}`}>{(model.r2 * 100).toFixed(1)}%</p>
