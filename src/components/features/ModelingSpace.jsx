@@ -966,20 +966,38 @@ export function ModelingSpace() {
 
   const handleExport = useCallback(() => {
     if (!activeModel || !hasData) return
+    const patternLabel = PATTERN_OPTIONS.find(p => p.id === pattern)?.label || '—'
+    const shapeLabel = shape === 'accelerating' ? 'acelerando' : shape === 'decelerating' ? 'desacelerando' : shape === 'constant' ? 'ritmo constante' : ''
     const rows = [
-      ['x', 'y (dato)', 'ŷ (modelo)', 'Residual'],
+      ['═══ REPORTE DE MODELACIÓN ═══'],
+      [],
+      ['Variable independiente (x)', xName || 'x'],
+      ['Variable dependiente (y)', yName || 'y'],
+      ['Número de datos', xs.length],
+      [],
+      ['═══ OBSERVACIÓN ═══'],
+      ['Tendencia observada', patternLabel],
+      ['Forma del crecimiento', shapeLabel || '—'],
+      ['Familias probadas', selectedFamilies.join(', ')],
+      [],
+      ['═══ MODELO SELECCIONADO ═══'],
+      ['Familia', activeModel.label],
+      ['Ecuación', activeModel.formula],
+      ['R²', format(activeModel.r2)],
+      ['Interpretación R²', interpretR2(activeModel.r2)],
+      ['MAE', format(activeModel.mae)],
+      [],
+      ['═══ DATOS Y PREDICCIONES ═══'],
+      [xName || 'x', yName || 'y (dato)', 'ŷ (modelo)', 'Residual'],
       ...xs.map((x, i) => {
         const yHat = activeModel.fn(x)
         return [x, ys[i], format(yHat), format(ys[i] - yHat)]
       }),
       [],
-      ['Modelo', activeModel.label],
-      ['Ecuación', activeModel.formula],
-      ['R²', format(activeModel.r2)],
-      ['MAE', format(activeModel.mae)],
-      ...(conclusion ? [[], ['Justificación del estudiante', conclusion]] : []),
+      ['═══ JUSTIFICACIÓN ═══'],
+      [conclusion || '(No se escribió justificación)'],
     ]
-    downloadCsv(rows, `modelacion-${activeModel.id}.csv`)
+    downloadCsv(rows, `reporte-modelacion-${activeModel.id}.csv`)
   }, [activeModel, xs, ys, hasData, conclusion])
 
   // ── Step navigation ──
@@ -1246,13 +1264,33 @@ export function ModelingSpace() {
           {/* ── FASE 5: JUSTIFICAR ── */}
           {step === 4 && (
             <div className="space-y-4">
-              {sectionKicker('Fase 5 — Justificar')}
-              <p className="text-base font-semibold text-ink/80">¿Por qué este modelo y no otro?</p>
+              {sectionKicker('Fase 5 — Justificar y cerrar')}
+              <p className="text-base font-semibold text-ink/80">Cierre de tu proceso de modelación</p>
               <p className="text-sm text-ink/55 leading-relaxed">
-                En matemáticas, elegir un modelo no basta — hay que argumentar la decisión. Esto es lo que evalúa el criterio E de la Exploración IB.
+                En matemáticas, elegir un modelo no basta — hay que argumentar la decisión y reconocer sus limitaciones. Esto es lo que evalúa el criterio E de la Exploración IB.
               </p>
               {activeModel && (
                 <>
+                  {/* ── Resumen del proceso ── */}
+                  <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-3">
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Resumen de tu proceso</p>
+                    <div className="grid gap-2 md:grid-cols-3">
+                      <div className="rounded-lg bg-white border border-ink/8 px-3 py-2">
+                        <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Observaste</p>
+                        <p className="mt-1 text-sm font-semibold text-ink">{PATTERN_OPTIONS.find(p => p.id === pattern)?.label || '—'}{shape === 'accelerating' ? ', acelerando' : shape === 'decelerating' ? ', desacelerando' : shape === 'constant' ? ', a ritmo constante' : ''}</p>
+                      </div>
+                      <div className="rounded-lg bg-white border border-ink/8 px-3 py-2">
+                        <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Probaste</p>
+                        <p className="mt-1 text-sm font-semibold text-ink">{selectedFamilies.length} familia{selectedFamilies.length > 1 ? 's' : ''}</p>
+                      </div>
+                      <div className="rounded-lg bg-white border border-ink/8 px-3 py-2">
+                        <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Elegiste</p>
+                        <p className="mt-1 text-sm font-semibold text-signal">{activeModel.label}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── Modelo final con gráfica ── */}
                   <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-4">
                     <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-2">Tu modelo</p>
                     <p className="font-mono text-lg font-bold text-signal">{activeModel.formula}</p>
@@ -1261,10 +1299,46 @@ export function ModelingSpace() {
 
                   <DataChart xs={xs} ys={ys} fittedModels={[activeModel]} selectedModelId={activeModelId} xLabel={xName} yLabel={yName} dark={false} />
 
+                  {/* ── Interpretación de parámetros ── */}
+                  <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-2">
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">¿Qué significan los parámetros?</p>
+                    {activeModel.id === 'linear' && activeModel.params && (
+                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+                        <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — por cada unidad de {xName || 'x'}, {yName || 'y'} {activeModel.params.b > 0 ? 'aumenta' : 'disminuye'} en {format(Math.abs(activeModel.params.b))}.</p>
+                        <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — cuando {xName || 'x'} = 0, {yName || 'y'} ≈ {format(activeModel.params.a)}.</p>
+                      </div>
+                    )}
+                    {activeModel.id === 'exponential' && activeModel.params && (
+                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+                        <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — valor inicial.</p>
+                        <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — {activeModel.params.b > 0 ? `se duplica cada ${format(Math.log(2) / activeModel.params.b)} unidades` : `se reduce a la mitad cada ${format(Math.log(2) / Math.abs(activeModel.params.b))} unidades`}.</p>
+                      </div>
+                    )}
+                    {activeModel.id === 'quadratic' && activeModel.params && (
+                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+                        <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — parábola abre {activeModel.params.a > 0 ? 'hacia arriba' : 'hacia abajo'}.</p>
+                        <p><strong className="text-ink">Vértice</strong> en x = {format(-activeModel.params.b / (2 * activeModel.params.a))}.</p>
+                      </div>
+                    )}
+                    {activeModel.id === 'power' && activeModel.params && (
+                      <p className="text-sm text-ink/65"><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — al duplicar {xName || 'x'}, {yName || 'y'} se multiplica por {format(Math.pow(2, activeModel.params.b))}.</p>
+                    )}
+                    {activeModel.id === 'logarithmic' && activeModel.params && (
+                      <p className="text-sm text-ink/65"><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — cada vez que {xName || 'x'} se duplica, {yName || 'y'} aumenta en {format(activeModel.params.b * Math.log(2))}.</p>
+                    )}
+                    {activeModel.id === 'sinusoidal' && activeModel.params && (
+                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+                        <p><strong className="text-ink">Amplitud</strong> = {format(Math.abs(activeModel.params.a))} — oscila entre {format(activeModel.params.d - Math.abs(activeModel.params.a))} y {format(activeModel.params.d + Math.abs(activeModel.params.a))}.</p>
+                        <p><strong className="text-ink">Período</strong> = {format(2 * Math.PI / Math.abs(activeModel.params.b))} unidades de {xName || 'x'}.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Justificación del estudiante ── */}
                   <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4 space-y-3">
                     <p className="text-sm font-semibold text-ink/70">Escribe tu justificación:</p>
                     <p className="text-xs text-ink/45 leading-relaxed">
-                      Considera: ¿Por qué esta familia y no las otras? ¿Qué dice el R²? ¿Los residuales muestran algún patrón? ¿El modelo tiene sentido en el contexto del fenómeno?
+                      Responde: ¿Por qué esta familia y no las otras? ¿Qué dice el R²? ¿Los residuales muestran algún patrón? ¿El modelo tiene sentido en el contexto del fenómeno? ¿Qué limitaciones tiene?
                     </p>
                     <textarea
                       rows={5}
@@ -1275,6 +1349,21 @@ export function ModelingSpace() {
                     />
                   </div>
 
+                  {/* ── Reflexión metacognitiva ── */}
+                  <div className="rounded-xl border border-violet/20 bg-violet/5 p-4 space-y-2">
+                    <p className="text-sm font-semibold text-ink/70">Reflexión final</p>
+                    <div className="space-y-2 text-sm text-ink/55 leading-relaxed">
+                      <p>Antes de cerrar, considera:</p>
+                      <ul className="list-disc pl-5 space-y-1">
+                        <li>¿Tu modelo sirve para predecir valores <strong>fuera</strong> del rango de datos? ¿Hasta dónde?</li>
+                        <li>¿Hay algún dato que no se ajusta bien? ¿Por qué podría ser?</li>
+                        <li>Si tuvieras más datos, ¿cambiarías de modelo?</li>
+                        <li>¿Qué variable no estás considerando que podría mejorar la predicción?</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* ── Exportar ── */}
                   <button
                     onClick={handleExport}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-signal px-4 py-3 font-semibold text-white transition hover:bg-signal/90"
@@ -1282,7 +1371,7 @@ export function ModelingSpace() {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                       <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                     </svg>
-                    Exportar resultados (CSV)
+                    Exportar reporte completo (CSV)
                   </button>
                 </>
               )}
