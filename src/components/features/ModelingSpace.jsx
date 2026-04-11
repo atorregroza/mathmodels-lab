@@ -860,6 +860,7 @@ export function ModelingSpace() {
   const [reflection1, setReflection1] = useState('')
   const [reflection2, setReflection2] = useState('')
   const [reflection3, setReflection3] = useState('')
+  const [problemContext, setProblemContext] = useState('')
   const [showAllCurves, setShowAllCurves] = useState(false)
   const [manualCurveFn, setManualCurveFn] = useState(null)
   const [predictionX, setPredictionX] = useState(null)
@@ -1115,6 +1116,11 @@ export function ModelingSpace() {
   </div>
   <p>Tendencia observada: <strong>${patternLabel}${shapeLabel ? ', ' + shapeLabel : ''}</strong></p>
   <p>Familias consideradas: <strong>${selectedFamilies.join(', ')}</strong></p>
+
+  ${problemContext ? `
+  <h2>Contexto del problema</h2>
+  <div class="justification">${problemContext}</div>
+  ` : ''}
 
   <h2>2. Modelo seleccionado</h2>
   <div class="model-box">
@@ -1524,6 +1530,13 @@ export function ModelingSpace() {
                     </div>
                   </div>
 
+                  {/* ── Contexto del problema ── */}
+                  <div className="rounded-xl border border-ink/8 bg-white p-4 space-y-2">
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Contexto del problema</p>
+                    <p className="text-xs text-ink/45">Describe brevemente el fenómeno que estás modelando: ¿de dónde vienen los datos? ¿Qué se quiere entender o predecir?</p>
+                    <textarea rows={3} value={problemContext} onChange={e => setProblemContext(e.target.value)} placeholder="Ej: Se midió la población de bacterias en un cultivo cada hora durante 10 horas para determinar su tasa de crecimiento..." className="w-full resize-none rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30" />
+                  </div>
+
                   {/* ── Justificación del estudiante ── */}
                   <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4 space-y-3">
                     <p className="text-sm font-semibold text-ink/70">Escribe tu justificación:</p>
@@ -1570,7 +1583,7 @@ export function ModelingSpace() {
                   </button>
                   <button
                     onClick={handleReport}
-                    disabled={!studentName || !conclusion || !reflection1 || !reflection2 || !reflection3}
+                    disabled={!studentName || !problemContext || !conclusion || !reflection1 || !reflection2 || !reflection3}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -1583,7 +1596,7 @@ export function ModelingSpace() {
                   </button>
 
                   {/* Validation message */}
-                  {(!studentName || !conclusion || !reflection1 || !reflection2 || !reflection3) && (
+                  {(!studentName || !problemContext || !conclusion || !reflection1 || !reflection2 || !reflection3) && (
                     <p className="text-xs text-rose text-center">Completa todos los campos antes de generar el informe: nombre, justificación y las 3 reflexiones.</p>
                   )}
                 </>
