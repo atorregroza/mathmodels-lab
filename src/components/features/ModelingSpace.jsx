@@ -548,36 +548,36 @@ function DiagnosticPanel({ model, xs, ys, xName, yName }) {
       {/* Metrics with explanations */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">R²</p>
+          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">R²</p>
           <p className={`font-display text-2xl font-bold ${model.r2 < 0 ? 'text-rose' : 'text-ink'}`}>{(model.r2 * 100).toFixed(1)}%</p>
-          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">% de variación explicada por el modelo</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">% de variación explicada por el modelo</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">R² ajustado</p>
+          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">R² ajustado</p>
           <p className={`font-display text-2xl font-bold ${d.adjR2 < model.r2 - 0.05 ? 'text-signal' : 'text-ink'}`}>{(d.adjR2 * 100).toFixed(1)}%</p>
-          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">{d.adjR2 < model.r2 - 0.05 ? 'Baja: modelo muy complejo' : 'Similar a R²: complejidad adecuada'}</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">{d.adjR2 < model.r2 - 0.05 ? 'Baja: modelo muy complejo' : 'Similar a R²: complejidad adecuada'}</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">AIC</p>
+          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">AIC</p>
           <p className="font-display text-2xl font-bold text-ink">{format(d.aic)}</p>
-          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">Menor = mejor balance entre precisión y simplicidad</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">Menor = mejor balance entre precisión y simplicidad</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Error medio</p>
+          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">Error medio</p>
           <p className="font-display text-2xl font-bold text-ink">{format(model.mae)}</p>
-          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">Distancia promedio entre dato real y predicción</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">Distancia promedio entre dato real y predicción</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Parámetros</p>
+          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">Parámetros</p>
           <p className="font-display text-2xl font-bold text-ink">{model.numParams}</p>
-          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">Números ajustables en la ecuación</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">Números ajustables en la ecuación</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Sobreajuste</p>
+          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">Sobreajuste</p>
           <p className={`font-display text-2xl font-bold ${d.overfitRisk === 'alto' ? 'text-rose' : d.overfitRisk === 'moderado' ? 'text-signal' : 'text-graph'}`}>
             {d.overfitRisk === 'alto' ? 'Alto' : d.overfitRisk === 'moderado' ? 'Medio' : 'Bajo'}
           </p>
-          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">{d.overfitRisk === 'alto' ? 'Pocos datos para tantos parámetros' : d.overfitRisk === 'moderado' ? 'Más datos darían más confianza' : 'Datos suficientes para el modelo'}</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">{d.overfitRisk === 'alto' ? 'Pocos datos para tantos parámetros' : d.overfitRisk === 'moderado' ? 'Más datos darían más confianza' : 'Datos suficientes para el modelo'}</p>
         </div>
       </div>
 
