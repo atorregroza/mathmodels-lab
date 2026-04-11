@@ -1683,7 +1683,7 @@ export function ModelingSpace() {
           {activeModel && (
             <div className="grid gap-4 lg:grid-cols-2">
               <div className="space-y-3">
-                <ManualSliders model={activeModel} xs={xs} ys={ys} />
+                <ManualSliders model={activeModel} xs={xs} ys={ys} showChart xLabel={xName} yLabel={yName} />
                 <PredictionTool model={activeModel} xs={xs} xName={xName} yName={yName} />
               </div>
               <div className="space-y-3">
