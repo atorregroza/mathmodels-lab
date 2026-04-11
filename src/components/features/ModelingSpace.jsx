@@ -854,6 +854,9 @@ export function ModelingSpace() {
   const [selectedFamilies, setSelectedFamilies] = useState([])
   const [selectedModelId, setSelectedModelId] = useState(null)
   const [conclusion, setConclusion] = useState('')
+  const [studentName, setStudentName] = useState('')
+  const [studentCourse, setStudentCourse] = useState('')
+  const [studentSchool, setStudentSchool] = useState('')
   const [showAllCurves, setShowAllCurves] = useState(false)
   const [manualCurveFn, setManualCurveFn] = useState(null)
   const [predictionX, setPredictionX] = useState(null)
@@ -998,7 +1001,172 @@ export function ModelingSpace() {
       [conclusion || '(No se escribió justificación)'],
     ]
     downloadCsv(rows, `reporte-modelacion-${activeModel.id}.csv`)
-  }, [activeModel, xs, ys, hasData, conclusion])
+  }, [activeModel, xs, ys, hasData, conclusion, pattern, shape, selectedFamilies, xName, yName])
+
+  const handleReport = useCallback(() => {
+    if (!activeModel || !hasData) return
+    const patternLabel = PATTERN_OPTIONS.find(p => p.id === pattern)?.label || '—'
+    const shapeLabel = shape === 'accelerating' ? 'acelerando' : shape === 'decelerating' ? 'desacelerando' : shape === 'constant' ? 'a ritmo constante' : ''
+
+    // Build SVG chart inline
+    const dataXMin = Math.min(...xs), dataXMax = Math.max(...xs)
+    const dataYMin = Math.min(...ys), dataYMax = Math.max(...ys)
+    const xPad = (dataXMax - dataXMin) * 0.1 || 1
+    const yPad = (dataYMax - dataYMin) * 0.1 || 1
+    const cXMin = dataXMin - xPad, cXMax = dataXMax + xPad
+    const cYMin = dataYMin - yPad, cYMax = dataYMax + yPad
+    const w = 560, h = 300, pad = 40
+    const sx = (v) => pad + ((v - cXMin) / (cXMax - cXMin)) * (w - pad * 2)
+    const sy = (v) => h - pad - ((v - cYMin) / (cYMax - cYMin)) * (h - pad * 2)
+
+    // Data points
+    const dots = xs.map((x, i) => `<circle cx="${sx(x)}" cy="${sy(ys[i])}" r="5" fill="#5096ff" />`).join('')
+    // Model curve
+    const curvePts = []
+    for (let i = 0; i <= 200; i++) {
+      const x = cXMin + (i / 200) * (cXMax - cXMin)
+      const y = activeModel.fn(x)
+      if (isFinite(y)) curvePts.push(`${i === 0 ? 'M' : 'L'} ${sx(x)} ${sy(y)}`)
+    }
+    // Axis lines + ticks
+    const xAxis = cYMin <= 0 && cYMax >= 0 ? `<line x1="${pad}" y1="${sy(0)}" x2="${w - pad}" y2="${sy(0)}" stroke="#999" stroke-width="1"/>` : ''
+    const yAxis = cXMin <= 0 && cXMax >= 0 ? `<line x1="${sx(0)}" y1="${pad}" x2="${sx(0)}" y2="${h - pad}" stroke="#999" stroke-width="1"/>` : ''
+
+    // Data table rows
+    const tableRows = xs.map((x, i) => {
+      const yHat = activeModel.fn(x)
+      return `<tr><td>${x}</td><td>${ys[i]}</td><td>${format(yHat)}</td><td>${format(ys[i] - yHat)}</td></tr>`
+    }).join('')
+
+    const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Informe de Modelación — MathModels Lab</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; color: #121723; max-width: 800px; margin: 0 auto; padding: 40px 32px; line-height: 1.6; }
+  h1 { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 4px; }
+  h2 { font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 600; color: #ff6b35; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #ff6b3520; }
+  .subtitle { color: #12172380; font-size: 0.85rem; margin-bottom: 24px; }
+  .meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .meta-card { background: #f8f7f4; border-radius: 12px; padding: 12px 16px; }
+  .meta-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: #12172360; font-weight: 600; }
+  .meta-value { font-size: 1rem; font-weight: 600; margin-top: 4px; }
+  .model-box { background: #22c5a010; border: 1px solid #22c5a030; border-radius: 16px; padding: 16px 20px; margin: 16px 0; }
+  .model-eq { font-family: monospace; font-size: 1.3rem; font-weight: 700; color: #ff6b35; }
+  .model-detail { font-size: 0.85rem; color: #12172370; margin-top: 6px; }
+  .chart-container { margin: 20px 0; text-align: center; }
+  svg.chart { border: 1px solid #12172310; border-radius: 12px; background: white; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 12px 0; }
+  th { background: #121723; color: white; padding: 8px 12px; text-align: left; font-weight: 500; }
+  td { padding: 6px 12px; border-bottom: 1px solid #12172310; }
+  tr:nth-child(even) td { background: #f8f7f4; }
+  .justification { background: #5096ff10; border: 1px solid #5096ff25; border-radius: 12px; padding: 16px; margin: 16px 0; white-space: pre-wrap; font-size: 0.9rem; }
+  .reflection { background: #8b5cf610; border: 1px solid #8b5cf620; border-radius: 12px; padding: 16px; margin: 16px 0; }
+  .reflection ul { padding-left: 20px; }
+  .reflection li { margin: 4px 0; font-size: 0.85rem; color: #12172380; }
+  .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #12172315; font-size: 0.7rem; color: #12172340; text-align: center; }
+  .print-btn { display: block; margin: 24px auto; padding: 12px 32px; background: #ff6b35; color: white; border: none; border-radius: 24px; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+  .print-btn:hover { opacity: 0.9; }
+  @media print { .print-btn { display: none; } }
+</style>
+</head>
+<body>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+    <div style="width:40px;height:40px;background:#121723;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+      <span style="color:#22c5a0;font-family:Outfit;font-weight:700;font-size:14px;">ML</span>
+    </div>
+    <div>
+      <p style="font-family:Outfit;font-weight:700;font-size:1rem;letter-spacing:-0.02em;">MathModels Lab</p>
+      <p style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:#12172350;">Informe de modelación matemática</p>
+    </div>
+  </div>
+  <hr style="border:none;border-top:2px solid #12172310;margin:16px 0;">
+
+  <h1>Informe de Modelación</h1>
+  <p class="subtitle">${new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+
+  ${studentName || studentCourse || studentSchool ? `
+  <div class="meta">
+    ${studentName ? `<div class="meta-card"><p class="meta-label">Estudiante</p><p class="meta-value">${studentName}</p></div>` : ''}
+    ${studentCourse ? `<div class="meta-card"><p class="meta-label">Curso</p><p class="meta-value">${studentCourse}</p></div>` : ''}
+    ${studentSchool ? `<div class="meta-card"><p class="meta-label">Colegio</p><p class="meta-value">${studentSchool}</p></div>` : ''}
+  </div>` : ''}
+
+  <h2>1. Observación</h2>
+  <div class="meta">
+    <div class="meta-card">
+      <p class="meta-label">Variable X</p>
+      <p class="meta-value">${xName || 'x'}</p>
+    </div>
+    <div class="meta-card">
+      <p class="meta-label">Variable Y</p>
+      <p class="meta-value">${yName || 'y'}</p>
+    </div>
+    <div class="meta-card">
+      <p class="meta-label">Datos</p>
+      <p class="meta-value">${xs.length} pares</p>
+    </div>
+  </div>
+  <p>Tendencia observada: <strong>${patternLabel}${shapeLabel ? ', ' + shapeLabel : ''}</strong></p>
+  <p>Familias consideradas: <strong>${selectedFamilies.join(', ')}</strong></p>
+
+  <h2>2. Modelo seleccionado</h2>
+  <div class="model-box">
+    <p class="model-eq">${activeModel.formula}</p>
+    <p class="model-detail">${activeModel.label} — R² = ${format(activeModel.r2)} (${interpretR2(activeModel.r2).toLowerCase()})</p>
+  </div>
+
+  <h2>3. Gráfica</h2>
+  <div class="chart-container">
+    <svg class="chart" viewBox="0 0 ${w} ${h}" width="100%">
+      <rect width="${w}" height="${h}" fill="#fafafa" rx="8"/>
+      ${xAxis}${yAxis}
+      <line x1="${pad}" y1="${h - pad}" x2="${w - pad}" y2="${h - pad}" stroke="#ddd" stroke-width="1"/>
+      <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${h - pad}" stroke="#ddd" stroke-width="1"/>
+      <path d="${curvePts.join(' ')}" fill="none" stroke="#ff6b35" stroke-width="3" stroke-linecap="round"/>
+      ${dots}
+      <text x="${w / 2}" y="${h - 6}" text-anchor="middle" font-size="11" fill="#999">${xName || 'x'}</text>
+      <text x="10" y="${h / 2}" text-anchor="middle" font-size="11" fill="#999" transform="rotate(-90,10,${h / 2})">${yName || 'y'}</text>
+    </svg>
+  </div>
+
+  <h2>4. Datos y predicciones</h2>
+  <table>
+    <thead><tr><th>${xName || 'x'}</th><th>${yName || 'y'} (dato)</th><th>ŷ (modelo)</th><th>Residual</th></tr></thead>
+    <tbody>${tableRows}</tbody>
+  </table>
+
+  <h2>5. Justificación</h2>
+  <div class="justification">${conclusion || '<em>No se escribió justificación.</em>'}</div>
+
+  <h2>6. Reflexión</h2>
+  <div class="reflection">
+    <ul>
+      <li>¿El modelo sirve para predecir fuera del rango de datos? ¿Hasta dónde?</li>
+      <li>¿Hay algún dato que no se ajusta bien? ¿Por qué podría ser?</li>
+      <li>Si tuvieras más datos, ¿cambiarías de modelo?</li>
+      <li>¿Qué variable no estás considerando que podría mejorar la predicción?</li>
+    </ul>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">Imprimir / Guardar como PDF</button>
+
+  <div class="footer">
+    Generado con MathModels Lab — mathmodels.astridto.com<br>
+    Astrid Torregroza Olivero · Lic. en Matemáticas y Física
+  </div>
+</body>
+</html>`
+
+    const win = window.open('', '_blank')
+    if (win) {
+      win.document.write(html)
+      win.document.close()
+    }
+  }, [activeModel, xs, ys, hasData, conclusion, pattern, shape, selectedFamilies, xName, yName])
 
   // ── Step navigation ──
   const patternCorrect = pattern === actualTrend || pattern === null
@@ -1334,6 +1502,25 @@ export function ModelingSpace() {
                     )}
                   </div>
 
+                  {/* ── Identificación del estudiante ── */}
+                  <div className="rounded-xl border border-ink/8 bg-white p-4 space-y-3">
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Identificación</p>
+                    <div className="grid gap-3 md:grid-cols-3">
+                      <div>
+                        <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/40">Nombre</label>
+                        <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)} placeholder="Tu nombre completo" className="w-full rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/40">Curso</label>
+                        <input type="text" value={studentCourse} onChange={e => setStudentCourse(e.target.value)} placeholder="Ej: 11° IB" className="w-full rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/40">Colegio</label>
+                        <input type="text" value={studentSchool} onChange={e => setStudentSchool(e.target.value)} placeholder="Nombre del colegio" className="w-full rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30" />
+                      </div>
+                    </div>
+                  </div>
+
                   {/* ── Justificación del estudiante ── */}
                   <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4 space-y-3">
                     <p className="text-sm font-semibold text-ink/70">Escribe tu justificación:</p>
@@ -1371,7 +1558,19 @@ export function ModelingSpace() {
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                       <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                     </svg>
-                    Exportar reporte completo (CSV)
+                    Descargar datos (CSV)
+                  </button>
+                  <button
+                    onClick={handleReport}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 font-semibold text-paper transition hover:bg-ink/90"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <line x1="16" y1="13" x2="8" y2="13"/>
+                      <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    Ver informe completo
                   </button>
                 </>
               )}
