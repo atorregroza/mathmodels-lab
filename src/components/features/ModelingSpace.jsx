@@ -14,12 +14,17 @@ import {
 function makeTicks(min, max, count = 6) {
   const range = max - min
   if (range === 0) return [min]
-  const step = Math.pow(10, Math.floor(Math.log10(range / count)))
+  // Find a "nice" step that gives approximately `count` ticks
+  const rawStep = range / count
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)))
+  const residual = rawStep / magnitude
+  // Round to nearest "nice" number: 1, 2, 5, 10
+  const niceStep = residual <= 1.5 ? magnitude : residual <= 3.5 ? 2 * magnitude : residual <= 7.5 ? 5 * magnitude : 10 * magnitude
   const ticks = []
-  const start = Math.ceil(min / step) * step
-  for (let v = start; v <= max; v += step) {
+  const start = Math.ceil(min / niceStep) * niceStep
+  for (let v = start; v <= max + niceStep * 0.01; v += niceStep) {
     ticks.push(parseFloat(v.toPrecision(6)))
-    if (ticks.length > 20) break
+    if (ticks.length > count + 2) break
   }
   return ticks
 }
