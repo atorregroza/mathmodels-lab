@@ -1147,7 +1147,47 @@ export function ModelingSpace() {
                         <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">Ecuación ajustada</p>
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.formula}</p>
                       </div>
-                      <ManualSliders model={activeModel} xs={xs} ys={ys} />
+                      {/* Parameter interpretation — pedagogical, not sliders */}
+                      <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-2">
+                        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">¿Qué significa cada parámetro?</p>
+                        {activeModel.id === 'linear' && activeModel.params && (
+                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
+                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — pendiente: por cada unidad que aumenta {xName || 'x'}, {yName || 'y'} {activeModel.params.b > 0 ? 'aumenta' : 'disminuye'} en {format(Math.abs(activeModel.params.b))} unidades.</p>
+                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — intercepto: cuando {xName || 'x'} = 0, el modelo predice {yName || 'y'} = {format(activeModel.params.a)}.</p>
+                          </div>
+                        )}
+                        {activeModel.id === 'quadratic' && activeModel.params && (
+                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
+                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — curvatura: {activeModel.params.a > 0 ? 'la parábola abre hacia arriba (tiene mínimo)' : 'la parábola abre hacia abajo (tiene máximo)'}.</p>
+                            <p><strong className="text-ink">Vértice</strong> — el punto donde la curva cambia de dirección está en x = {format(-activeModel.params.b / (2 * activeModel.params.a))}.</p>
+                          </div>
+                        )}
+                        {activeModel.id === 'exponential' && activeModel.params && (
+                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
+                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — valor inicial: cuando {xName || 'x'} = 0, {yName || 'y'} ≈ {format(activeModel.params.a)}.</p>
+                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — tasa de {activeModel.params.b > 0 ? 'crecimiento' : 'decaimiento'}: {activeModel.params.b > 0 ? `el valor se duplica cada ${format(Math.log(2) / activeModel.params.b)} unidades de ${xName || 'x'}` : `el valor se reduce a la mitad cada ${format(Math.log(2) / Math.abs(activeModel.params.b))} unidades de ${xName || 'x'}`}.</p>
+                          </div>
+                        )}
+                        {activeModel.id === 'power' && activeModel.params && (
+                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
+                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — exponente: al duplicar {xName || 'x'}, {yName || 'y'} se multiplica por {format(Math.pow(2, activeModel.params.b))}.</p>
+                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — factor de escala.</p>
+                          </div>
+                        )}
+                        {activeModel.id === 'logarithmic' && activeModel.params && (
+                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
+                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — sensibilidad: cada vez que {xName || 'x'} se duplica, {yName || 'y'} aumenta en {format(activeModel.params.b * Math.log(2))} unidades.</p>
+                            <p>El crecimiento se desacelera: los primeros valores de {xName || 'x'} tienen más impacto que los últimos.</p>
+                          </div>
+                        )}
+                        {activeModel.id === 'sinusoidal' && activeModel.params && (
+                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
+                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — amplitud: la oscilación va desde {format(activeModel.params.d - Math.abs(activeModel.params.a))} hasta {format(activeModel.params.d + Math.abs(activeModel.params.a))}.</p>
+                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — frecuencia: un ciclo completo ocurre cada {format(2 * Math.PI / Math.abs(activeModel.params.b))} unidades de {xName || 'x'}.</p>
+                            <p><strong className="text-ink">d = {format(activeModel.params.d)}</strong> — línea media: el valor promedio alrededor del cual oscila.</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </>
