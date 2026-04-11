@@ -308,22 +308,22 @@ function PredictionTool({ model, xs, xName, yName }) {
   const isExtrapolating = isValid && (xVal < dataXMin || xVal > dataXMax)
 
   return (
-    <div className="rounded-xl border border-ink/10 bg-white p-4 space-y-3">
+    <div className="rounded-xl border border-ink/10 bg-white p-4 space-y-2">
       <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">Predicción</p>
-      <div className="flex items-center gap-3">
-        <label className="text-sm text-ink/60 shrink-0">Si {xName || 'x'} =</label>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs text-ink/50">Si {xName || 'x'} =</span>
         <input
           type="number"
           value={predX}
           onChange={e => setPredX(e.target.value)}
           placeholder="valor"
-          className="w-24 rounded-lg border border-ink/12 bg-ink/3 px-3 py-1.5 font-mono text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30"
+          className="w-20 rounded-lg border border-ink/12 bg-ink/3 px-2 py-1.5 font-mono text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30"
         />
         {isValid && predY != null && isFinite(predY) && (
-          <span className="flex items-center gap-1.5 text-sm">
-            <span className="text-ink/50">→ {yName || 'y'} ≈</span>
-            <span className="font-mono font-bold text-signal text-base">{format(predY)}</span>
-          </span>
+          <>
+            <span className="text-xs text-ink/50">→ {yName || 'y'} ≈</span>
+            <span className="font-mono font-bold text-signal text-lg">{format(predY)}</span>
+          </>
         )}
       </div>
 
@@ -545,33 +545,39 @@ function DiagnosticPanel({ model, xs, ys, xName, yName }) {
 
   return (
     <div className="space-y-3">
-      {/* Metrics — responsive grid */}
+      {/* Metrics with explanations */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
           <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">R²</p>
           <p className={`font-display text-2xl font-bold ${model.r2 < 0 ? 'text-rose' : 'text-ink'}`}>{(model.r2 * 100).toFixed(1)}%</p>
+          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">% de variación explicada por el modelo</p>
         </div>
-        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
           <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">R² ajustado</p>
           <p className={`font-display text-2xl font-bold ${d.adjR2 < model.r2 - 0.05 ? 'text-signal' : 'text-ink'}`}>{(d.adjR2 * 100).toFixed(1)}%</p>
+          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">{d.adjR2 < model.r2 - 0.05 ? 'Baja: modelo muy complejo' : 'Similar a R²: complejidad adecuada'}</p>
         </div>
-        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
           <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">AIC</p>
           <p className="font-display text-2xl font-bold text-ink">{format(d.aic)}</p>
+          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">Menor = mejor balance entre precisión y simplicidad</p>
         </div>
-        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
           <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Error medio</p>
           <p className="font-display text-2xl font-bold text-ink">{format(model.mae)}</p>
+          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">Distancia promedio entre dato real y predicción</p>
         </div>
-        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
           <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Parámetros</p>
           <p className="font-display text-2xl font-bold text-ink">{model.numParams}</p>
+          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">Números ajustables en la ecuación</p>
         </div>
-        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
           <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Sobreajuste</p>
           <p className={`font-display text-2xl font-bold ${d.overfitRisk === 'alto' ? 'text-rose' : d.overfitRisk === 'moderado' ? 'text-signal' : 'text-graph'}`}>
             {d.overfitRisk === 'alto' ? 'Alto' : d.overfitRisk === 'moderado' ? 'Medio' : 'Bajo'}
           </p>
+          <p className="mt-1 text-[0.65rem] leading-tight text-ink/35">{d.overfitRisk === 'alto' ? 'Pocos datos para tantos parámetros' : d.overfitRisk === 'moderado' ? 'Más datos darían más confianza' : 'Datos suficientes para el modelo'}</p>
         </div>
       </div>
 
