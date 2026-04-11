@@ -857,6 +857,9 @@ export function ModelingSpace() {
   const [studentName, setStudentName] = useState('')
   const [studentCourse, setStudentCourse] = useState('')
   const [studentSchool, setStudentSchool] = useState('')
+  const [reflection1, setReflection1] = useState('')
+  const [reflection2, setReflection2] = useState('')
+  const [reflection3, setReflection3] = useState('')
   const [showAllCurves, setShowAllCurves] = useState(false)
   const [manualCurveFn, setManualCurveFn] = useState(null)
   const [predictionX, setPredictionX] = useState(null)
@@ -1001,7 +1004,7 @@ export function ModelingSpace() {
       [conclusion || '(No se escribió justificación)'],
     ]
     downloadCsv(rows, `reporte-modelacion-${activeModel.id}.csv`)
-  }, [activeModel, xs, ys, hasData, conclusion, pattern, shape, selectedFamilies, xName, yName])
+  }, [activeModel, xs, ys, hasData, conclusion, pattern, shape, selectedFamilies, xName, yName, studentName, studentCourse, studentSchool, reflection1, reflection2, reflection3])
 
   const handleReport = useCallback(() => {
     if (!activeModel || !hasData) return
@@ -1143,13 +1146,13 @@ export function ModelingSpace() {
   <div class="justification">${conclusion || '<em>No se escribió justificación.</em>'}</div>
 
   <h2>6. Reflexión</h2>
-  <div class="reflection">
-    <ul>
-      <li>¿El modelo sirve para predecir fuera del rango de datos? ¿Hasta dónde?</li>
-      <li>¿Hay algún dato que no se ajusta bien? ¿Por qué podría ser?</li>
-      <li>Si tuvieras más datos, ¿cambiarías de modelo?</li>
-      <li>¿Qué variable no estás considerando que podría mejorar la predicción?</li>
-    </ul>
+  <div class="reflection" style="space-y:12px;">
+    <p style="font-size:0.85rem;color:#12172370;margin-bottom:8px;"><strong>¿Tu modelo sirve para predecir fuera del rango de datos?</strong></p>
+    <div class="justification" style="margin:4px 0 16px;">${reflection1 || '<em>Sin respuesta</em>'}</div>
+    <p style="font-size:0.85rem;color:#12172370;margin-bottom:8px;"><strong>¿Hay algún dato que no se ajusta bien? ¿Por qué?</strong></p>
+    <div class="justification" style="margin:4px 0 16px;">${reflection2 || '<em>Sin respuesta</em>'}</div>
+    <p style="font-size:0.85rem;color:#12172370;margin-bottom:8px;"><strong>¿Qué variable no estás considerando?</strong></p>
+    <div class="justification" style="margin:4px 0 16px;">${reflection3 || '<em>Sin respuesta</em>'}</div>
   </div>
 
   <button class="print-btn" onclick="window.print()">Imprimir / Guardar como PDF</button>
@@ -1166,7 +1169,7 @@ export function ModelingSpace() {
       win.document.write(html)
       win.document.close()
     }
-  }, [activeModel, xs, ys, hasData, conclusion, pattern, shape, selectedFamilies, xName, yName])
+  }, [activeModel, xs, ys, hasData, conclusion, pattern, shape, selectedFamilies, xName, yName, studentName, studentCourse, studentSchool, reflection1, reflection2, reflection3])
 
   // ── Step navigation ──
   const patternCorrect = pattern === actualTrend || pattern === null
@@ -1539,14 +1542,19 @@ export function ModelingSpace() {
                   {/* ── Reflexión metacognitiva ── */}
                   <div className="rounded-xl border border-violet/20 bg-violet/5 p-4 space-y-2">
                     <p className="text-sm font-semibold text-ink/70">Reflexión final</p>
-                    <div className="space-y-2 text-sm text-ink/55 leading-relaxed">
-                      <p>Antes de cerrar, considera:</p>
-                      <ul className="list-disc pl-5 space-y-1">
-                        <li>¿Tu modelo sirve para predecir valores <strong>fuera</strong> del rango de datos? ¿Hasta dónde?</li>
-                        <li>¿Hay algún dato que no se ajusta bien? ¿Por qué podría ser?</li>
-                        <li>Si tuvieras más datos, ¿cambiarías de modelo?</li>
-                        <li>¿Qué variable no estás considerando que podría mejorar la predicción?</li>
-                      </ul>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-xs text-ink/50 mb-1">¿Tu modelo sirve para predecir valores <strong>fuera</strong> del rango de datos? ¿Hasta dónde?</p>
+                        <textarea rows={2} value={reflection1} onChange={e => setReflection1(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-violet/30" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-ink/50 mb-1">¿Hay algún dato que no se ajusta bien? ¿Por qué podría ser?</p>
+                        <textarea rows={2} value={reflection2} onChange={e => setReflection2(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-violet/30" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-ink/50 mb-1">¿Qué variable no estás considerando que podría mejorar la predicción?</p>
+                        <textarea rows={2} value={reflection3} onChange={e => setReflection3(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-violet/30" />
+                      </div>
                     </div>
                   </div>
 
