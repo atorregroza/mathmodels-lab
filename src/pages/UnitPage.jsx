@@ -26,7 +26,7 @@ export const UnitPage = () => {
   const colors = getUnitColors(unitId)
 
   if (!unit) {
-    return <Navigate to="/ruta-ib" replace />
+    return <Navigate to="/secuencia" replace />
   }
 
   const unitLabs = labs.filter((lab) => lab.unitId === unit.id)
@@ -42,42 +42,27 @@ export const UnitPage = () => {
         <motion.div {...fadeIn} className="max-w-4xl">
           <p className="section-kicker flex items-center gap-2">
             <span className={`inline-block h-2 w-2 rounded-full ${colors.dot}`} />
-            Unidad curricular
+            Unidad
           </p>
           <h1 className="mt-4 font-display text-[clamp(2.8rem,7vw,5.8rem)] font-bold leading-[0.94] tracking-[-0.05em]">
             {unit.title}
           </h1>
           <p className="mt-6 text-lg leading-8 text-ink/74">{unit.overview}</p>
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex items-start gap-2.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0 text-ink/35">
+                <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+              </svg>
+              <p className="text-sm leading-6 text-ink/58">{unit.studentFocus}</p>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0 text-ink/35">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              <p className="text-sm leading-6 text-ink/58">{unit.teacherUse}</p>
+            </div>
+          </div>
         </motion.div>
-
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.02fr_0.98fr]">
-          <motion.div {...fadeIn} className="rounded-[2rem] border border-ink/10 bg-white/78 p-6 shadow-[0_22px_55px_rgba(18,23,35,0.07)]">
-            <p className="section-kicker">Propósito</p>
-            <p className="mt-4 text-base leading-7 text-ink/70">{unit.purpose}</p>
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="rounded-[1.2rem] bg-paper px-4 py-4">
-                <p className="text-sm font-semibold text-ink">Para estudiantes</p>
-                <p className="mt-2 text-sm leading-6 text-ink/68">{unit.studentFocus}</p>
-              </div>
-              <div className="rounded-[1.2rem] bg-paper px-4 py-4">
-                <p className="text-sm font-semibold text-ink">Para docentes</p>
-                <p className="mt-2 text-sm leading-6 text-ink/68">{unit.teacherUse}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div {...fadeIn} className="rounded-[2rem] border border-ink/10 bg-ink p-6 text-paper shadow-[0_28px_80px_rgba(18,23,35,0.22)]">
-            <p className="section-kicker text-paper/55">Secuencia sugerida</p>
-            <div className="mt-5 space-y-3">
-              {unit.recommendedOrder.map((item, index) => (
-                <div key={item} className="rounded-[1.2rem] border border-white/10 bg-white/6 px-4 py-4">
-                  <p className="text-[0.68rem] uppercase tracking-[0.24em] text-paper/45">Paso {index + 1}</p>
-                  <p className="mt-2 text-sm leading-6 text-paper/76">{item}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
 
         {unit.mathToolkit && unit.mathToolkit.length > 0 && (
           <motion.div {...fadeIn} className="mt-8">
@@ -128,39 +113,19 @@ export const UnitPage = () => {
         )}
 
         {learningPath.length > 0 && (
-          <motion.div {...fadeIn} className="mt-8 rounded-[2rem] border border-ink/10 bg-paper p-6 shadow-[0_22px_55px_rgba(18,23,35,0.07)]">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="max-w-3xl">
-                <p className="section-kicker">Cómo se organiza esta unidad</p>
-                <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.8rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                  La secuencia va de una visión comparativa a laboratorios cada vez más especializados.
-                </h2>
-              </div>
-              <Link
-                to="/laboratorios"
-                className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-4 py-2.5 text-sm font-semibold text-ink"
-              >
-                Explorar biblioteca
-              </Link>
-            </div>
+          <motion.div {...fadeIn} className="mt-8">
+            <p className="section-kicker">Laboratorios de esta unidad</p>
 
-            <div className="mt-6 grid gap-5 xl:grid-cols-2">
+            <div className="mt-5 grid gap-4 xl:grid-cols-2">
               {learningPath.map((step, index) => (
-                <article key={step.lab.id} className="rounded-[1.5rem] border border-ink/10 bg-white px-5 py-5 shadow-[0_14px_30px_rgba(18,23,35,0.05)]">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className={`flex h-9 w-9 items-center justify-center rounded-full ${colors.dot} text-sm font-semibold text-white`}>
+                <article key={step.lab.id} className="rounded-[1.5rem] border border-ink/10 bg-white px-5 py-5 shadow-[0_10px_25px_rgba(18,23,35,0.05)]">
+                  <div className="flex items-center gap-3">
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${colors.dot} text-sm font-semibold text-white`}>
                       {index + 1}
                     </span>
-                    <span className={`rounded-full px-3 py-1 text-xs uppercase tracking-[0.16em] ${step.lab.status === 'available' ? `border ${colors.border} ${colors.bg} ${colors.text}` : 'bg-ink/8 text-ink/55'}`}>
-                      {step.lab.status === 'available' ? 'Disponible' : 'En preparación'}
-                    </span>
+                    <h3 className="font-display text-lg font-semibold tracking-[-0.02em]">{step.title}</h3>
                   </div>
-
-                  <h3 className="mt-4 font-display text-[2rem] leading-tight tracking-[-0.03em]">{step.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-ink/68">{step.description}</p>
-                  {step.lab.contextSummary && (
-                    <p className="mt-3 text-sm leading-6 text-ink/60">{step.lab.contextSummary}</p>
-                  )}
 
                   {step.lab.status === 'available' ? (
                     <div className="mt-5 flex flex-wrap gap-3">
@@ -188,13 +153,13 @@ export const UnitPage = () => {
           <motion.div {...fadeIn} className="mt-8 rounded-[2rem] border border-ink/10 bg-white/78 p-6 shadow-[0_22px_55px_rgba(18,23,35,0.07)]">
             <p className="section-kicker">Laboratorios para esta unidad</p>
             <div className="mt-6 grid gap-5 xl:grid-cols-2">
-              {availableLabs.map((lab) => (
+              {availableLabs.map((lab, index) => (
                 <article key={lab.id} className="rounded-[1.5rem] border border-ink/10 bg-paper px-5 py-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-display text-[2rem] leading-tight tracking-[-0.03em]">{lab.title}</h3>
-                    <span className={`rounded-full border ${colors.border} ${colors.bg} px-3 py-1 text-xs uppercase tracking-[0.16em] ${colors.text}`}>
-                      Disponible
+                  <div className="flex items-center gap-3">
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${colors.dot} text-sm font-semibold text-white`}>
+                      {index + 1}
                     </span>
+                    <h3 className="font-display text-lg font-semibold tracking-[-0.02em]">{lab.title}</h3>
                   </div>
                   <p className="mt-3 text-sm leading-6 text-ink/68">{lab.contextSummary}</p>
                   <Link
@@ -208,12 +173,7 @@ export const UnitPage = () => {
 
               {plannedLabs.map((lab) => (
                 <article key={lab.id} className="rounded-[1.5rem] border border-ink/10 bg-white px-5 py-5">
-                  <div className="flex items-center justify-between gap-3">
-                    <h3 className="font-display text-[2rem] leading-tight tracking-[-0.03em]">{lab.title}</h3>
-                    <span className="rounded-full bg-ink/8 px-3 py-1 text-xs uppercase tracking-[0.16em] text-ink/55">
-                      En preparación
-                    </span>
-                  </div>
+                  <h3 className="font-display text-lg font-semibold tracking-[-0.02em] text-ink/55">{lab.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-ink/68">{lab.contextSummary}</p>
                 </article>
               ))}

@@ -1225,7 +1225,7 @@ export const platformSupports = [
 
 export const navigationItems = [
   { label: 'Inicio', to: '/', end: true },
-  { label: 'Unidades', to: '/ruta-ib', end: true },
+  { label: 'Unidades', to: '/secuencia', end: true },
   { label: 'Laboratorios', to: '/laboratorios', end: false },
   { label: 'Modelar', to: '/modelacion', end: true },
   { label: 'Investigar', submenu: [

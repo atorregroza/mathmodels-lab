@@ -5,7 +5,7 @@ import { ModelingSpace } from '../components/features/ModelingSpace'
 export function ModelacionPage() {
   usePageMeta({
     title: 'Espacio de Modelación — MathModels Lab',
-    description: 'Sube tus datos y encuentra el modelo matemático que mejor los describe. Guiado paso a paso o en modo directo.',
+    description: 'Ingresa datos reales, compara familias de funciones y justifica qué modelo describe mejor el fenómeno.',
     keywords: 'modelación, regresión, ajuste de curvas, datos, modelo matemático, IB',
   })
 
@@ -26,8 +26,8 @@ export function ModelacionPage() {
           Del dato al modelo.
         </h1>
         <p className="mt-3 max-w-2xl text-base text-ink/60 leading-relaxed md:text-lg">
-          Sube tus propios datos y descubre qué función matemática describe mejor el fenómeno.
-          El sistema te guía para que entiendas <strong>por qué</strong> un modelo funciona — no solo cuál es.
+          Ingresa datos reales, compara familias de funciones y justifica qué modelo describe mejor el fenómeno.
+          La herramienta acompaña el proceso para que entiendas <strong>por qué</strong> un modelo funciona — no solo cuál es.
         </p>
       </div>
 

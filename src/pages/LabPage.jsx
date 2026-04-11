@@ -106,18 +106,13 @@ export const LabPage = () => {
             {lab.title}
           </h1>
           <p className="mt-6 text-lg leading-8 text-ink/74">{lab.purpose}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8">
             <Link
               to={`/unidades/${lab.unitId}`}
               className={`inline-flex items-center gap-2 rounded-full ${colors.bg} ${colors.text} border ${colors.border} px-5 py-3 text-sm font-semibold`}
             >
-              Volver a la unidad
-            </Link>
-            <Link
-              to="/ruta-ib"
-              className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
-            >
-              Ver ruta de estudio
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              {unit.shortTitle}
             </Link>
           </div>
         </motion.div>

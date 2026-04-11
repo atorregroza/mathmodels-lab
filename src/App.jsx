@@ -19,7 +19,7 @@ function App() {
           <PlatformShell>
             <Routes>
               <Route path="/" element={<DerivaHomePage />} />
-              <Route path="/ruta-ib" element={<StudyRoutePage />} />
+              <Route path="/secuencia" element={<StudyRoutePage />} />
               <Route path="/exploraciones/:blockId" element={<ExplorationBlockPage />} />
               <Route path="/unidades/:unitId" element={<UnitPage />} />
               <Route path="/laboratorios" element={<LabsLibraryPage />} />

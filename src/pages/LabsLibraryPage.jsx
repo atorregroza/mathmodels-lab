@@ -104,9 +104,6 @@ const LabCard = ({ lab }) => {
           <span className={`inline-block h-2 w-2 rounded-full ${colors.dot}`} />
           {unit?.shortTitle || 'Unidad'}
         </span>
-        <span className="rounded-full border border-signal/25 bg-signal/10 px-3 py-1 text-xs uppercase tracking-[0.18em] text-signal">
-          Disponible
-        </span>
       </div>
       <h2 className="mt-4 font-display text-[2.4rem] leading-[0.98] tracking-[-0.04em]">{lab.title}</h2>
       <p className="mt-4 text-sm leading-6 text-ink/68">{lab.contextSummary}</p>
@@ -145,18 +142,12 @@ const LabCard = ({ lab }) => {
           )}
         </AnimatePresence>
       </div>
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-6">
         <Link
           to={`/laboratorios/${lab.id}`}
           className={`inline-flex items-center gap-2 rounded-full ${colors.dot} px-5 py-3 text-sm font-semibold text-white`}
         >
-          Abrir
-        </Link>
-        <Link
-          to={`/unidades/${lab.unitId}`}
-          className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
-        >
-          Ver secuencia
+          Abrir laboratorio
         </Link>
       </div>
     </motion.article>
@@ -180,10 +171,10 @@ export const LabsLibraryPage = () => {
         <motion.div {...fadeIn} className="max-w-4xl">
           <p className="section-kicker">Biblioteca de laboratorios</p>
           <h1 className="mt-4 font-display text-[clamp(2.8rem,7vw,5.8rem)] font-bold leading-[0.94] tracking-[-0.05em]">
-            Simuladores listos para explorar, analizar y usar en clase.
+            {availableLabs.length} laboratorios organizados por unidad.
           </h1>
           <p className="mt-6 text-lg leading-8 text-ink/74">
-            Esta biblioteca reúne los laboratorios activos de la plataforma. Cada experiencia tiene una página propia para mantener la lectura clara y el espacio matemático bien aprovechado.
+            Cada laboratorio parte de una situación concreta, conecta con el contenido de su unidad y permite explorar, conjeturar y justificar con herramientas matemáticas.
           </p>
         </motion.div>
 
@@ -198,7 +189,7 @@ export const LabsLibraryPage = () => {
               <p className="mt-3 text-sm leading-6 text-paper/76">Compara gráficos, tablas y expresiones para justificar qué está ocurriendo.</p>
             </div>
             <div className="rounded-[1.3rem] border border-white/10 bg-white/6 p-4">
-              <p className="text-[0.68rem] uppercase tracking-[0.28em] text-paper/45">3. Continúa</p>
+              <p className="text-[0.68rem] uppercase tracking-[0.28em] text-paper/45">3. Profundiza</p>
               <p className="mt-3 text-sm leading-6 text-paper/76">Descarga datos, conecta con una unidad y transforma la experiencia en análisis más largo.</p>
             </div>
           </div>
