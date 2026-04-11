@@ -387,13 +387,6 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
   const currentParams = showBest ? model.params : (manualParams || model.params)
 
   const currentFn = buildFn(currentParams)
-
-  // Notify parent of curve on mount and when params change
-  const isFirstRender = useRef(true)
-  if (isFirstRender.current && onParamsChange && manualParams) {
-    isFirstRender.current = false
-    Promise.resolve().then(() => onParamsChange(buildFn(manualParams)))
-  }
   const currentR2 = computeR2(xs, ys, currentFn)
   const bestR2 = model.r2
 
@@ -1211,13 +1204,11 @@ export function ModelingSpace() {
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
 
-                      {/* Chart showing data points + student's manual curve */}
-                      <DataChart xs={xs} ys={ys}
-                        fittedModels={manualCurveFn ? [{ ...activeModel, fn: manualCurveFn, id: 'manual' }] : []}
-                        selectedModelId="manual" xLabel={xName} yLabel={yName} dark={false} />
+                      {/* Chart showing data points only — student adjusts visually */}
+                      <DataChart xs={xs} ys={ys} fittedModels={[]} selectedModelId={null} xLabel={xName} yLabel={yName} dark={false} />
 
                       {/* Manual sliders — start random, no R² until verify */}
-                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom onParamsChange={setManualCurveFn} />
+                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom />
                     </div>
                   )}
                 </>
