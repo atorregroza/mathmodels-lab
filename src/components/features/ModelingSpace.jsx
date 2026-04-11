@@ -423,18 +423,26 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
     if (onParamsChange) onParamsChange(buildFn(randomized))
   }
 
+  const [verified, setVerified] = useState(false)
+  const savedR2Ref = useRef(null)
+
+  const handleVerify = () => {
+    savedR2Ref.current = currentR2
+    setVerified(true)
+  }
+
+  // Reset verified when params change
+  const handleChangeWithReset = (key, value) => {
+    handleChange(key, value)
+    setVerified(false)
+  }
+
   return (
     <div className="rounded-xl border border-ink/10 bg-white p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">Ajustar parámetros manualmente</p>
-        <div className="flex items-center gap-2">
-          {/* R² indicator */}
-          <span className={`font-mono text-sm font-bold ${
-            currentR2 >= bestR2 - 0.01 ? 'text-graph' : currentR2 >= bestR2 * 0.8 ? 'text-signal' : 'text-rose'
-          }`}>
-            R² = {(currentR2 * 100).toFixed(1)}%
-          </span>
-        </div>
+        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">
+          {showBest ? 'Mejor ajuste' : 'Ajusta la curva a los datos'}
+        </p>
       </div>
 
       {paramKeys.map(key => {
@@ -447,46 +455,72 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
               type="range"
               min={range.min} max={range.max} step={range.step}
               value={value}
-              onChange={e => handleChange(key, Number(e.target.value))}
-              className="h-1.5 flex-1 cursor-pointer accent-signal"
+              onChange={e => handleChangeWithReset(key, Number(e.target.value))}
+              disabled={showBest}
+              className="h-1.5 flex-1 cursor-pointer accent-signal disabled:opacity-50"
             />
             <span className="w-16 shrink-0 text-right font-mono text-xs text-ink/55">{format(value)}</span>
           </div>
         )
       })}
 
-      <div className="flex gap-2">
-        <button
-          onClick={handleReset}
-          className="flex-1 rounded-lg border border-ink/12 py-1.5 text-xs font-medium text-ink/50 transition hover:bg-ink/5"
-        >
-          Aleatorizar
-        </button>
-        <button
-          onClick={handleReveal}
-          className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition ${
-            showBest ? 'bg-graph/15 text-graph' : 'bg-signal/10 text-signal hover:bg-signal/20'
-          }`}
-        >
-          {showBest ? '✓ Mejor ajuste revelado' : 'Ver mejor ajuste'}
-        </button>
-      </div>
-
-      {!showBest && manualParams && (
-        <div className={`rounded-lg px-3 py-2 text-sm leading-relaxed ${
-          currentR2 >= 0.95 ? 'bg-graph/10 text-graph' : currentR2 >= 0.8 ? 'bg-amber-50 text-amber-700' : currentR2 >= 0.5 ? 'bg-signal/10 text-signal' : 'bg-ink/5 text-ink/50'
-        }`}>
-          {currentR2 >= 0.95 && 'Excelente ajuste. Tu curva describe muy bien los datos.'}
-          {currentR2 >= 0.8 && currentR2 < 0.95 && 'Buen intento — la curva se acerca pero aún puedes mejorar. Sigue ajustando.'}
-          {currentR2 >= 0.5 && currentR2 < 0.8 && 'La curva captura parte de la tendencia pero le falta. Experimenta con los parámetros.'}
-          {currentR2 < 0.5 && 'La curva todavía está lejos de los datos. Observa la forma y ajusta.'}
+      {/* Step 1: Verify — student checks their R² */}
+      {!verified && !showBest && (
+        <div className="flex gap-2">
+          <button
+            onClick={handleReset}
+            className="flex-1 rounded-lg border border-ink/12 py-2 text-xs font-medium text-ink/50 transition hover:bg-ink/5"
+          >
+            Reiniciar
+          </button>
+          <button
+            onClick={handleVerify}
+            className="flex-1 rounded-lg bg-signal py-2 text-xs font-semibold text-white transition hover:bg-signal/90"
+          >
+            Verificar mi ajuste
+          </button>
         </div>
       )}
+
+      {/* Step 2: Show student's R² and option to reveal best */}
+      {verified && !showBest && (
+        <>
+          <div className={`rounded-lg px-3 py-2 text-sm leading-relaxed ${
+            savedR2Ref.current >= 0.9 ? 'bg-graph/10 text-graph' : savedR2Ref.current >= 0.7 ? 'bg-amber-50 text-amber-700' : 'bg-signal/10 text-signal'
+          }`}>
+            <p><strong>Tu R² = {(savedR2Ref.current * 100).toFixed(1)}%</strong></p>
+            {savedR2Ref.current >= 0.9 && 'Excelente — tu curva describe muy bien los datos.'}
+            {savedR2Ref.current >= 0.7 && savedR2Ref.current < 0.9 && 'Buen intento — puedes intentar de nuevo o ver el óptimo.'}
+            {savedR2Ref.current < 0.7 && 'La curva aún no se ajusta bien. Puedes intentar de nuevo o ver la solución.'}
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setVerified(false); handleReset() }}
+              className="flex-1 rounded-lg border border-ink/12 py-2 text-xs font-medium text-ink/50 transition hover:bg-ink/5"
+            >
+              Intentar de nuevo
+            </button>
+            <button
+              onClick={handleReveal}
+              className="flex-1 rounded-lg bg-aqua/15 py-2 text-xs font-semibold text-aqua transition hover:bg-aqua/25"
+            >
+              Revelar mejor ajuste
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Step 3: Best fit revealed — show comparison */}
       {showBest && (
-        <div className="rounded-lg bg-graph/10 px-3 py-2 text-sm text-graph leading-relaxed">
-          Estos son los valores óptimos. {manualParams && currentR2 < bestR2 - 0.01
-            ? `Tu mejor intento tenía R² = ${(computeR2(xs, ys, buildFn(manualParams)) * 100).toFixed(1)}%. El óptimo es ${(bestR2 * 100).toFixed(1)}%.`
-            : '¡Encontraste valores muy cercanos al óptimo!'}
+        <div className="rounded-lg bg-graph/10 px-3 py-3 text-sm text-graph leading-relaxed space-y-1">
+          <p><strong>Mejor R² = {(bestR2 * 100).toFixed(1)}%</strong></p>
+          {savedR2Ref.current != null && (
+            <p>Tu intento: R² = {(savedR2Ref.current * 100).toFixed(1)}% — {
+              savedR2Ref.current >= bestR2 - 0.02 ? '¡Prácticamente igual al óptimo!' :
+              savedR2Ref.current >= bestR2 * 0.85 ? 'muy cerca del óptimo.' :
+              'el ajuste automático encontró mejores valores.'
+            }</p>
+          )}
         </div>
       )}
     </div>
@@ -814,6 +848,7 @@ export function ModelingSpace() {
   const [selectedModelId, setSelectedModelId] = useState(null)
   const [conclusion, setConclusion] = useState('')
   const [showAllCurves, setShowAllCurves] = useState(false)
+  const [manualCurveFn, setManualCurveFn] = useState(null)
   const [predictionX, setPredictionX] = useState(null)
 
   // ── Parsed data ──
@@ -1138,33 +1173,44 @@ export function ModelingSpace() {
           {step === 2 && (
             <div className="space-y-4">
               {sectionKicker('Fase 3 — Ajustar')}
-              <p className="text-base font-semibold text-ink/80">Manipula los parámetros y observa cómo cambia la curva</p>
+              <p className="text-base font-semibold text-ink/80">Ajusta cada modelo a los datos moviendo los parámetros</p>
               <p className="text-sm text-ink/55 leading-relaxed">
-                Cada modelo tiene parámetros que controlan su forma. Mueve los sliders para entender qué hace cada uno. ¿Cuál se acerca más a tus datos?
+                Para cada familia que elegiste, mueve los deslizadores hasta que la curva se acerque lo más posible a los puntos. Cuando creas que es tu mejor intento, verifica tu ajuste.
               </p>
               {fittedModels.length === 0 ? (
                 <p className="text-sm text-ink/50">No se pudieron ajustar modelos. Vuelve al paso anterior y selecciona más familias.</p>
               ) : (
                 <>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setShowAllCurves(v => !v)}
-                      className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${showAllCurves ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/45 hover:bg-ink/10'}`}
-                    >
-                      {showAllCurves ? 'Mostrando todas las curvas' : 'Comparar curvas'}
-                    </button>
+                  {/* Model selector tabs — no R² shown */}
+                  <div className="flex flex-wrap gap-2">
+                    {fittedModels.map((m) => (
+                      <button
+                        key={m.id}
+                        onClick={() => setSelectedModelId(m.id)}
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                          activeModelId === m.id ? 'bg-ink text-paper' : 'border border-ink/10 bg-paper text-ink hover:border-ink/30'
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
                   </div>
-                  <DataChart xs={xs} ys={ys} fittedModels={fittedModels} selectedModelId={activeModelId}
-                    showAllCurves={showAllCurves} predictionX={predictionX} xLabel={xName} yLabel={yName} dark={false} />
-                  <RankingBars models={fittedModels} selectedId={activeModelId} onSelect={setSelectedModelId} />
+
                   {activeModel && (
                     <div className="space-y-3">
+                      {/* Show equation template */}
                       <div className="rounded-xl border border-signal/20 bg-signal/5 px-4 py-3 text-center">
-                        <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">Modelo general</p>
+                        <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">Ecuación general</p>
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
-                      <p className="text-sm text-ink/55 leading-relaxed">Mueve los deslizadores hasta que la curva se ajuste a los puntos. Observa cómo cambia el R².</p>
-                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom />
+
+                      {/* Chart showing data points + student's manual curve */}
+                      <DataChart xs={xs} ys={ys}
+                        fittedModels={manualCurveFn ? [{ ...activeModel, fn: manualCurveFn, id: 'manual' }] : []}
+                        selectedModelId="manual" xLabel={xName} yLabel={yName} dark={false} />
+
+                      {/* Manual sliders — start random, no R² until verify */}
+                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom onParamsChange={setManualCurveFn} />
                     </div>
                   )}
                 </>
