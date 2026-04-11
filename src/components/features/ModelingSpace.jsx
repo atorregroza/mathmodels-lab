@@ -1583,15 +1583,6 @@ export function ModelingSpace() {
 
                   {/* ── Exportar ── */}
                   <button
-                    onClick={handleExport}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-signal px-4 py-3 font-semibold text-white transition hover:bg-signal/90"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                    </svg>
-                    Descargar datos (CSV)
-                  </button>
-                  <button
                     onClick={handleReport}
                     disabled={!studentName || !problemContext || !conclusion || !reflection1 || !reflection2 || !reflection3}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 font-semibold text-paper transition hover:bg-ink/90 disabled:opacity-40 disabled:cursor-not-allowed"
@@ -1703,13 +1694,14 @@ export function ModelingSpace() {
                     <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
 
                     <button
-                      onClick={handleExport}
+                      onClick={handleReport}
                       className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 font-semibold text-paper transition hover:bg-ink/90"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
                       </svg>
-                      Exportar CSV
+                      Ver informe
                     </button>
                   </>
                 )}
