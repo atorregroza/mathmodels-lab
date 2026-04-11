@@ -813,27 +813,6 @@ export function ModelingSpace() {
 
   const activeModel = fittedModels.find(m => m.id === activeModelId)
 
-  // ── Concavity detection ──
-  const actualConcavity = useMemo(() => {
-    if (xs.length < 4 || !actualTrend || actualTrend === 'oscila' || actualTrend === 'sube_baja') return null
-    // Compare rate of change in first half vs second half (preserve sign)
-    const mid = Math.floor(xs.length / 2)
-    const slopeFirst = (ys[mid] - ys[0]) / (xs[mid] - xs[0] || 1)
-    const slopeSecond = (ys[xs.length - 1] - ys[mid]) / (xs[xs.length - 1] - xs[mid] || 1)
-    // For growing data: accelerating = slope increases, decelerating = slope decreases
-    // For decreasing data: accelerating = slope more negative, decelerating = slope less negative
-    const absDiff = Math.abs(slopeSecond) - Math.abs(slopeFirst)
-    const avgSlope = (Math.abs(slopeFirst) + Math.abs(slopeSecond)) / 2
-    if (avgSlope < 0.01) return 'constant'
-    const relChange = absDiff / avgSlope
-    if (relChange > 0.4) return 'accelerating'
-    if (relChange < -0.4) return 'decelerating'
-    return 'constant'
-  }, [xs, ys, actualTrend])
-
-  // ── Pattern hints ──
-  const hints = useMemo(() => getPatternHints(pattern), [pattern])
-
   // ── Auto-detect actual data trend ──
   const actualTrend = useMemo(() => {
     if (xs.length < 3) return null
@@ -882,6 +861,24 @@ export function ModelingSpace() {
     if (goesUpDown || goesDownUp) return 'sube_baja'
     return slope > 0 ? 'crece' : 'decrece'
   }, [xs, ys])
+
+  // ── Concavity detection ──
+  const actualConcavity = useMemo(() => {
+    if (xs.length < 4 || !actualTrend || actualTrend === 'oscila' || actualTrend === 'sube_baja') return null
+    const mid = Math.floor(xs.length / 2)
+    const slopeFirst = (ys[mid] - ys[0]) / (xs[mid] - xs[0] || 1)
+    const slopeSecond = (ys[xs.length - 1] - ys[mid]) / (xs[xs.length - 1] - xs[mid] || 1)
+    const absDiff = Math.abs(slopeSecond) - Math.abs(slopeFirst)
+    const avgSlope = (Math.abs(slopeFirst) + Math.abs(slopeSecond)) / 2
+    if (avgSlope < 0.01) return 'constant'
+    const relChange = absDiff / avgSlope
+    if (relChange > 0.4) return 'accelerating'
+    if (relChange < -0.4) return 'decelerating'
+    return 'constant'
+  }, [xs, ys, actualTrend])
+
+  // ── Pattern hints ──
+  const hints = useMemo(() => getPatternHints(pattern), [pattern])
 
   // ── Handlers ──
   const loadSample = useCallback((ds) => {
