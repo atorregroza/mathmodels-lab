@@ -381,15 +381,6 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
   })
   const [showBest, setShowBest] = useState(false)
 
-  // Notify parent of initial curve on mount
-  useEffect(() => {
-    if (onParamsChange && manualParams) {
-      onParamsChange(buildFn(manualParams))
-    } else if (onParamsChange && model) {
-      onParamsChange(buildFn(model.params))
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   if (!model) return null
 
   const paramKeys = Object.keys(model.params)
@@ -1213,13 +1204,11 @@ export function ModelingSpace() {
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
 
-                      {/* Chart showing data points + student's manual curve */}
-                      <DataChart xs={xs} ys={ys}
-                        fittedModels={manualCurveFn ? [{ ...activeModel, fn: manualCurveFn, id: 'manual', r2: 0 }] : []}
-                        selectedModelId="manual" xLabel={xName} yLabel={yName} dark={false} />
+                      {/* Chart showing data points — no pre-fitted curve */}
+                      <DataChart xs={xs} ys={ys} fittedModels={[]} selectedModelId={null} xLabel={xName} yLabel={yName} dark={false} />
 
                       {/* Manual sliders — start random, no R² until verify */}
-                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom onParamsChange={setManualCurveFn} />
+                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom />
                     </div>
                   )}
                 </>
