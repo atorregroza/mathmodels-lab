@@ -189,26 +189,34 @@ export const CartesianFrame = ({
         <line x1={padding} y1={scaleY(0)} x2={width - padding} y2={scaleY(0)} stroke={axisStroke} strokeWidth="2" />
       )}
 
-      {yMin <= 0 && yMax >= 0 && xTicks.map((tick) => (
-        <g key={`xt-${tick}`}>
-          <line x1={scaleX(tick)} y1={scaleY(0) - 4} x2={scaleX(tick)} y2={scaleY(0) + 4} stroke={axisStroke} strokeWidth="1" />
-          {Math.abs(tick) > 0.001 && (
-            <text x={scaleX(tick)} y={scaleY(0) + 16} fill={tickFill} fontSize="11" textAnchor="middle">
-              {xTickFormatter ? xTickFormatter(tick) : tick}
-            </text>
-          )}
-        </g>
-      ))}
-      {xMin <= 0 && xMax >= 0 && yTicks.map((tick) => (
-        <g key={`yt-${tick}`}>
-          <line x1={scaleX(0) - 4} y1={scaleY(tick)} x2={scaleX(0) + 4} y2={scaleY(tick)} stroke={axisStroke} strokeWidth="1" />
-          {Math.abs(tick) > 0.001 && (
-            <text x={scaleX(0) - 8} y={scaleY(tick) + 4} fill={tickFill} fontSize="11" textAnchor="end">
-              {yTickFormatter ? yTickFormatter(tick) : tick}
-            </text>
-          )}
-        </g>
-      ))}
+      {xTicks.map((tick) => {
+        const hasXAxis = yMin <= 0 && yMax >= 0
+        const anchorY = hasXAxis ? scaleY(0) : height - padding
+        return (
+          <g key={`xt-${tick}`}>
+            {hasXAxis && <line x1={scaleX(tick)} y1={anchorY - 4} x2={scaleX(tick)} y2={anchorY + 4} stroke={axisStroke} strokeWidth="1" />}
+            {Math.abs(tick) > 0.001 && (
+              <text x={scaleX(tick)} y={anchorY + 16} fill={tickFill} fontSize="11" textAnchor="middle">
+                {xTickFormatter ? xTickFormatter(tick) : tick}
+              </text>
+            )}
+          </g>
+        )
+      })}
+      {yTicks.map((tick) => {
+        const hasYAxis = xMin <= 0 && xMax >= 0
+        const anchorX = hasYAxis ? scaleX(0) : padding
+        return (
+          <g key={`yt-${tick}`}>
+            {hasYAxis && <line x1={anchorX - 4} y1={scaleY(tick)} x2={anchorX + 4} y2={scaleY(tick)} stroke={axisStroke} strokeWidth="1" />}
+            {Math.abs(tick) > 0.001 && (
+              <text x={anchorX - 8} y={scaleY(tick) + 4} fill={tickFill} fontSize="11" textAnchor="end">
+                {yTickFormatter ? yTickFormatter(tick) : tick}
+              </text>
+            )}
+          </g>
+        )
+      })}
 
       <g clipPath={`url(#${clipId})`}>
         {children({ scaleX, scaleY, padding, width, height })}

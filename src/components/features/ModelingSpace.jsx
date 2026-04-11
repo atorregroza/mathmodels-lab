@@ -75,7 +75,7 @@ function parseFileContent(text) {
 
 /* ── Scatter plot with optional fitted curves ────────── */
 
-function DataChart({ xs, ys, fittedModels, selectedModelId, showAllCurves = false, predictionX = null, dark = true }) {
+function DataChart({ xs, ys, fittedModels, selectedModelId, showAllCurves = false, predictionX = null, dark = true, xLabel = '', yLabel = '' }) {
   if (xs.length < 2) return null
 
   const dataXMin = Math.min(...xs), dataXMax = Math.max(...xs)
@@ -135,7 +135,7 @@ function DataChart({ xs, ys, fittedModels, selectedModelId, showAllCurves = fals
       xTicks={xTicks} yTicks={yTicks}
       dark={dark}
     >
-      {({ scaleX, scaleY }) => (
+      {({ scaleX, scaleY, width, height }) => (
         <>
           {/* extrapolation zone shading */}
           {predictionX != null && (predictionX < dataXMin || predictionX > dataXMax) && (
@@ -225,6 +225,17 @@ function DataChart({ xs, ys, fittedModels, selectedModelId, showAllCurves = fals
               <text x="20" y="4" fontSize="10" fill="rgba(18,23,35,0.6)">{model.label}</text>
             </g>
           ))}
+
+          {/* Axis labels */}
+          {xLabel && (
+            <text x={width / 2} y={height - 2} textAnchor="middle" fontSize="11" fontWeight="600"
+              fill={dark ? 'rgba(255,255,255,0.55)' : 'rgba(18,23,35,0.45)'}>{xLabel}</text>
+          )}
+          {yLabel && (
+            <text x={10} y={height / 2} textAnchor="middle" fontSize="11" fontWeight="600"
+              fill={dark ? 'rgba(255,255,255,0.55)' : 'rgba(18,23,35,0.45)'}
+              transform={`rotate(-90, 10, ${height / 2})`}>{yLabel}</text>
+          )}
         </>
       )}
     </CartesianFrame>
@@ -474,7 +485,7 @@ function DiagnosticPanel({ model, xs, ys, xName, yName }) {
           dark={false}
           valueClassName={d.adjR2 < model.r2 - 0.05 ? 'text-signal' : ''} />
         <MetricCard label="Calidad vs complejidad" value={format(d.aic)}
-          detail="AIC — balancea qué tan bien ajusta el modelo contra cuántos parámetros necesita. Entre dos modelos con ajuste similar, el de menor AIC es preferible porque logra lo mismo con menos" dark={false} />
+          detail="AIC — piénsalo como una nota que premia la precisión pero penaliza usar demasiados parámetros. El modelo con menor AIC es el mejor equilibrio entre simple y preciso" dark={false} />
         {model.cvR2 != null && (
           <MetricCard label="¿Generaliza?" value={`${(model.cvR2 * 100).toFixed(1)}%`}
             detail={model.cvR2 < model.r2 - 0.15
@@ -704,34 +715,50 @@ function DataTable({ xs, ys }) {
 /* ── Model family card (for Step 2) ──────────────────── */
 
 function FamilyCard({ family, isLikely, isUnlikely, isSelected, onToggle }) {
+  // Feedback only appears AFTER the student clicks
+  const feedbackColor = isSelected
+    ? isLikely ? 'text-graph' : isUnlikely ? 'text-rose' : 'text-aqua'
+    : ''
+  const feedbackText = isSelected
+    ? isLikely ? 'Buena elección — este modelo tiene sentido para la forma de tus datos.'
+    : isUnlikely ? 'Piénsalo bien — ¿esta forma encaja con lo que observaste? Puedes deseleccionarla.'
+    : 'Puede funcionar. Veamos cómo se comporta en el ajuste.'
+    : null
+
   return (
-    <button
-      onClick={onToggle}
-      className={`flex items-start gap-3 rounded-xl border p-3 text-left transition-all ${
-        isSelected
-          ? 'border-signal/40 bg-signal/5 ring-1 ring-signal/20'
-          : 'border-ink/10 bg-white hover:bg-ink/3'
-      }`}
-    >
-      {/* mini curve icon */}
-      <div className={`shrink-0 rounded-lg p-1.5 ${isSelected ? 'bg-signal/15' : 'bg-ink/6'}`}>
-        <svg width="40" height="32" viewBox="0 0 40 32">
-          <path d={MINI_CURVES[family.icon] || MINI_CURVES.linear}
-            fill="none" stroke={isSelected ? '#ff6b35' : '#121723'} strokeWidth="2.5"
-            strokeLinecap="round" strokeLinejoin="round" opacity={isSelected ? 1 : 0.4} />
-        </svg>
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-sm text-ink">{family.label}</span>
-          <span className="font-mono text-[0.65rem] text-ink/40">{family.equation}</span>
-          {isLikely && <span className="text-[0.6rem] text-graph font-bold">✓ probable</span>}
-          {isUnlikely && <span className="text-[0.6rem] text-rose font-bold">✗ poco probable</span>}
+    <div>
+      <button
+        onClick={onToggle}
+        className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left transition-all ${
+          isSelected
+            ? isUnlikely ? 'border-rose/40 bg-rose/5 ring-1 ring-rose/20'
+            : isLikely ? 'border-graph/40 bg-graph/5 ring-1 ring-graph/20'
+            : 'border-signal/40 bg-signal/5 ring-1 ring-signal/20'
+            : 'border-ink/10 bg-white hover:bg-ink/3'
+        }`}
+      >
+        <div className={`shrink-0 rounded-lg p-1.5 ${isSelected ? 'bg-signal/15' : 'bg-ink/6'}`}>
+          <svg width="40" height="32" viewBox="0 0 40 32">
+            <path d={MINI_CURVES[family.icon] || MINI_CURVES.linear}
+              fill="none" stroke={isSelected ? '#ff6b35' : '#121723'} strokeWidth="2.5"
+              strokeLinecap="round" strokeLinejoin="round" opacity={isSelected ? 1 : 0.4} />
+          </svg>
         </div>
-        <p className="mt-0.5 text-xs text-ink/55 leading-relaxed">{family.description}</p>
-        <p className="mt-0.5 text-[0.65rem] text-ink/40 italic">{family.when}</p>
-      </div>
-    </button>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-sm text-ink">{family.label}</span>
+            <span className="font-mono text-[0.65rem] text-ink/40">{family.equation}</span>
+          </div>
+          <p className="mt-0.5 text-xs text-ink/55 leading-relaxed">{family.description}</p>
+          <p className="mt-0.5 text-[0.65rem] text-ink/40 italic">{family.when}</p>
+        </div>
+      </button>
+      {feedbackText && (
+        <p className={`mt-1 px-3 text-xs font-medium leading-relaxed ${feedbackColor}`}>
+          {feedbackText}
+        </p>
+      )}
+    </div>
   )
 }
 
@@ -750,7 +777,8 @@ export function ModelingSpace() {
   // ── Wizard ──
   const [step, setStep] = useState(0) // 0-3
   const [pattern, setPattern] = useState(null) // 'crece' | 'decrece' | 'sube_baja' | 'oscila' | null
-  const [selectedFamilies, setSelectedFamilies] = useState(MODEL_FAMILIES.map(f => f.id))
+  const [shape, setShape] = useState(null) // 'constant' | 'accelerating' | 'decelerating' | null
+  const [selectedFamilies, setSelectedFamilies] = useState([])
   const [selectedModelId, setSelectedModelId] = useState(null)
   const [conclusion, setConclusion] = useState('')
   const [showAllCurves, setShowAllCurves] = useState(false)
@@ -774,14 +802,77 @@ export function ModelingSpace() {
 
   const activeModel = fittedModels.find(m => m.id === activeModelId)
 
+  // ── Concavity detection ──
+  const actualConcavity = useMemo(() => {
+    if (xs.length < 4 || !actualTrend || actualTrend === 'oscila' || actualTrend === 'sube_baja') return null
+    // Compare growth in first half vs second half
+    const mid = Math.floor(xs.length / 2)
+    const slopeFirst = (ys[mid] - ys[0]) / (xs[mid] - xs[0] || 1)
+    const slopeSecond = (ys[xs.length - 1] - ys[mid]) / (xs[xs.length - 1] - xs[mid] || 1)
+    const ratio = Math.abs(slopeFirst) > 0.01 ? Math.abs(slopeSecond / slopeFirst) : 1
+    if (ratio > 1.5) return 'accelerating' // cóncava hacia arriba — exponencial/potencia
+    if (ratio < 0.65) return 'decelerating' // cóncava hacia abajo — logarítmico/raíz
+    return 'constant' // ritmo constante — lineal
+  }, [xs, ys, actualTrend])
+
   // ── Pattern hints ──
   const hints = useMemo(() => getPatternHints(pattern), [pattern])
+
+  // ── Auto-detect actual data trend ──
+  const actualTrend = useMemo(() => {
+    if (xs.length < 3) return null
+    const n = xs.length
+
+    // Linear regression
+    const mx = xs.reduce((a, b) => a + b, 0) / n
+    const my = ys.reduce((a, b) => a + b, 0) / n
+    let num = 0, den = 0, ssTot = 0
+    for (let i = 0; i < n; i++) {
+      num += (xs[i] - mx) * (ys[i] - my)
+      den += (xs[i] - mx) ** 2
+      ssTot += (ys[i] - my) ** 2
+    }
+    const slope = den > 0 ? num / den : 0
+    const intercept = my - slope * mx
+    let ssRes = 0
+    for (let i = 0; i < n; i++) ssRes += (ys[i] - (slope * xs[i] + intercept)) ** 2
+    const r2 = ssTot > 0 ? 1 - ssRes / ssTot : 0
+
+    // If linear R² is decent (>0.5), it's monotonic — just check slope
+    if (r2 > 0.5) return slope > 0 ? 'crece' : 'decrece'
+
+    // For low R², check if data has a clear turn (quadratic) or oscillation
+    // Use smoothed segments: split data in thirds and compare means
+    const third = Math.floor(n / 3)
+    const m1 = ys.slice(0, third).reduce((a, b) => a + b, 0) / third
+    const m2 = ys.slice(third, 2 * third).reduce((a, b) => a + b, 0) / third
+    const m3 = ys.slice(2 * third).reduce((a, b) => a + b, 0) / (n - 2 * third)
+
+    // Oscillation: middle segment goes opposite to both ends
+    const goesUpDown = m1 < m2 && m2 > m3
+    const goesDownUp = m1 > m2 && m2 < m3
+
+    // True oscillation needs multiple full cycles — check sign changes in smoothed residuals
+    const residuals = ys.map((y, i) => y - (slope * xs[i] + intercept))
+    let smoothSignChanges = 0
+    const w = Math.max(2, Math.floor(n / 6))
+    for (let i = w; i < n - w; i++) {
+      const before = residuals.slice(i - w, i).reduce((a, b) => a + b, 0) / w
+      const after = residuals.slice(i, i + w).reduce((a, b) => a + b, 0) / w
+      if (i > w && before * after < 0) smoothSignChanges++
+    }
+
+    if (smoothSignChanges >= 3) return 'oscila'
+    if (goesUpDown || goesDownUp) return 'sube_baja'
+    return slope > 0 ? 'crece' : 'decrece'
+  }, [xs, ys])
 
   // ── Handlers ──
   const loadSample = useCallback((ds) => {
     setXInput(ds.x)
     setYInput(ds.y)
-    if (ds.hint) setPattern(ds.hint)
+    setPattern(null)
+    setShape(null)
     if (ds.xName) setXName(ds.xName)
     if (ds.yName) setYName(ds.yName)
   }, [])
@@ -816,11 +907,16 @@ export function ModelingSpace() {
   }, [activeModel, xs, ys, hasData, conclusion])
 
   // ── Step navigation ──
-  const canNext = step === 0 ? hasData
-    : step === 1 ? selectedFamilies.length > 0
+  const patternCorrect = pattern === actualTrend || pattern === null
+  const needsShape = patternCorrect && (pattern === 'crece' || pattern === 'decrece') && actualConcavity != null
+  const shapeCorrect = !needsShape || shape === actualConcavity
+  const canNext = step === 0 ? hasData && pattern != null && patternCorrect && (!needsShape || (shape != null && shapeCorrect))
+    : step === 1 ? selectedFamilies.length >= 2
     : step === 2 ? activeModel != null
+    : step === 3 ? activeModel != null
     : true
-  const totalSteps = 4
+  const totalSteps = 5
+  const STEP_NAMES = ['Observar', 'Conjeturar', 'Ajustar', 'Evaluar', 'Justificar']
 
   // ── Render helpers ──
   const sectionKicker = (text) => (
@@ -838,17 +934,21 @@ export function ModelingSpace() {
     <div className="space-y-6">
       {/* progress bar */}
       <div className="flex items-center gap-1">
-        {['Tus datos', 'Descartemos', 'Comparemos', 'Conclusión'].map((label, i) => (
+        {STEP_NAMES.map((label, i) => (
           <div key={i} className="flex flex-1 items-center gap-1">
-            <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors ${
-              i < step ? 'bg-graph text-white' : i === step ? 'bg-signal text-white' : 'bg-ink/10 text-ink/40'
-            }`}>
+            <button
+              onClick={() => i < step && setStep(i)}
+              disabled={i >= step}
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors ${
+                i < step ? 'bg-graph text-white cursor-pointer hover:bg-graph/80' : i === step ? 'bg-signal text-white' : 'bg-ink/10 text-ink/40'
+              }`}
+            >
               {i < step ? '✓' : i + 1}
-            </div>
-            <span className={`hidden text-xs font-medium md:block ${i === step ? 'text-signal' : 'text-ink/40'}`}>
+            </button>
+            <span className={`hidden text-xs font-medium md:block ${i === step ? 'text-signal' : i < step ? 'text-graph cursor-pointer' : 'text-ink/40'}`}>
               {label}
             </span>
-            {i < 3 && <div className={`mx-1 h-0.5 flex-1 rounded ${i < step ? 'bg-graph' : 'bg-ink/10'}`} />}
+            {i < totalSteps - 1 && <div className={`mx-1 h-0.5 flex-1 rounded ${i < step ? 'bg-graph' : 'bg-ink/10'}`} />}
           </div>
         ))}
       </div>
@@ -861,12 +961,13 @@ export function ModelingSpace() {
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.25 }}
         >
-          {/* ── STEP 0: Tus datos ── */}
+          {/* ── FASE 1: OBSERVAR ── */}
           {step === 0 && (
             <div className="space-y-4">
-              {sectionKicker('Paso 1 — Tus datos')}
-              <p className="text-sm text-ink/65 leading-relaxed">
-                Ingresa los datos que quieres modelar. Puedes escribirlos, pegarlos, o subir un archivo CSV.
+              {sectionKicker('Fase 1 — Observar')}
+              <p className="text-base font-semibold text-ink/80">¿Qué fenómeno quieres estudiar?</p>
+              <p className="text-sm text-ink/55 leading-relaxed">
+                Carga tus datos y observa la nube de puntos. Antes de buscar una fórmula, describe con tus palabras qué patrón ves.
               </p>
               <DataInput xInput={xInput} yInput={yInput} setXInput={setXInput} setYInput={setYInput}
                 xName={xName} yName={yName} setXName={setXName} setYName={setYName}
@@ -874,11 +975,11 @@ export function ModelingSpace() {
               {dataError && <p className="text-sm text-rose font-medium">{dataError}</p>}
               <div className="grid gap-4 md:grid-cols-2">
                 <DataTable xs={xs} ys={ys} />
-                {hasData && <DataChart xs={xs} ys={ys} fittedModels={[]} selectedModelId={null} />}
+                {hasData && <DataChart xs={xs} ys={ys} fittedModels={[]} selectedModelId={null} xLabel={xName} yLabel={yName} dark={false} />}
               </div>
               {hasData && (
                 <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4">
-                  <p className="mb-2 text-sm font-semibold text-ink/70">¿Qué observas en tus datos?</p>
+                  <p className="mb-2 text-sm font-semibold text-ink/70">Mirando la nube de puntos, ¿qué forma ves?</p>
                   <div className="flex flex-wrap gap-2">
                     {PATTERN_OPTIONS.map(opt => (
                       <button
@@ -895,21 +996,86 @@ export function ModelingSpace() {
                       </button>
                     ))}
                   </div>
+                  {pattern && (() => {
+                    const match = pattern === actualTrend || pattern === null
+                    const close = !match && (
+                      (pattern === 'crece' && actualTrend === 'sube_baja') ||
+                      (pattern === 'decrece' && actualTrend === 'sube_baja') ||
+                      (pattern === 'sube_baja' && (actualTrend === 'crece' || actualTrend === 'decrece'))
+                    )
+                    return (
+                      <div className={`mt-3 rounded-lg px-3 py-2 text-sm leading-relaxed ${
+                        match ? 'bg-graph/10 text-graph' : close ? 'bg-amber-50 text-amber-700' : 'bg-rose/10 text-rose'
+                      }`}>
+                        {match && pattern === 'crece' && '¡Bien! Los datos crecen.'}
+                        {match && pattern === 'decrece' && '¡Bien! Los datos decrecen.'}
+                        {match && pattern === 'sube_baja' && '¡Correcto! Los datos tienen un cambio de dirección. Esto sugiere un modelo cuadrático o polinomial.'}
+                        {match && pattern === 'oscila' && '¡Correcto! Los datos oscilan. Esto sugiere un modelo trigonométrico (senoidal).'}
+                        {match && pattern === null && 'No pasa nada — la herramienta te ayudará a descartar modelos en el siguiente paso.'}
+                        {close && 'Casi — observa con más cuidado la nube de puntos. ¿La tendencia general sube, baja, o hace ambas cosas?'}
+                        {!match && !close && `Observa de nuevo la gráfica. Los datos parecen ${
+                          actualTrend === 'crece' ? 'crecer' : actualTrend === 'decrece' ? 'decrecer' : actualTrend === 'sube_baja' ? 'subir y bajar' : 'oscilar'
+                        }, no ${
+                          pattern === 'crece' ? 'crecer' : pattern === 'decrece' ? 'decrecer' : pattern === 'sube_baja' ? 'subir y bajar' : 'oscilar'
+                        }. Inténtalo de nuevo.`}
+                      </div>
+                    )
+                  })()}
+
+                  {/* Second question: concavity — only when trend is correct and monotonic */}
+                  {patternCorrect && needsShape && (
+                    <div className="mt-4 rounded-xl border border-violet/20 bg-violet/5 p-4">
+                      <p className="mb-2 text-sm font-semibold text-ink/70">
+                        Los datos {pattern === 'crece' ? 'crecen' : 'decrecen'}. ¿Cómo lo hacen?
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          { id: 'constant', label: 'A ritmo constante', desc: 'Los puntos siguen una línea recta' },
+                          { id: 'accelerating', label: pattern === 'crece' ? 'Cada vez más rápido' : 'Cada vez más lento', desc: 'La curva se abre hacia arriba' },
+                          { id: 'decelerating', label: pattern === 'crece' ? 'Cada vez más lento' : 'Cada vez más rápido', desc: 'La curva se aplana' },
+                        ].map(opt => (
+                          <button
+                            key={opt.id}
+                            onClick={() => setShape(opt.id)}
+                            className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                              shape === opt.id
+                                ? 'bg-violet text-white shadow-md'
+                                : 'bg-white border border-ink/12 text-ink/60 hover:bg-ink/5'
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                      {shape && (() => {
+                        const ok = shape === actualConcavity
+                        return (
+                          <p className={`mt-2 text-sm leading-relaxed ${ok ? 'text-graph' : 'text-rose'}`}>
+                            {ok && shape === 'constant' && '¡Sí! El ritmo es constante — un modelo lineal es el candidato natural.'}
+                            {ok && shape === 'accelerating' && `¡Exacto! El ${pattern === 'crece' ? 'crecimiento se acelera' : 'decrecimiento se frena'}. Esto sugiere un modelo exponencial o de potencia.`}
+                            {ok && shape === 'decelerating' && `¡Correcto! El ${pattern === 'crece' ? 'crecimiento se desacelera' : 'decrecimiento se acelera'}. Esto sugiere un modelo logarítmico.`}
+                            {!ok && `Observa la curvatura de los puntos. ¿La separación entre puntos consecutivos ${actualConcavity === 'accelerating' ? 'aumenta' : actualConcavity === 'decelerating' ? 'disminuye' : 'se mantiene igual'}?`}
+                          </p>
+                        )
+                      })()}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
 
-          {/* ── STEP 1: Descartemos modelos ── */}
+          {/* ── FASE 2: CONJETURAR ── */}
           {step === 1 && (
             <div className="space-y-4">
-              {sectionKicker('Paso 2 — Descartemos modelos')}
-              <p className="text-sm text-ink/65 leading-relaxed">
+              {sectionKicker('Fase 2 — Conjeturar')}
+              <p className="text-base font-semibold text-ink/80">¿Qué familias de funciones podrían describir este fenómeno?</p>
+              <p className="text-sm text-ink/55 leading-relaxed">
                 {pattern
-                  ? `Dijiste que tus datos "${PATTERN_OPTIONS.find(p => p.id === pattern)?.label || ''}". Veamos qué modelos podrían funcionar.`
-                  : 'Selecciona los modelos que quieres probar con tus datos.'}
+                  ? `Observaste que tus datos "${PATTERN_OPTIONS.find(p => p.id === pattern)?.label?.toLowerCase() || ''}". Ahora elige las familias que crees que podrían ajustarse — y descarta las que no tienen sentido para esta forma.`
+                  : 'Selecciona las familias de funciones que quieres probar con tus datos.'}
               </p>
-              <p className="text-xs text-ink/45">Marca los modelos que quieres comparar:</p>
+              <p className="text-xs text-ink/40">Haz clic en cada familia para seleccionarla o descartarla. Recibirás retroalimentación sobre tu elección.</p>
               <div className="grid gap-2 md:grid-cols-2">
                 {MODEL_FAMILIES.map(family => (
                   <FamilyCard
@@ -922,18 +1088,24 @@ export function ModelingSpace() {
                   />
                 ))}
               </div>
+              {selectedFamilies.length > 0 && (
+                <p className="text-xs text-ink/45">{selectedFamilies.length} familia{selectedFamilies.length > 1 ? 's' : ''} seleccionada{selectedFamilies.length > 1 ? 's' : ''} para comparar.</p>
+              )}
             </div>
           )}
 
-          {/* ── STEP 2: Comparemos ── */}
+          {/* ── FASE 3: AJUSTAR ── */}
           {step === 2 && (
             <div className="space-y-4">
-              {sectionKicker('Paso 3 — Comparemos')}
+              {sectionKicker('Fase 3 — Ajustar')}
+              <p className="text-base font-semibold text-ink/80">Manipula los parámetros y observa cómo cambia la curva</p>
+              <p className="text-sm text-ink/55 leading-relaxed">
+                Cada modelo tiene parámetros que controlan su forma. Mueve los sliders para entender qué hace cada uno. ¿Cuál se acerca más a tus datos?
+              </p>
               {fittedModels.length === 0 ? (
-                <p className="text-sm text-ink/50">No se pudieron ajustar modelos a tus datos. Intenta con otros datos o selecciona más familias.</p>
+                <p className="text-sm text-ink/50">No se pudieron ajustar modelos. Vuelve al paso anterior y selecciona más familias.</p>
               ) : (
                 <>
-                  {/* chart controls */}
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setShowAllCurves(v => !v)}
@@ -942,29 +1114,16 @@ export function ModelingSpace() {
                       {showAllCurves ? 'Mostrando todas las curvas' : 'Comparar curvas'}
                     </button>
                   </div>
-
                   <DataChart xs={xs} ys={ys} fittedModels={fittedModels} selectedModelId={activeModelId}
-                    showAllCurves={showAllCurves} predictionX={predictionX} />
+                    showAllCurves={showAllCurves} predictionX={predictionX} xLabel={xName} yLabel={yName} dark={false} />
                   <RankingBars models={fittedModels} selectedId={activeModelId} onSelect={setSelectedModelId} />
                   {activeModel && (
                     <div className="space-y-3">
-                      {/* model equation */}
                       <div className="rounded-xl border border-signal/20 bg-signal/5 px-4 py-3 text-center">
                         <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">Ecuación ajustada</p>
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.formula}</p>
                       </div>
-
-                      {/* manual parameter adjustment */}
                       <ManualSliders model={activeModel} xs={xs} ys={ys} />
-
-                      {/* prediction tool */}
-                      <PredictionTool model={activeModel} xs={xs} xName={xName} yName={yName} />
-
-                      {/* residual plot */}
-                      <ResidualPlot xs={xs} ys={ys} predictFn={activeModel.fn} />
-
-                      {/* full diagnostics */}
-                      <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
                     </div>
                   )}
                 </>
@@ -972,29 +1131,57 @@ export function ModelingSpace() {
             </div>
           )}
 
-          {/* ── STEP 3: Conclusión ── */}
+          {/* ── FASE 4: EVALUAR ── */}
           {step === 3 && (
             <div className="space-y-4">
-              {sectionKicker('Paso 4 — Tu conclusión')}
+              {sectionKicker('Fase 4 — Evaluar')}
+              <p className="text-base font-semibold text-ink/80">¿Qué tan bien describe el modelo tus datos?</p>
+              <p className="text-sm text-ink/55 leading-relaxed">
+                Un buen modelo no solo pasa cerca de los puntos — también predice bien donde no hay datos y sus residuales no forman patrones.
+              </p>
+              {activeModel && (
+                <div className="space-y-3">
+                  <DataChart xs={xs} ys={ys} fittedModels={[activeModel]} selectedModelId={activeModelId}
+                    predictionX={predictionX} xLabel={xName} yLabel={yName} dark={false} />
+
+                  <PredictionTool model={activeModel} xs={xs} xName={xName} yName={yName} />
+
+                  <ResidualPlot xs={xs} ys={ys} predictFn={activeModel.fn} />
+
+                  <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── FASE 5: JUSTIFICAR ── */}
+          {step === 4 && (
+            <div className="space-y-4">
+              {sectionKicker('Fase 5 — Justificar')}
+              <p className="text-base font-semibold text-ink/80">¿Por qué este modelo y no otro?</p>
+              <p className="text-sm text-ink/55 leading-relaxed">
+                En matemáticas, elegir un modelo no basta — hay que argumentar la decisión. Esto es lo que evalúa el criterio E de la Exploración IB.
+              </p>
               {activeModel && (
                 <>
                   <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-4">
-                    <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-2">Modelo seleccionado</p>
+                    <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-2">Tu modelo</p>
                     <p className="font-mono text-lg font-bold text-signal">{activeModel.formula}</p>
                     <p className="mt-1 text-sm text-ink/55">{activeModel.label} — R² = {format(activeModel.r2)} ({interpretR2(activeModel.r2).toLowerCase()})</p>
                   </div>
 
-                  <DataChart xs={xs} ys={ys} fittedModels={[activeModel]} selectedModelId={activeModelId} />
+                  <DataChart xs={xs} ys={ys} fittedModels={[activeModel]} selectedModelId={activeModelId} xLabel={xName} yLabel={yName} dark={false} />
 
-                  <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4">
-                    <p className="mb-2 text-sm font-semibold text-ink/70">
-                      ¿Por qué crees que este modelo es el más adecuado para tus datos?
+                  <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4 space-y-3">
+                    <p className="text-sm font-semibold text-ink/70">Escribe tu justificación:</p>
+                    <p className="text-xs text-ink/45 leading-relaxed">
+                      Considera: ¿Por qué esta familia y no las otras? ¿Qué dice el R²? ¿Los residuales muestran algún patrón? ¿El modelo tiene sentido en el contexto del fenómeno?
                     </p>
                     <textarea
-                      rows={4}
+                      rows={5}
                       value={conclusion}
                       onChange={e => setConclusion(e.target.value)}
-                      placeholder="Escribe tu justificación aquí..."
+                      placeholder="Elegí el modelo... porque..."
                       className="w-full resize-none rounded-xl border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-aqua/30"
                     />
                   </div>
@@ -1020,7 +1207,7 @@ export function ModelingSpace() {
         <button
           onClick={() => setStep(s => Math.max(0, s - 1))}
           disabled={step === 0}
-          className="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-ink/50 transition hover:bg-ink/5 disabled:opacity-30"
+          className="flex items-center gap-1 rounded-full border border-ink/15 px-5 py-2.5 text-sm font-medium text-ink/60 transition hover:bg-ink/5 disabled:opacity-25"
         >
           ← Anterior
         </button>
@@ -1028,7 +1215,7 @@ export function ModelingSpace() {
           <button
             onClick={() => setStep(s => Math.min(totalSteps - 1, s + 1))}
             disabled={!canNext}
-            className="flex items-center gap-1 rounded-lg bg-signal px-5 py-2 text-sm font-semibold text-white transition hover:bg-signal/90 disabled:opacity-40"
+            className="flex items-center gap-1 rounded-full bg-signal px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-signal/90 disabled:opacity-40"
           >
             Siguiente →
           </button>
@@ -1074,7 +1261,7 @@ export function ModelingSpace() {
               </button>
             </div>
             <DataChart xs={xs} ys={ys} fittedModels={fittedModels} selectedModelId={activeModelId}
-              showAllCurves={showAllCurves} predictionX={predictionX} />
+              showAllCurves={showAllCurves} predictionX={predictionX} xLabel={xName} yLabel={yName} dark={false} />
 
             {fittedModels.length > 0 && (
               <>
@@ -1148,8 +1335,8 @@ export function ModelingSpace() {
         </div>
         <p className="text-xs text-ink/40">
           {viewMode === 'guided'
-            ? 'Te guiamos paso a paso para entender tu modelo'
-            : 'Sube datos y ve los resultados directamente'}
+            ? 'Ciclo completo de modelación: observar, conjeturar, ajustar, evaluar, justificar'
+            : 'Todos los modelos y herramientas visibles — para usuarios con experiencia'}
         </p>
       </div>
 

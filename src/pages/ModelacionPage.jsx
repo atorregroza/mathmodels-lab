@@ -23,11 +23,10 @@ export function ModelacionPage() {
           Espacio de Modelación
         </p>
         <h1 className="font-display text-3xl font-extrabold tracking-tight text-ink md:text-4xl lg:text-5xl">
-          Del dato al modelo.
+          Datos reales, modelos con sentido.
         </h1>
         <p className="mt-3 max-w-2xl text-base text-ink/60 leading-relaxed md:text-lg">
-          Ingresa datos reales, compara familias de funciones y justifica qué modelo describe mejor el fenómeno.
-          La herramienta acompaña el proceso para que entiendas <strong>por qué</strong> un modelo funciona — no solo cuál es.
+          Un espacio para explorar la relación entre datos y funciones. Compara familias, ajusta parámetros y construye la justificación de <strong>por qué</strong> un modelo describe mejor el fenómeno — no solo cuál es.
         </p>
       </div>
 
