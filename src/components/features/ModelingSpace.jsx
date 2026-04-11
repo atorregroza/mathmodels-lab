@@ -354,7 +354,7 @@ function PredictionTool({ model, xs, xName, yName }) {
 
 /* ── Manual parameter sliders ────────────────────────── */
 
-function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false, showChart = false, xLabel = '', yLabel = '' }) {
+function ManualSliders({ model, xs, ys, onParamsChange, onRevealBest, onVerify, startRandom = false, showChart = false, xLabel = '', yLabel = '' }) {
   // Build a function from params
   const buildFn = useCallback((params) => {
     if (!model) return () => 0
@@ -408,6 +408,7 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false, sho
     setShowBest(true)
     setManualParams(null)
     if (onParamsChange) onParamsChange(model.fn)
+    if (onRevealBest) onRevealBest()
   }
 
   const handleReset = () => {
@@ -429,6 +430,7 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false, sho
   const handleVerify = () => {
     savedR2Ref.current = currentR2
     setVerified(true)
+    if (onVerify) onVerify(currentFn, currentR2)
   }
 
   // Reset verified when params change
@@ -528,6 +530,48 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false, sho
               'el ajuste automático encontró mejores valores.'
             }</p>
           )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── Parameter interpretation ───────────────────────── */
+
+function ParameterInterpretation({ model, xName, yName }) {
+  if (!model?.params) return null
+  const x = xName || 'x', y = yName || 'y'
+  return (
+    <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-2">
+      <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">¿Qué significan los parámetros?</p>
+      {model.id === 'linear' && (
+        <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+          <p><strong className="text-ink">b = {format(model.params.b)}</strong> — por cada unidad de {x}, {y} {model.params.b > 0 ? 'aumenta' : 'disminuye'} en {format(Math.abs(model.params.b))}.</p>
+          <p><strong className="text-ink">a = {format(model.params.a)}</strong> — cuando {x} = 0, {y} ≈ {format(model.params.a)}.</p>
+        </div>
+      )}
+      {model.id === 'exponential' && (
+        <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+          <p><strong className="text-ink">a = {format(model.params.a)}</strong> — valor inicial.</p>
+          <p><strong className="text-ink">b = {format(model.params.b)}</strong> — {model.params.b > 0 ? `se duplica cada ${format(Math.log(2) / model.params.b)} unidades` : `se reduce a la mitad cada ${format(Math.log(2) / Math.abs(model.params.b))} unidades`}.</p>
+        </div>
+      )}
+      {model.id === 'quadratic' && (
+        <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+          <p><strong className="text-ink">a = {format(model.params.a)}</strong> — parábola abre {model.params.a > 0 ? 'hacia arriba' : 'hacia abajo'}.</p>
+          <p><strong className="text-ink">Vértice</strong> en x = {format(-model.params.b / (2 * model.params.a))}.</p>
+        </div>
+      )}
+      {model.id === 'power' && (
+        <p className="text-sm text-ink/65"><strong className="text-ink">b = {format(model.params.b)}</strong> — al duplicar {x}, {y} se multiplica por {format(Math.pow(2, model.params.b))}.</p>
+      )}
+      {model.id === 'logarithmic' && (
+        <p className="text-sm text-ink/65"><strong className="text-ink">b = {format(model.params.b)}</strong> — cada vez que {x} se duplica, {y} aumenta en {format(model.params.b * Math.log(2))}.</p>
+      )}
+      {model.id === 'sinusoidal' && (
+        <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
+          <p><strong className="text-ink">Amplitud</strong> = {format(Math.abs(model.params.a))} — oscila entre {format(model.params.d - Math.abs(model.params.a))} y {format(model.params.d + Math.abs(model.params.a))}.</p>
+          <p><strong className="text-ink">Período</strong> = {format(2 * Math.PI / Math.abs(model.params.b))} unidades de {x}.</p>
         </div>
       )}
     </div>
@@ -847,6 +891,7 @@ export function ModelingSpace() {
   const [yInput, setYInput] = useState('')
   const [xName, setXName] = useState('')
   const [yName, setYName] = useState('')
+  const [isCustomData, setIsCustomData] = useState(false) // true when student typed/uploaded data
 
   // ── Wizard ──
   const [step, setStep] = useState(0) // 0-3
@@ -863,7 +908,9 @@ export function ModelingSpace() {
   const [reflection3, setReflection3] = useState('')
   const [problemContext, setProblemContext] = useState('')
   const [showAllCurves, setShowAllCurves] = useState(false)
-  const [manualCurveFn, setManualCurveFn] = useState(null)
+  const [studentCurveFn, setStudentCurveFn] = useState(null) // fn from student's manual sliders
+  const [studentR2, setStudentR2] = useState(null)            // R² achieved by student
+  const [revealedBestFit, setRevealedBestFit] = useState(false) // did student reveal optimal?
   const [predictionX, setPredictionX] = useState(null)
 
   // ── Parsed data ──
@@ -958,6 +1005,7 @@ export function ModelingSpace() {
     setYInput(data.y)
     setPattern(null)
     setShape(null)
+    setIsCustomData(false)
     if (ds.xName) setXName(ds.xName)
     if (ds.yName) setYName(ds.yName)
   }, [])
@@ -965,6 +1013,18 @@ export function ModelingSpace() {
   const handleFileUpload = useCallback((x, y) => {
     setXInput(x)
     setYInput(y)
+    setIsCustomData(true)
+  }, [])
+
+  const resetAll = useCallback(() => {
+    setXInput(''); setYInput(''); setXName(''); setYName('')
+    setIsCustomData(false); setStep(0); setPattern(null); setShape(null)
+    setSelectedFamilies([]); setSelectedModelId(null); setConclusion('')
+    setStudentName(''); setStudentCourse(''); setStudentSchool('')
+    setReflection1(''); setReflection2(''); setReflection3('')
+    setProblemContext(''); setShowAllCurves(false)
+    setStudentCurveFn(null); setStudentR2(null); setRevealedBestFit(false)
+    setPredictionX(null); setViewMode('guided')
   }, [])
 
   const toggleFamily = useCallback((id) => {
@@ -1252,7 +1312,9 @@ export function ModelingSpace() {
               <p className="text-sm text-ink/55 leading-relaxed">
                 Carga tus datos y observa la nube de puntos. Antes de buscar una fórmula, describe con tus palabras qué patrón ves.
               </p>
-              <DataInput xInput={xInput} yInput={yInput} setXInput={setXInput} setYInput={setYInput}
+              <DataInput xInput={xInput} yInput={yInput}
+                setXInput={(v) => { setXInput(v); setIsCustomData(true) }}
+                setYInput={(v) => { setYInput(v); setIsCustomData(true) }}
                 xName={xName} yName={yName} setXName={setXName} setYName={setYName}
                 onLoadSample={loadSample} onFileUpload={handleFileUpload} />
               {dataError && <p className="text-sm text-rose font-medium">{dataError}</p>}
@@ -1400,7 +1462,7 @@ export function ModelingSpace() {
                     {fittedModels.map((m) => (
                       <button
                         key={m.id}
-                        onClick={() => setSelectedModelId(m.id)}
+                        onClick={() => { setSelectedModelId(m.id); setStudentCurveFn(null); setStudentR2(null); setRevealedBestFit(false) }}
                         className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                           activeModelId === m.id ? 'bg-ink text-paper' : 'border border-ink/10 bg-paper text-ink hover:border-ink/30'
                         }`}
@@ -1418,8 +1480,20 @@ export function ModelingSpace() {
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
 
-                      {/* Sliders with live chart — curve moves in real time */}
-                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom showChart xLabel={xName} yLabel={yName} />
+                      {/* Unified chart — curve moves as student drags sliders */}
+                      <DataChart xs={xs} ys={ys}
+                        fittedModels={[studentCurveFn
+                          ? { ...activeModel, fn: studentCurveFn, id: 'manual', r2: computeR2(xs, ys, studentCurveFn) }
+                          : { ...activeModel, id: 'manual' }
+                        ]}
+                        selectedModelId="manual" xLabel={xName} yLabel={yName} dark={false} />
+
+                      {/* Sliders only — no duplicate chart */}
+                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom xLabel={xName} yLabel={yName}
+                        onParamsChange={(fn) => { setStudentCurveFn(() => fn); setRevealedBestFit(false) }}
+                        onVerify={(fn, r2) => { setStudentCurveFn(() => fn); setStudentR2(r2); setRevealedBestFit(false) }}
+                        onRevealBest={() => { setRevealedBestFit(true); setStudentCurveFn(null); setStudentR2(null) }}
+                      />
                     </div>
                   )}
                 </>
@@ -1428,27 +1502,42 @@ export function ModelingSpace() {
           )}
 
           {/* ── FASE 4: EVALUAR ── */}
-          {step === 3 && (
+          {step === 3 && (() => {
+            // Use student's curve if they didn't reveal the best fit
+            const useStudentCurve = studentCurveFn && !revealedBestFit
+            const evalModel = activeModel && useStudentCurve
+              ? { ...activeModel, fn: studentCurveFn, r2: studentR2 ?? computeR2(xs, ys, studentCurveFn) }
+              : activeModel
+            return (
             <div className="space-y-4">
               {sectionKicker('Fase 4 — Evaluar')}
               <p className="text-base font-semibold text-ink/80">¿Qué tan bien describe el modelo tus datos?</p>
               <p className="text-sm text-ink/55 leading-relaxed">
-                Un buen modelo no solo pasa cerca de los puntos — también predice bien donde no hay datos y sus residuales no forman patrones.
+                {useStudentCurve
+                  ? 'Estás evaluando la curva que ajustaste manualmente. Un buen modelo no solo pasa cerca de los puntos — también predice bien donde no hay datos.'
+                  : 'Un buen modelo no solo pasa cerca de los puntos — también predice bien donde no hay datos y sus residuales no forman patrones.'}
               </p>
-              {activeModel && (
+              {useStudentCurve && (
+                <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800">
+                  Evaluando <strong>tu ajuste manual</strong> (R² = {((studentR2 ?? computeR2(xs, ys, studentCurveFn)) * 100).toFixed(1)}%).
+                  Si quieres evaluar el ajuste óptimo, vuelve a la fase 3 y revela el mejor ajuste.
+                </div>
+              )}
+              {evalModel && (
                 <div className="space-y-3">
-                  <DataChart xs={xs} ys={ys} fittedModels={[activeModel]} selectedModelId={activeModelId}
+                  <DataChart xs={xs} ys={ys} fittedModels={[evalModel]} selectedModelId={evalModel.id}
                     predictionX={predictionX} xLabel={xName} yLabel={yName} dark={false} />
 
-                  <PredictionTool model={activeModel} xs={xs} xName={xName} yName={yName} />
+                  <PredictionTool model={evalModel} xs={xs} xName={xName} yName={yName} />
 
-                  <ResidualPlot xs={xs} ys={ys} predictFn={activeModel.fn} />
+                  <ResidualPlot xs={xs} ys={ys} predictFn={evalModel.fn} />
 
-                  <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
+                  <DiagnosticPanel model={evalModel} xs={xs} ys={ys} xName={xName} yName={yName} />
                 </div>
               )}
             </div>
-          )}
+            )
+          })()}
 
           {/* ── FASE 5: JUSTIFICAR ── */}
           {step === 4 && (
@@ -1488,40 +1577,7 @@ export function ModelingSpace() {
 
                   <DataChart xs={xs} ys={ys} fittedModels={[activeModel]} selectedModelId={activeModelId} xLabel={xName} yLabel={yName} dark={false} />
 
-                  {/* ── Interpretación de parámetros ── */}
-                  <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-2">
-                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">¿Qué significan los parámetros?</p>
-                    {activeModel.id === 'linear' && activeModel.params && (
-                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
-                        <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — por cada unidad de {xName || 'x'}, {yName || 'y'} {activeModel.params.b > 0 ? 'aumenta' : 'disminuye'} en {format(Math.abs(activeModel.params.b))}.</p>
-                        <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — cuando {xName || 'x'} = 0, {yName || 'y'} ≈ {format(activeModel.params.a)}.</p>
-                      </div>
-                    )}
-                    {activeModel.id === 'exponential' && activeModel.params && (
-                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
-                        <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — valor inicial.</p>
-                        <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — {activeModel.params.b > 0 ? `se duplica cada ${format(Math.log(2) / activeModel.params.b)} unidades` : `se reduce a la mitad cada ${format(Math.log(2) / Math.abs(activeModel.params.b))} unidades`}.</p>
-                      </div>
-                    )}
-                    {activeModel.id === 'quadratic' && activeModel.params && (
-                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
-                        <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — parábola abre {activeModel.params.a > 0 ? 'hacia arriba' : 'hacia abajo'}.</p>
-                        <p><strong className="text-ink">Vértice</strong> en x = {format(-activeModel.params.b / (2 * activeModel.params.a))}.</p>
-                      </div>
-                    )}
-                    {activeModel.id === 'power' && activeModel.params && (
-                      <p className="text-sm text-ink/65"><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — al duplicar {xName || 'x'}, {yName || 'y'} se multiplica por {format(Math.pow(2, activeModel.params.b))}.</p>
-                    )}
-                    {activeModel.id === 'logarithmic' && activeModel.params && (
-                      <p className="text-sm text-ink/65"><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — cada vez que {xName || 'x'} se duplica, {yName || 'y'} aumenta en {format(activeModel.params.b * Math.log(2))}.</p>
-                    )}
-                    {activeModel.id === 'sinusoidal' && activeModel.params && (
-                      <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
-                        <p><strong className="text-ink">Amplitud</strong> = {format(Math.abs(activeModel.params.a))} — oscila entre {format(activeModel.params.d - Math.abs(activeModel.params.a))} y {format(activeModel.params.d + Math.abs(activeModel.params.a))}.</p>
-                        <p><strong className="text-ink">Período</strong> = {format(2 * Math.PI / Math.abs(activeModel.params.b))} unidades de {xName || 'x'}.</p>
-                      </div>
-                    )}
-                  </div>
+                  <ParameterInterpretation model={activeModel} xName={xName} yName={yName} />
 
                   {/* ── Identificación del estudiante ── */}
                   <div className="rounded-xl border border-ink/8 bg-white p-4 space-y-3">
@@ -1689,6 +1745,7 @@ export function ModelingSpace() {
               <div className="space-y-3">
                 <ResidualPlot xs={xs} ys={ys} predictFn={activeModel.fn} />
                 <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
+                <ParameterInterpretation model={activeModel} xName={xName} yName={yName} />
               </div>
             </div>
           )}
@@ -1716,14 +1773,26 @@ export function ModelingSpace() {
           </button>
           <button
             onClick={() => setViewMode('direct')}
+            disabled={isCustomData}
+            title={isCustomData ? 'Con datos propios, usa el modo Guiado para aprender modelando' : ''}
             className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
-              viewMode === 'direct' ? 'bg-signal text-white shadow-md' : 'text-ink/50 hover:text-ink/70'
+              viewMode === 'direct' ? 'bg-signal text-white shadow-md'
+              : isCustomData ? 'text-ink/25 cursor-not-allowed'
+              : 'text-ink/50 hover:text-ink/70'
             }`}
           >
             Directo
           </button>
         </div>
-        <p className="text-xs text-ink/40">
+        {hasData && (
+          <button
+            onClick={resetAll}
+            className="rounded-full border border-ink/12 px-4 py-2 text-xs font-medium text-ink/50 transition hover:bg-ink/5 hover:text-ink/70"
+          >
+            Nueva modelación
+          </button>
+        )}
+        <p className="text-xs text-ink/40 hidden md:block">
           {viewMode === 'guided'
             ? 'Ciclo completo de modelación: observar, conjeturar, ajustar, evaluar, justificar'
             : 'Todos los modelos y herramientas visibles — para usuarios con experiencia'}

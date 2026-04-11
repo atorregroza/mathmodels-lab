@@ -673,6 +673,55 @@ const SAMPLE_GENERATORS = [
       return { x: xs.join(', '), y: xs.map(x => Math.round(Math.min(98, a + b * Math.log(x) + noise(3)))).join(', ') }
     },
   },
+  {
+    id: 'reaction',
+    label: 'Velocidad de reacción química',
+    xName: 'Tiempo (minutos)',
+    yName: 'Concentración (mol/L)',
+    generate: () => {
+      const a = 2.5 + noise(0.6)
+      const b = -(0.25 + noise(0.08))
+      const xs = [0, 1, 2, 3, 5, 7, 10, 14, 18, 24, 30]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(Math.max(0.05, a * Math.exp(b * x) + noise(0.08)) * 100) / 100).join(', ') }
+    },
+  },
+  {
+    id: 'braking',
+    label: 'Distancia de frenado',
+    xName: 'Velocidad (km/h)',
+    yName: 'Distancia de frenado (metros)',
+    generate: () => {
+      const a = 0.006 + noise(0.001)
+      const b = 1.9 + noise(0.15)
+      const xs = [20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(a * Math.pow(x, b) + noise(2))).join(', ') }
+    },
+  },
+  {
+    id: 'sales',
+    label: 'Ventas mensuales',
+    xName: 'Mes',
+    yName: 'Ventas (miles de unidades)',
+    generate: () => {
+      const amp = 12 + noise(3)
+      const mid = 45 + noise(8)
+      const phase = 0.5 + noise(0.3)
+      const xs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(mid + amp * Math.sin((x - phase) * Math.PI / 6) + noise(3))).join(', ') }
+    },
+  },
+  {
+    id: 'height_weight',
+    label: 'Estatura vs peso corporal',
+    xName: 'Estatura (cm)',
+    yName: 'Peso (kg)',
+    generate: () => {
+      const slope = 0.85 + noise(0.15)
+      const intercept = -(80 + noise(15))
+      const xs = [150, 152, 155, 158, 160, 162, 165, 167, 170, 172, 175, 178, 180, 183, 185, 188, 190]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(intercept + slope * x + noise(6))).join(', ') }
+    },
+  },
 ]
 
 export const SAMPLE_DATASETS = SAMPLE_GENERATORS.map(g => ({
