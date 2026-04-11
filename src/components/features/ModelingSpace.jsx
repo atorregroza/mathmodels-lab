@@ -1014,11 +1014,20 @@ export function ModelingSpace() {
 
     // Build SVG chart inline
     const dataXMin = Math.min(...xs), dataXMax = Math.max(...xs)
-    const dataYMin = Math.min(...ys), dataYMax = Math.max(...ys)
     const xPad = (dataXMax - dataXMin) * 0.1 || 1
-    const yPad = (dataYMax - dataYMin) * 0.1 || 1
     const cXMin = dataXMin - xPad, cXMax = dataXMax + xPad
-    const cYMin = dataYMin - yPad, cYMax = dataYMax + yPad
+    // Compute y range including both data AND curve
+    let cYMin = Math.min(...ys), cYMax = Math.max(...ys)
+    for (let i = 0; i <= 200; i++) {
+      const x = cXMin + (i / 200) * (cXMax - cXMin)
+      const y = activeModel.fn(x)
+      if (isFinite(y) && Math.abs(y) < (cYMax - cYMin + 1) * 20) {
+        if (y < cYMin) cYMin = y
+        if (y > cYMax) cYMax = y
+      }
+    }
+    const yPad = (cYMax - cYMin) * 0.1 || 1
+    cYMin -= yPad; cYMax += yPad
     const w = 560, h = 300, pad = 40
     const sx = (v) => pad + ((v - cXMin) / (cXMax - cXMin)) * (w - pad * 2)
     const sy = (v) => h - pad - ((v - cYMin) / (cYMax - cYMin)) * (h - pad * 2)
@@ -1030,7 +1039,9 @@ export function ModelingSpace() {
     for (let i = 0; i <= 200; i++) {
       const x = cXMin + (i / 200) * (cXMax - cXMin)
       const y = activeModel.fn(x)
-      if (isFinite(y)) curvePts.push(`${i === 0 ? 'M' : 'L'} ${sx(x)} ${sy(y)}`)
+      if (isFinite(y) && Math.abs(y) < (cYMax - cYMin) * 5) {
+        curvePts.push(`${curvePts.length === 0 ? 'M' : 'L'} ${sx(x)} ${sy(y)}`)
+      }
     }
     // Axis lines + ticks
     const xAxis = cYMin <= 0 && cYMax >= 0 ? `<line x1="${pad}" y1="${sy(0)}" x2="${w - pad}" y2="${sy(0)}" stroke="#999" stroke-width="1"/>` : ''
