@@ -677,25 +677,25 @@ function DataInput({ xInput, yInput, setXInput, setYInput, xName, yName, setXNam
   return (
     <div className="space-y-3">
       {/* Variable descriptions */}
-      <div className="flex gap-3">
-        <div className="flex-1">
+      <div className="grid gap-3 md:grid-cols-2">
+        <div>
           <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">¿Qué mide x?</label>
           <input
             type="text"
             value={xName}
             onChange={e => setXName(e.target.value)}
             placeholder="Ej: Horas de estudio, Temperatura, Tiempo..."
-            className="w-full rounded-xl border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
+            className="w-full rounded-xl border border-ink/12 bg-white px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
           />
         </div>
-        <div className="flex-1">
+        <div>
           <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">¿Qué mide y?</label>
           <input
             type="text"
             value={yName}
             onChange={e => setYName(e.target.value)}
             placeholder="Ej: Nota del examen, Ventas, Altura..."
-            className="w-full rounded-xl border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
+            className="w-full rounded-xl border border-ink/12 bg-white px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
           />
         </div>
       </div>
