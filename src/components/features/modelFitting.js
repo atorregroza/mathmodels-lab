@@ -606,50 +606,79 @@ export function explainFit(model) {
 
 // ─── Sample datasets for quick testing ─────────────────
 
-export const SAMPLE_DATASETS = [
+// Each dataset generates fresh random data based on a model + noise
+const noise = (amplitude) => (Math.random() - 0.5) * 2 * amplitude
+const jitter = (val, pct = 0.08) => Math.round((val + noise(val * pct)) * 10) / 10
+
+const SAMPLE_GENERATORS = [
   {
     id: 'notas',
     label: 'Horas de estudio vs nota',
-    hint: 'crece',
     xName: 'Horas de estudio por semana',
     yName: 'Nota del examen (sobre 100)',
-    x: '1, 2, 2, 3, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10, 12',
-    y: '32, 41, 38, 45, 52, 55, 58, 62, 60, 71, 65, 74, 78, 80, 85, 82',
+    generate: () => {
+      const slope = 4 + noise(1.5)
+      const intercept = 28 + noise(5)
+      const xs = [1, 2, 2, 3, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10, 12]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(intercept + slope * x + noise(5))).join(', ') }
+    },
   },
   {
     id: 'population',
     label: 'Crecimiento poblacional',
-    hint: 'crece',
     xName: 'Año (desde inicio del estudio)',
     yName: 'Población (individuos)',
-    x: '0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10',
-    y: '100, 122, 149, 182, 222, 271, 330, 403, 492, 600, 732',
+    generate: () => {
+      const a = 90 + noise(20)
+      const b = 0.18 + noise(0.05)
+      const xs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(a * Math.exp(b * x) + noise(8))).join(', ') }
+    },
   },
   {
     id: 'projectile',
     label: 'Trayectoria de proyectil',
-    hint: 'sube_baja',
     xName: 'Tiempo (segundos)',
     yName: 'Altura (metros)',
-    x: '0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10',
-    y: '0, 14, 24, 30, 32, 30, 24, 14, 0, -18, -40',
+    generate: () => {
+      const a = -(3 + noise(0.8))
+      const b = 28 + noise(5)
+      const c = noise(3)
+      const xs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(a * x * x + b * x + c + noise(2))).join(', ') }
+    },
   },
   {
     id: 'temperature',
     label: 'Temperatura estacional',
-    hint: 'oscila',
     xName: 'Mes del año',
     yName: 'Temperatura promedio (°C)',
-    x: '1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12',
-    y: '5, 7, 12, 18, 23, 27, 28, 26, 21, 15, 9, 6',
+    generate: () => {
+      const amp = 11 + noise(3)
+      const mid = 16 + noise(3)
+      const phase = 1 + noise(0.5)
+      const xs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(mid + amp * Math.sin((x - phase) * Math.PI / 6) + noise(1.5))).join(', ') }
+    },
   },
   {
     id: 'learning',
     label: 'Curva de aprendizaje',
-    hint: 'crece',
     xName: 'Horas de práctica acumuladas',
     yName: 'Puntaje en la prueba (%)',
-    x: '1, 2, 3, 5, 8, 12, 18, 25, 35, 50',
-    y: '20, 35, 45, 58, 68, 75, 81, 85, 88, 90',
+    generate: () => {
+      const a = 15 + noise(5)
+      const b = 18 + noise(4)
+      const xs = [1, 2, 3, 5, 8, 12, 18, 25, 35, 50]
+      return { x: xs.join(', '), y: xs.map(x => Math.round(Math.min(98, a + b * Math.log(x) + noise(3)))).join(', ') }
+    },
   },
 ]
+
+export const SAMPLE_DATASETS = SAMPLE_GENERATORS.map(g => ({
+  id: g.id,
+  label: g.label,
+  xName: g.xName,
+  yName: g.yName,
+  generate: g.generate,
+}))

@@ -545,31 +545,31 @@ function DiagnosticPanel({ model, xs, ys, xName, yName }) {
 
   return (
     <div className="space-y-3">
-      {/* Compact metric row */}
-      <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
-        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
-          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">R²</p>
-          <p className={`font-display text-lg font-bold ${model.r2 < 0 ? 'text-rose' : 'text-ink'}`}>{(model.r2 * 100).toFixed(1)}%</p>
+      {/* Metrics — responsive grid */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">R²</p>
+          <p className={`font-display text-2xl font-bold ${model.r2 < 0 ? 'text-rose' : 'text-ink'}`}>{(model.r2 * 100).toFixed(1)}%</p>
         </div>
-        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
-          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">R² ajust.</p>
-          <p className={`font-display text-lg font-bold ${d.adjR2 < model.r2 - 0.05 ? 'text-signal' : 'text-ink'}`}>{(d.adjR2 * 100).toFixed(1)}%</p>
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">R² ajustado</p>
+          <p className={`font-display text-2xl font-bold ${d.adjR2 < model.r2 - 0.05 ? 'text-signal' : 'text-ink'}`}>{(d.adjR2 * 100).toFixed(1)}%</p>
         </div>
-        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
-          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">AIC</p>
-          <p className="font-display text-lg font-bold text-ink">{format(d.aic)}</p>
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">AIC</p>
+          <p className="font-display text-2xl font-bold text-ink">{format(d.aic)}</p>
         </div>
-        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
-          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">MAE</p>
-          <p className="font-display text-lg font-bold text-ink">{format(model.mae)}</p>
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Error medio</p>
+          <p className="font-display text-2xl font-bold text-ink">{format(model.mae)}</p>
         </div>
-        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
-          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">Params</p>
-          <p className="font-display text-lg font-bold text-ink">{model.numParams}</p>
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Parámetros</p>
+          <p className="font-display text-2xl font-bold text-ink">{model.numParams}</p>
         </div>
-        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
-          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">Sobreajuste</p>
-          <p className={`font-display text-lg font-bold ${d.overfitRisk === 'alto' ? 'text-rose' : d.overfitRisk === 'moderado' ? 'text-signal' : 'text-graph'}`}>
+        <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3 text-center">
+          <p className="text-[0.6rem] uppercase tracking-widest text-ink/40 mb-1">Sobreajuste</p>
+          <p className={`font-display text-2xl font-bold ${d.overfitRisk === 'alto' ? 'text-rose' : d.overfitRisk === 'moderado' ? 'text-signal' : 'text-graph'}`}>
             {d.overfitRisk === 'alto' ? 'Alto' : d.overfitRisk === 'moderado' ? 'Medio' : 'Bajo'}
           </p>
         </div>
@@ -947,8 +947,9 @@ export function ModelingSpace() {
 
   // ── Handlers ──
   const loadSample = useCallback((ds) => {
-    setXInput(ds.x)
-    setYInput(ds.y)
+    const data = ds.generate ? ds.generate() : { x: ds.x, y: ds.y }
+    setXInput(data.x)
+    setYInput(data.y)
     setPattern(null)
     setShape(null)
     if (ds.xName) setXName(ds.xName)
