@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from 'react'
+import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CartesianFrame, MetricCard, SliderField } from './DerivaLabPrimitives'
 import { format, downloadCsv, sampleRange, linePath } from './derivaLabUtils'
@@ -380,6 +380,15 @@ function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
     return randomized
   })
   const [showBest, setShowBest] = useState(false)
+
+  // Notify parent of initial curve on mount
+  useEffect(() => {
+    if (onParamsChange && manualParams) {
+      onParamsChange(buildFn(manualParams))
+    } else if (onParamsChange && model) {
+      onParamsChange(buildFn(model.params))
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!model) return null
 
@@ -1204,11 +1213,13 @@ export function ModelingSpace() {
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
 
-                      {/* Chart showing data points only — student adjusts visually */}
-                      <DataChart xs={xs} ys={ys} fittedModels={[]} selectedModelId={null} xLabel={xName} yLabel={yName} dark={false} />
+                      {/* Chart showing data points + student's manual curve */}
+                      <DataChart xs={xs} ys={ys}
+                        fittedModels={manualCurveFn ? [{ ...activeModel, fn: manualCurveFn, id: 'manual', r2: 0 }] : []}
+                        selectedModelId="manual" xLabel={xName} yLabel={yName} dark={false} />
 
                       {/* Manual sliders — start random, no R² until verify */}
-                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom />
+                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom onParamsChange={setManualCurveFn} />
                     </div>
                   )}
                 </>
