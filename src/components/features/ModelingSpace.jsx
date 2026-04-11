@@ -1089,7 +1089,6 @@ export function ModelingSpace() {
   </div>
   <hr style="border:none;border-top:2px solid #12172310;margin:16px 0;">
 
-  <h1>Informe de Modelación</h1>
   <p class="subtitle">${new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
 
   ${studentName || studentCourse || studentSchool ? `
