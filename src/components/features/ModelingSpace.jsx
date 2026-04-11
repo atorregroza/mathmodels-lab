@@ -545,45 +545,40 @@ function DiagnosticPanel({ model, xs, ys, xName, yName }) {
 
   return (
     <div className="space-y-3">
-      {/* Metric grid — student-friendly labels */}
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-        <MetricCard label="¿Qué tan bien ajusta?" value={`${(model.r2 * 100).toFixed(1)}%`}
-          detail={model.r2 < 0 ? 'R² negativo — este modelo es PEOR que usar el promedio. Prueba otra familia.' : 'R² — porcentaje de variación explicada por el modelo'}
-          dark={false} valueClassName={model.r2 < 0 ? 'text-rose' : ''} />
-        <MetricCard label="Ajuste corregido" value={`${(d.adjR2 * 100).toFixed(1)}%`}
-          detail={d.adjR2 < model.r2 - 0.05 ? 'R² ajustado — baja porque el modelo es muy complejo para estos datos' : 'R² ajustado — similar al básico, el modelo no es innecesariamente complejo'}
-          dark={false}
-          valueClassName={d.adjR2 < model.r2 - 0.05 ? 'text-signal' : ''} />
-        <MetricCard label="Calidad vs complejidad" value={format(d.aic)}
-          detail="AIC — piénsalo como una nota que premia la precisión pero penaliza usar demasiados parámetros. El modelo con menor AIC es el mejor equilibrio entre simple y preciso" dark={false} />
-        {model.cvR2 != null && (
-          <MetricCard label="¿Generaliza?" value={`${(model.cvR2 * 100).toFixed(1)}%`}
-            detail={model.cvR2 < model.r2 - 0.15
-              ? 'Validación cruzada — si este número es mucho menor que el ajuste, el modelo memoriza en vez de aprender'
-              : 'Validación cruzada — el modelo predice bien datos que no ha visto, eso es buena señal'}
-            dark={false}
-            valueClassName={model.cvR2 < model.r2 - 0.15 ? 'text-rose' : ''} />
-        )}
+      {/* Compact metric row */}
+      <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
+        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
+          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">R²</p>
+          <p className={`font-display text-lg font-bold ${model.r2 < 0 ? 'text-rose' : 'text-ink'}`}>{(model.r2 * 100).toFixed(1)}%</p>
+        </div>
+        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
+          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">R² ajust.</p>
+          <p className={`font-display text-lg font-bold ${d.adjR2 < model.r2 - 0.05 ? 'text-signal' : 'text-ink'}`}>{(d.adjR2 * 100).toFixed(1)}%</p>
+        </div>
+        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
+          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">AIC</p>
+          <p className="font-display text-lg font-bold text-ink">{format(d.aic)}</p>
+        </div>
+        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
+          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">MAE</p>
+          <p className="font-display text-lg font-bold text-ink">{format(model.mae)}</p>
+        </div>
+        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
+          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">Params</p>
+          <p className="font-display text-lg font-bold text-ink">{model.numParams}</p>
+        </div>
+        <div className="rounded-lg border border-ink/8 bg-paper px-3 py-2">
+          <p className="text-[0.55rem] uppercase tracking-widest text-ink/40">Sobreajuste</p>
+          <p className={`font-display text-lg font-bold ${d.overfitRisk === 'alto' ? 'text-rose' : d.overfitRisk === 'moderado' ? 'text-signal' : 'text-graph'}`}>
+            {d.overfitRisk === 'alto' ? 'Alto' : d.overfitRisk === 'moderado' ? 'Medio' : 'Bajo'}
+          </p>
+        </div>
       </div>
 
-      {/* Diagnostics detail */}
-      <div className="grid grid-cols-3 gap-2">
-        <MetricCard label="Error promedio" value={format(model.mae)}
-          detail={`En promedio, el modelo se equivoca por ${format(model.mae)} unidades de "${context.yName}"`} dark={false} />
-        <MetricCard label="Complejidad" value={`${model.numParams} param.`}
-          detail={`El modelo usa ${model.numParams} número(s) ajustable(s) para describir ${n} datos`} dark={false} />
-        <MetricCard label="¿Sobreajuste?" value={d.overfitRisk === 'alto' ? 'Cuidado' : d.overfitRisk === 'moderado' ? 'Posible' : 'No'}
-          detail={d.overfitRisk === 'alto' ? 'El modelo puede estar "memorizando" los datos — necesitas más observaciones' : d.overfitRisk === 'moderado' ? 'Más datos harían la conclusión más sólida' : 'Hay suficientes datos para confiar en el modelo'}
-          dark={false}
-          valueClassName={d.overfitRisk === 'alto' ? 'text-rose' : d.overfitRisk === 'moderado' ? 'text-signal' : 'text-graph'} />
-      </div>
-
-      {/* Interpretation — the pedagogical core */}
-      <div className="rounded-xl border border-aqua/15 bg-aqua/5 px-4 py-3 space-y-2">
-        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-aqua/70">Interpretación</p>
-        {interpretation.map((line, i) => (
-          <p key={i} className="text-sm text-ink/65 leading-relaxed">{line}</p>
-        ))}
+      {/* Interpretation — compact */}
+      <div className="rounded-xl border border-aqua/15 bg-aqua/5 px-4 py-3">
+        <p className="text-[0.6rem] font-semibold uppercase tracking-widest text-aqua/70 mb-1">Interpretación</p>
+        <p className="text-sm text-ink/60 leading-relaxed">{interpretation[0]}</p>
       </div>
 
       {/* Warnings */}
@@ -1634,72 +1629,64 @@ export function ModelingSpace() {
   /* ════════════════════════════════════════════════════ */
 
   const renderDirect = () => (
-    <div className="grid gap-6 lg:grid-cols-[1fr_1.6fr]">
-      {/* LEFT: data input */}
-      <div className="space-y-4">
-        {sectionKicker('Datos')}
+    <div className="space-y-4">
+      {/* TOP: Data input — full width, compact */}
+      <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
         <DataInput xInput={xInput} yInput={yInput} setXInput={setXInput} setYInput={setYInput}
           xName={xName} yName={yName} setXName={setXName} setYName={setYName}
-                onLoadSample={loadSample} onFileUpload={handleFileUpload} />
+          onLoadSample={loadSample} onFileUpload={handleFileUpload} />
         {dataError && <p className="text-sm text-rose font-medium">{dataError}</p>}
-        <DataTable xs={xs} ys={ys} />
-        {hasData && (
-          <p className="text-xs text-ink/45">n = {xs.length} pares de datos</p>
-        )}
       </div>
 
-      {/* RIGHT: results */}
-      <div className="space-y-4">
-        {!hasData ? (
-          <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-ink/15 text-sm text-ink/35">
-            Ingresa al menos 2 pares de datos para comenzar
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center gap-2 mb-2">
-              {sectionKicker('Modelo ajustado')}
-              <button
-                onClick={() => setShowAllCurves(v => !v)}
-                className={`rounded-full px-3 py-1 text-[0.65rem] font-medium transition ${showAllCurves ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/40 hover:bg-ink/10'}`}
-              >
-                {showAllCurves ? 'Todas las curvas' : 'Comparar curvas'}
-              </button>
+      {!hasData ? (
+        <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-ink/15 text-sm text-ink/35">
+          Ingresa al menos 2 pares de datos para comenzar
+        </div>
+      ) : (
+        <>
+          {/* MAIN: Chart + Ranking side by side */}
+          <div className="grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                {sectionKicker('Gráfica')}
+                <button
+                  onClick={() => setShowAllCurves(v => !v)}
+                  className={`rounded-full px-3 py-1 text-[0.65rem] font-medium transition ${showAllCurves ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/40 hover:bg-ink/10'}`}
+                >
+                  {showAllCurves ? 'Todas las curvas' : 'Comparar'}
+                </button>
+              </div>
+              <DataChart xs={xs} ys={ys} fittedModels={fittedModels} selectedModelId={activeModelId}
+                showAllCurves={showAllCurves} predictionX={predictionX} xLabel={xName} yLabel={yName} dark={false} />
             </div>
-            <DataChart xs={xs} ys={ys} fittedModels={fittedModels} selectedModelId={activeModelId}
-              showAllCurves={showAllCurves} predictionX={predictionX} xLabel={xName} yLabel={yName} dark={false} />
-
             {fittedModels.length > 0 && (
-              <>
-                {sectionKicker('Ranking de modelos')}
+              <div>
+                {sectionKicker('Ranking')}
                 <RankingBars models={fittedModels} selectedId={activeModelId} onSelect={setSelectedModelId} />
-
                 {activeModel && (
-                  <>
-                    {/* equation */}
-                    <div className="rounded-xl border border-signal/20 bg-signal/5 px-4 py-3 text-center">
-                      <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">{activeModel.label}</p>
-                      <p className="font-mono text-base font-semibold text-signal">{activeModel.formula}</p>
-                    </div>
-
-                    {/* manual parameter adjustment */}
-                    <ManualSliders model={activeModel} xs={xs} ys={ys} />
-
-                    {/* prediction */}
-                    <PredictionTool model={activeModel} xs={xs} xName={xName} yName={yName} />
-
-                    {/* residual plot */}
-                    <ResidualPlot xs={xs} ys={ys} predictFn={activeModel.fn} />
-
-                    {/* full diagnostics */}
-                    <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
-
-                  </>
+                  <div className="mt-3 rounded-xl border border-signal/20 bg-signal/5 px-3 py-2 text-center">
+                    <p className="font-mono text-sm font-semibold text-signal">{activeModel.formula}</p>
+                  </div>
                 )}
-              </>
+              </div>
             )}
-          </>
-        )}
-      </div>
+          </div>
+
+          {/* BOTTOM: Tools side by side */}
+          {activeModel && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div className="space-y-3">
+                <ManualSliders model={activeModel} xs={xs} ys={ys} />
+                <PredictionTool model={activeModel} xs={xs} xName={xName} yName={yName} />
+              </div>
+              <div className="space-y-3">
+                <ResidualPlot xs={xs} ys={ys} predictFn={activeModel.fn} />
+                <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 
