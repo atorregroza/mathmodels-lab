@@ -354,8 +354,18 @@ function PredictionTool({ model, xs, xName, yName }) {
 
 /* ── Manual parameter sliders ────────────────────────── */
 
-function ManualSliders({ model, xs, ys, onParamsChange }) {
-  const [manualParams, setManualParams] = useState(null)
+function ManualSliders({ model, xs, ys, onParamsChange, startRandom = false }) {
+  const [manualParams, setManualParams] = useState(() => {
+    if (!startRandom || !model) return null
+    // Start with randomized params so the student has to find the fit
+    const randomized = {}
+    for (const key of Object.keys(model.params)) {
+      const v = model.params[key]
+      const absV = Math.max(Math.abs(v), 1)
+      randomized[key] = v + (Math.random() - 0.5) * absV * 2.5
+    }
+    return randomized
+  })
   const [showBest, setShowBest] = useState(false)
 
   if (!model) return null
@@ -463,15 +473,21 @@ function ManualSliders({ model, xs, ys, onParamsChange }) {
       </div>
 
       {!showBest && manualParams && (
-        <p className="text-xs text-ink/40 leading-relaxed">
-          Mueve los sliders para entender qué hace cada parámetro. Observa cómo cambia la curva y el R².
-          Cuando estés listo, compara tu ajuste con el óptimo.
-        </p>
+        <div className={`rounded-lg px-3 py-2 text-sm leading-relaxed ${
+          currentR2 >= 0.95 ? 'bg-graph/10 text-graph' : currentR2 >= 0.8 ? 'bg-amber-50 text-amber-700' : currentR2 >= 0.5 ? 'bg-signal/10 text-signal' : 'bg-ink/5 text-ink/50'
+        }`}>
+          {currentR2 >= 0.95 && 'Excelente ajuste. Tu curva describe muy bien los datos.'}
+          {currentR2 >= 0.8 && currentR2 < 0.95 && 'Buen intento — la curva se acerca pero aún puedes mejorar. Sigue ajustando.'}
+          {currentR2 >= 0.5 && currentR2 < 0.8 && 'La curva captura parte de la tendencia pero le falta. Experimenta con los parámetros.'}
+          {currentR2 < 0.5 && 'La curva todavía está lejos de los datos. Observa la forma y ajusta.'}
+        </div>
       )}
       {showBest && (
-        <p className="text-xs text-graph/70 leading-relaxed">
-          Estos son los valores que minimizan el error. ¿Se parecen a los que encontraste manualmente?
-        </p>
+        <div className="rounded-lg bg-graph/10 px-3 py-2 text-sm text-graph leading-relaxed">
+          Estos son los valores óptimos. {manualParams && currentR2 < bestR2 - 0.01
+            ? `Tu mejor intento tenía R² = ${(computeR2(xs, ys, buildFn(manualParams)) * 100).toFixed(1)}%. El óptimo es ${(bestR2 * 100).toFixed(1)}%.`
+            : '¡Encontraste valores muy cercanos al óptimo!'}
+        </div>
       )}
     </div>
   )
@@ -1144,50 +1160,11 @@ export function ModelingSpace() {
                   {activeModel && (
                     <div className="space-y-3">
                       <div className="rounded-xl border border-signal/20 bg-signal/5 px-4 py-3 text-center">
-                        <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">Ecuación ajustada</p>
-                        <p className="font-mono text-base font-semibold text-signal">{activeModel.formula}</p>
+                        <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">Modelo general</p>
+                        <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
-                      {/* Parameter interpretation — pedagogical, not sliders */}
-                      <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-2">
-                        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">¿Qué significa cada parámetro?</p>
-                        {activeModel.id === 'linear' && activeModel.params && (
-                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
-                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — pendiente: por cada unidad que aumenta {xName || 'x'}, {yName || 'y'} {activeModel.params.b > 0 ? 'aumenta' : 'disminuye'} en {format(Math.abs(activeModel.params.b))} unidades.</p>
-                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — intercepto: cuando {xName || 'x'} = 0, el modelo predice {yName || 'y'} = {format(activeModel.params.a)}.</p>
-                          </div>
-                        )}
-                        {activeModel.id === 'quadratic' && activeModel.params && (
-                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
-                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — curvatura: {activeModel.params.a > 0 ? 'la parábola abre hacia arriba (tiene mínimo)' : 'la parábola abre hacia abajo (tiene máximo)'}.</p>
-                            <p><strong className="text-ink">Vértice</strong> — el punto donde la curva cambia de dirección está en x = {format(-activeModel.params.b / (2 * activeModel.params.a))}.</p>
-                          </div>
-                        )}
-                        {activeModel.id === 'exponential' && activeModel.params && (
-                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
-                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — valor inicial: cuando {xName || 'x'} = 0, {yName || 'y'} ≈ {format(activeModel.params.a)}.</p>
-                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — tasa de {activeModel.params.b > 0 ? 'crecimiento' : 'decaimiento'}: {activeModel.params.b > 0 ? `el valor se duplica cada ${format(Math.log(2) / activeModel.params.b)} unidades de ${xName || 'x'}` : `el valor se reduce a la mitad cada ${format(Math.log(2) / Math.abs(activeModel.params.b))} unidades de ${xName || 'x'}`}.</p>
-                          </div>
-                        )}
-                        {activeModel.id === 'power' && activeModel.params && (
-                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
-                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — exponente: al duplicar {xName || 'x'}, {yName || 'y'} se multiplica por {format(Math.pow(2, activeModel.params.b))}.</p>
-                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — factor de escala.</p>
-                          </div>
-                        )}
-                        {activeModel.id === 'logarithmic' && activeModel.params && (
-                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
-                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — sensibilidad: cada vez que {xName || 'x'} se duplica, {yName || 'y'} aumenta en {format(activeModel.params.b * Math.log(2))} unidades.</p>
-                            <p>El crecimiento se desacelera: los primeros valores de {xName || 'x'} tienen más impacto que los últimos.</p>
-                          </div>
-                        )}
-                        {activeModel.id === 'sinusoidal' && activeModel.params && (
-                          <div className="space-y-1.5 text-sm text-ink/65 leading-relaxed">
-                            <p><strong className="text-ink">a = {format(activeModel.params.a)}</strong> — amplitud: la oscilación va desde {format(activeModel.params.d - Math.abs(activeModel.params.a))} hasta {format(activeModel.params.d + Math.abs(activeModel.params.a))}.</p>
-                            <p><strong className="text-ink">b = {format(activeModel.params.b)}</strong> — frecuencia: un ciclo completo ocurre cada {format(2 * Math.PI / Math.abs(activeModel.params.b))} unidades de {xName || 'x'}.</p>
-                            <p><strong className="text-ink">d = {format(activeModel.params.d)}</strong> — línea media: el valor promedio alrededor del cual oscila.</p>
-                          </div>
-                        )}
-                      </div>
+                      <p className="text-sm text-ink/55 leading-relaxed">Mueve los deslizadores hasta que la curva se ajuste a los puntos. Observa cómo cambia el R².</p>
+                      <ManualSliders model={activeModel} xs={xs} ys={ys} startRandom />
                     </div>
                   )}
                 </>
