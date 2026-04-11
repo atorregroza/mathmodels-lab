@@ -55,8 +55,8 @@ export function computeAIC(xs, ys, predictFn, numParams) {
   const n = xs.length
   if (n < 2) return Infinity
   const mse = computeMSE(xs, ys, predictFn)
-  if (mse <= 0) return -Infinity
-  return n * Math.log(mse) + 2 * numParams
+  const logMSE = mse <= 0 ? 0 : Math.log(Math.max(mse, 1e-10))
+  return n * logMSE + 2 * numParams
 }
 
 /** BIC (Bayesian Information Criterion) — stronger penalty for complexity than AIC */
@@ -321,6 +321,7 @@ function fitExponential(xs, ys) {
   }
   if (validIdx.length < 2) return null
 
+  const filtered = ys.length - validIdx.length
   const vx = validIdx.map(i => xs[i])
   const vy = validIdx.map(i => Math.log(ys[i]))
   const reg = linearRegression(vx, vy)
@@ -337,6 +338,8 @@ function fitExponential(xs, ys) {
     description: 'El crecimiento se acelera — cada paso multiplica y por un factor fijo.',
     when: 'Crecimiento o decaimiento que se acelera con el tiempo (poblaciones, radiactividad).',
     patterns: ['crece', 'decrece'],
+    filteredCount: filtered,
+    usedCount: validIdx.length,
   }
 }
 
@@ -348,6 +351,7 @@ function fitPower(xs, ys) {
   }
   if (validIdx.length < 2) return null
 
+  const filtered = xs.length - validIdx.length
   const vx = validIdx.map(i => Math.log(xs[i]))
   const vy = validIdx.map(i => Math.log(ys[i]))
   const reg = linearRegression(vx, vy)
@@ -364,6 +368,8 @@ function fitPower(xs, ys) {
     description: 'La relación escala — al duplicar x, y se multiplica por 2^b.',
     when: 'Relaciones geométricas (área vs lado, gravedad vs distancia).',
     patterns: ['crece', 'decrece'],
+    filteredCount: filtered,
+    usedCount: validIdx.length,
   }
 }
 
@@ -375,6 +381,7 @@ function fitLogarithmic(xs, ys) {
   }
   if (validIdx.length < 2) return null
 
+  const filtered = xs.length - validIdx.length
   const vx = validIdx.map(i => Math.log(xs[i]))
   const vy = validIdx.map(i => ys[i])
   const reg = linearRegression(vx, vy)
@@ -390,6 +397,8 @@ function fitLogarithmic(xs, ys) {
     description: 'Crece rápido al principio y luego se desacelera — rendimientos decrecientes.',
     when: 'Datos que crecen rápido al inicio pero se estabilizan (aprendizaje, sensación).',
     patterns: ['crece', 'decrece'],
+    filteredCount: filtered,
+    usedCount: validIdx.length,
   }
 }
 

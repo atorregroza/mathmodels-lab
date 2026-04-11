@@ -330,6 +330,13 @@ function PredictionTool({ model, xs, xName, yName }) {
           </p>
         </div>
       )}
+      {isValid && predY != null && isFinite(predY) && Math.abs(predY) > Math.max(...xs.map((_, i) => Math.abs(model.fn(xs[i])))) * 10 && (
+        <div className="rounded-lg bg-rose/10 border border-rose/20 px-3 py-2">
+          <p className="text-sm text-rose leading-relaxed">
+            <strong>Predicción extrema:</strong> el valor {format(predY)} es mucho mayor que cualquier dato observado. ¿Es esto realista en el contexto de tu fenómeno?
+          </p>
+        </div>
+      )}
 
       {isValid && !isExtrapolating && predY != null && (
         <p className="text-xs text-ink/40">
@@ -479,7 +486,8 @@ function DiagnosticPanel({ model, xs, ys, xName, yName }) {
       {/* Metric grid — student-friendly labels */}
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
         <MetricCard label="¿Qué tan bien ajusta?" value={`${(model.r2 * 100).toFixed(1)}%`}
-          detail="R² — porcentaje de variación explicada por el modelo" dark={false} />
+          detail={model.r2 < 0 ? 'R² negativo — este modelo es PEOR que usar el promedio. Prueba otra familia.' : 'R² — porcentaje de variación explicada por el modelo'}
+          dark={false} valueClassName={model.r2 < 0 ? 'text-rose' : ''} />
         <MetricCard label="Ajuste corregido" value={`${(d.adjR2 * 100).toFixed(1)}%`}
           detail={d.adjR2 < model.r2 - 0.05 ? 'R² ajustado — baja porque el modelo es muy complejo para estos datos' : 'R² ajustado — similar al básico, el modelo no es innecesariamente complejo'}
           dark={false}
@@ -562,8 +570,11 @@ function RankingBars({ models, selectedId, onSelect }) {
             />
             <span className="shrink-0 text-sm font-semibold text-ink/80">{model.label}</span>
             <span className="shrink-0 font-mono text-[0.65rem] text-ink/45">
-              R²={format(model.r2)}
+              R²={format(model.r2)}{model.filteredCount > 0 ? ` (n=${model.usedCount})` : ''}
             </span>
+            {model.filteredCount > 0 && (
+              <span className="shrink-0 text-[0.6rem] text-amber-600" title={`Se excluyeron ${model.filteredCount} datos incompatibles`}>⚠️</span>
+            )}
             <span className="ml-auto shrink-0 font-mono text-[0.65rem] text-ink/40">
               AIC={format(model.diagnostics?.aic)}
             </span>
@@ -805,14 +816,19 @@ export function ModelingSpace() {
   // ── Concavity detection ──
   const actualConcavity = useMemo(() => {
     if (xs.length < 4 || !actualTrend || actualTrend === 'oscila' || actualTrend === 'sube_baja') return null
-    // Compare growth in first half vs second half
+    // Compare rate of change in first half vs second half (preserve sign)
     const mid = Math.floor(xs.length / 2)
     const slopeFirst = (ys[mid] - ys[0]) / (xs[mid] - xs[0] || 1)
     const slopeSecond = (ys[xs.length - 1] - ys[mid]) / (xs[xs.length - 1] - xs[mid] || 1)
-    const ratio = Math.abs(slopeFirst) > 0.01 ? Math.abs(slopeSecond / slopeFirst) : 1
-    if (ratio > 1.5) return 'accelerating' // cóncava hacia arriba — exponencial/potencia
-    if (ratio < 0.65) return 'decelerating' // cóncava hacia abajo — logarítmico/raíz
-    return 'constant' // ritmo constante — lineal
+    // For growing data: accelerating = slope increases, decelerating = slope decreases
+    // For decreasing data: accelerating = slope more negative, decelerating = slope less negative
+    const absDiff = Math.abs(slopeSecond) - Math.abs(slopeFirst)
+    const avgSlope = (Math.abs(slopeFirst) + Math.abs(slopeSecond)) / 2
+    if (avgSlope < 0.01) return 'constant'
+    const relChange = absDiff / avgSlope
+    if (relChange > 0.4) return 'accelerating'
+    if (relChange < -0.4) return 'decelerating'
+    return 'constant'
   }, [xs, ys, actualTrend])
 
   // ── Pattern hints ──
@@ -977,6 +993,12 @@ export function ModelingSpace() {
                 <DataTable xs={xs} ys={ys} />
                 {hasData && <DataChart xs={xs} ys={ys} fittedModels={[]} selectedModelId={null} xLabel={xName} yLabel={yName} dark={false} />}
               </div>
+              {hasData && xs.length < 6 && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
+                  <strong>Pocos datos:</strong> Con {xs.length} puntos, incluso un modelo complejo puede parecer perfecto.
+                  Se recomiendan al menos 8–10 puntos para un análisis confiable.
+                </div>
+              )}
               {hasData && (
                 <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4">
                   <p className="mb-2 text-sm font-semibold text-ink/70">Mirando la nube de puntos, ¿qué forma ves?</p>
