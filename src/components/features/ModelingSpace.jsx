@@ -1693,16 +1693,6 @@ export function ModelingSpace() {
                     {/* full diagnostics */}
                     <DiagnosticPanel model={activeModel} xs={xs} ys={ys} xName={xName} yName={yName} />
 
-                    <button
-                      onClick={handleReport}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 font-semibold text-paper transition hover:bg-ink/90"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                      </svg>
-                      Ver informe
-                    </button>
                   </>
                 )}
               </>
