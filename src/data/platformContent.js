@@ -1604,7 +1604,7 @@ export const navigationItems = [
   { label: 'Modelar', to: '/modelacion', end: true },
   { label: 'Investigar', submenu: [
     { label: 'Exploración', to: '/exploraciones/funciones-modelos', description: 'Investigación guiada con datos y modelos' },
-    { label: 'Monografía IB', to: '/monografias', description: 'Investigación extendida — Marco 2027' },
+    { label: 'Monografía IB', to: '/monografias', description: 'Investigación extendida — Primera evaluación 2027' },
   ]},
 ]
 
@@ -1613,7 +1613,7 @@ export const navigationItems = [
 export const monografiaContent = {
   hero: {
     title: 'Monografía IB',
-    subtitle: 'Matemáticas — Marco 2027',
+    subtitle: 'Matemáticas — Primera evaluación 2027',
     tagline: 'Tu investigación extendida, paso a paso',
     description: 'La monografía es una investigación independiente de ~4000 palabras que te permite explorar un tema matemático en profundidad. Es tu oportunidad de demostrar pensamiento crítico, creatividad y rigor académico.',
     highlight: '30 puntos posibles distribuidos en 5 criterios',
