@@ -592,6 +592,21 @@ ${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
                             <p className="text-sm leading-6 text-ink/70 font-medium">{branch.deliverable}</p>
                           </div>
                         </div>
+
+                        {/* Cómo lograr la mejor calificación */}
+                        {branch.excellenceTips && (
+                          <div>
+                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-2">Cómo lograr la mejor calificación</p>
+                            <div className="space-y-2">
+                              {branch.excellenceTips.map((t) => (
+                                <div key={t.area} className="rounded-xl border border-signal/15 bg-signal/5 px-4 py-3">
+                                  <p className="text-sm font-semibold text-ink">{t.area}</p>
+                                  <p className="mt-1 text-xs leading-5 text-ink/60">{t.tip}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )}

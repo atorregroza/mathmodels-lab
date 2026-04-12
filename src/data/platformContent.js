@@ -860,6 +860,13 @@ export const researchBranches = [
     ],
     scope: 'Trabajo individual. El estudiante elige el tema — puede ser modelación, geometría, probabilidad, teoría de números, optimización o cualquier rama de las matemáticas. La plataforma guía la estructura, no el tema.',
     deliverable: 'Documento de planeación inicial que sirve como base para desarrollar el trabajo completo fuera de la plataforma.',
+    excellenceTips: [
+      { area: 'Estructura y coherencia', tip: 'Tu exploración debe leerse de principio a fin sin confusión. Introduce el tema con una motivación clara, desarrolla cada sección de forma lógica y cierra con una conclusión que conecte tus hallazgos con tu pregunta original. Elimina todo lo que no contribuya directamente.' },
+      { area: 'Comunicación matemática', tip: 'Usa notación correcta y consistente en todo el documento. Define cada variable cuando la introduzcas. Las gráficas necesitan título, ejes etiquetados y unidades. Las tablas deben tener encabezados claros. La tecnología (calculadora, software) es una herramienta, no un sustituto del razonamiento.' },
+      { area: 'Compromiso personal', tip: 'Tu exploración debe mostrar que tú elegiste el tema porque te interesa de verdad, no porque era fácil. Presenta las ideas con tus propias palabras, toma decisiones propias sobre qué explorar y demuestra que entiendes lo que haces — no que solo seguiste un procedimiento.' },
+      { area: 'Reflexión a lo largo del trabajo', tip: 'No dejes la reflexión solo para el final. En cada etapa, pregúntate: ¿por qué elegí este método? ¿Funcionó como esperaba? ¿Qué cambiaría? Analiza por qué los métodos funcionaron o fallaron, discute las implicaciones de tus hallazgos y evalúa qué tan confiable es tu enfoque.' },
+      { area: 'Nivel y precisión matemática', tip: 'Las matemáticas que uses deben estar al nivel de tu curso y ser correctas. No basta con aplicar fórmulas — demuestra que entiendes por qué funcionan. El rigor matemático es lo que distingue una exploración sobresaliente de una aceptable.' },
+    ],
   },
   {
     id: 'investigacion-extendida',
