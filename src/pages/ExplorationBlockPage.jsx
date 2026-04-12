@@ -219,6 +219,9 @@ export const ExplorationBlockPage = () => {
   const [drafts, setDrafts] = useState(() => buildDraftState(firstExploration, firstContext))
   const [copied, setCopied] = useState(false)
   const [expandedBranch, setExpandedBranch] = useState(null)
+  const [studentName, setStudentName] = useState('')
+  const [studentCourse, setStudentCourse] = useState('')
+  const [studentSchool, setStudentSchool] = useState('')
 
   usePageMeta({
     title: block ? `${block.title} | Exploraciones | MathModels Lab` : 'Exploraciones | MathModels Lab',
@@ -343,6 +346,46 @@ export const ExplorationBlockPage = () => {
   }
 
   const handlePrintPlanning = () => {
+    const logoSvg = `<svg viewBox="0 0 48 48" width="36" height="36" style="vertical-align:middle;margin-right:8px"><rect width="48" height="48" rx="12" fill="#121723"/><path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36" fill="none" stroke="#22c5a0" stroke-width="3" stroke-linecap="round"/><line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/><circle cx="17.5" cy="9" r="3" fill="#ff6b35"/></svg>`
+
+    const referentesHTML = selectedLine ? {
+      'patrones-algebra': [
+        'Tabla de diferencias finitas y su relación con el grado del polinomio.',
+        'Sucesiones aritméticas y geométricas: fórmulas explícitas vs recursivas.',
+        'Números figurados: triangulares, cuadrados, pentagonales.',
+      ],
+      'modelacion-funcional': [
+        'Familias de funciones: lineal, cuadrática, exponencial, logarítmica, potencia.',
+        'Criterios para elegir un modelo: R², residuos, interpretación de parámetros.',
+        'Transformaciones de funciones y su efecto en los parámetros.',
+      ],
+      'cambio-analisis': [
+        'Razón de cambio promedio vs instantánea.',
+        'Integral definida como acumulación y el Teorema Fundamental del Cálculo.',
+        'Optimización: condiciones de primer y segundo orden.',
+      ],
+      'periodicidad-geometria': [
+        'Funciones trigonométricas: amplitud, período, fase, línea media.',
+        'Movimiento circular uniforme y sus componentes.',
+        'Amortiguamiento: modelos de decaimiento exponencial en oscilaciones.',
+      ],
+      'datos-distribuciones': [
+        'Medidas de tendencia central: media, mediana, moda — cuándo usar cada una.',
+        'Diagramas de caja y bigotes: lectura de cuartiles y valores atípicos.',
+        'Distribución normal: regla empírica 68-95-99.7%.',
+      ],
+      'probabilidad-simulacion': [
+        'Ley de los grandes números: convergencia de frecuencia relativa.',
+        'Distribución binomial: P(X=k) = C(n,k)·p^k·(1-p)^(n-k).',
+        'Probabilidad condicional e independencia de eventos.',
+      ],
+      'inferencia-prediccion': [
+        'Regresión lineal por mínimos cuadrados: pendiente, intercepto, r².',
+        'Correlación vs causalidad: variables ocultas y confusión.',
+        'Teorema Central del Límite: distribución de medias muestrales.',
+      ],
+    }[selectedLine.id] || [] : []
+
     const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -350,23 +393,38 @@ export const ExplorationBlockPage = () => {
 <title>${drafts.title || 'Planeación inicial'}</title>
 <style>
   @page { margin: 2cm; }
-  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #121723; line-height: 1.6; max-width: 700px; margin: 0 auto; }
-  h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-  h2 { font-size: 1rem; color: #555; margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
-  p { margin: 0.3rem 0; }
-  .subtitle { color: #666; font-size: 0.9rem; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #121723; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 1rem; }
+  .header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .header-title { font-size: 1.1rem; font-weight: 700; }
+  h1 { font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
+  h2 { font-size: 0.9rem; color: #555; margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+  p { margin: 0.3rem 0; font-size: 0.9rem; }
+  .subtitle { color: #666; font-size: 0.85rem; }
+  .student-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: #f5f5f5; border-radius: 8px; }
+  .student-info div { font-size: 0.8rem; }
+  .student-info .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
   .card { background: #f8f8f8; border-radius: 8px; padding: 0.75rem; }
-  .card-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
-  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.75rem; color: #999; }
-  ol { padding-left: 1.2rem; }
-  ol li { margin-bottom: 0.3rem; font-size: 0.85rem; }
-  @media print { body { font-size: 11pt; } }
+  .card-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.25rem; }
+  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.7rem; color: #999; display: flex; align-items: center; gap: 0.5rem; }
+  ol, ul { padding-left: 1.2rem; }
+  li { margin-bottom: 0.3rem; font-size: 0.85rem; }
+  .referentes { background: #f0f7ff; border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; }
+  .referentes li { font-size: 0.8rem; color: #444; }
+  @media print { body { font-size: 10pt; } .header { margin-bottom: 0.3rem; } }
 </style>
 </head>
 <body>
+<div class="header">${logoSvg}<span class="header-title">MathModels Lab</span></div>
+
 <h1>${drafts.title || 'Planeación inicial de exploración'}</h1>
 <p class="subtitle">${block.title} — ${selectedLine?.title || ''} — ${selectedFormat?.title || ''}</p>
+
+${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
+  <div><p class="label">Estudiante</p><p>${studentName || '—'}</p></div>
+  <div><p class="label">Curso</p><p>${studentCourse || '—'}</p></div>
+  <div><p class="label">Institución</p><p>${studentSchool || '—'}</p></div>
+</div>` : ''}
 
 <h2>Pregunta inicial</h2>
 <p>${drafts.question}</p>
@@ -393,12 +451,20 @@ export const ExplorationBlockPage = () => {
 <h2>Ayudas</h2>
 <ol>${[...helpItems, ...referenceItems].map(s => `<li>${s}</li>`).join('')}</ol>
 
+<h2>Referentes para investigar</h2>
+<div class="referentes">
+<ul>${referentesHTML.map(s => `<li>${s}</li>`).join('')}</ul>
+</div>
+
 <h2>Siguiente paso</h2>
 <p>${selectedExploration?.nextStep || ''}</p>
 
 <div class="footer">
-  <p>Generado en MathModels Lab — mathmodels.astridto.com</p>
-  <p>Este documento es un borrador inicial. Debe desarrollarse fuera de la plataforma.</p>
+  ${logoSvg}
+  <div>
+    <p><strong>MathModels Lab</strong> — mathmodels.astridto.com</p>
+    <p>Este documento es un borrador inicial. Debe desarrollarse fuera de la plataforma.</p>
+  </div>
 </div>
 </body>
 </html>`
@@ -644,6 +710,23 @@ export const ExplorationBlockPage = () => {
             <article className="rounded-[2rem] border border-ink/10 bg-paper p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
               <p className="section-kicker">5. Ajusta el borrador</p>
               <div className="mt-5 grid gap-4">
+                <div className="grid gap-3 md:grid-cols-3">
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-semibold text-ink/60">Nombre del estudiante</span>
+                    <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)} placeholder="Tu nombre completo"
+                      className="rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink outline-none focus:border-signal/35" />
+                  </label>
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-semibold text-ink/60">Curso</span>
+                    <input type="text" value={studentCourse} onChange={e => setStudentCourse(e.target.value)} placeholder="Ej: 11° NM"
+                      className="rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink outline-none focus:border-signal/35" />
+                  </label>
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-semibold text-ink/60">Institución educativa</span>
+                    <input type="text" value={studentSchool} onChange={e => setStudentSchool(e.target.value)} placeholder="Nombre del colegio"
+                      className="rounded-xl border border-ink/10 bg-white px-4 py-2.5 text-sm text-ink outline-none focus:border-signal/35" />
+                  </label>
+                </div>
                 <label className="grid gap-2">
                   <span className="text-sm font-semibold text-ink">Título provisional</span>
                   <input
