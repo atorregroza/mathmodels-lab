@@ -54,10 +54,17 @@ function PlanPanel({ planeacion }) {
               {/* Disciplinar */}
               {tab === 'disciplinar' && (
                 <div className="space-y-4">
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                    <p className="text-xs text-blue-500 font-semibold uppercase tracking-wide mb-1">Pregunta de investigación</p>
-                    <p className="text-sm text-blue-800 italic leading-relaxed">{disc.rq}</p>
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                    <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Pregunta de investigación</p>
+                    <p className="text-sm text-gray-700 italic leading-relaxed">{disc.rq}</p>
                   </div>
+
+                  {disc.tension && (
+                    <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-xl p-4">
+                      <p className="text-xs text-amber-600 font-semibold mb-1">Por qué esta pregunta puede llegar a A</p>
+                      <p className="text-sm text-amber-800 leading-relaxed">{disc.tension}</p>
+                    </div>
+                  )}
 
                   <div className="grid md:grid-cols-2 gap-3">
                     <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
