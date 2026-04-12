@@ -586,7 +586,6 @@ ${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-ink/35">Taller de planeación</p>
           <div className="h-px flex-1 bg-ink/10" />
         </div>
-        <p className="text-sm text-ink/50 mb-6">Elige una línea, un formato y una idea de arranque para construir tu planeación inicial paso a paso.</p>
 
         {/* ── Cómo funciona el taller ── */}
         <details className="mb-6 rounded-xl border border-ink/8 bg-white overflow-hidden">
