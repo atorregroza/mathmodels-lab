@@ -342,6 +342,73 @@ export const ExplorationBlockPage = () => {
     }
   }
 
+  const handlePrintPlanning = () => {
+    const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>${drafts.title || 'Planeación inicial'}</title>
+<style>
+  @page { margin: 2cm; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #121723; line-height: 1.6; max-width: 700px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+  h2 { font-size: 1rem; color: #555; margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+  p { margin: 0.3rem 0; }
+  .subtitle { color: #666; font-size: 0.9rem; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .card { background: #f8f8f8; border-radius: 8px; padding: 0.75rem; }
+  .card-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.75rem; color: #999; }
+  ol { padding-left: 1.2rem; }
+  ol li { margin-bottom: 0.3rem; font-size: 0.85rem; }
+  @media print { body { font-size: 11pt; } }
+</style>
+</head>
+<body>
+<h1>${drafts.title || 'Planeación inicial de exploración'}</h1>
+<p class="subtitle">${block.title} — ${selectedLine?.title || ''} — ${selectedFormat?.title || ''}</p>
+
+<h2>Pregunta inicial</h2>
+<p>${drafts.question}</p>
+
+<h2>Fenómeno o foco</h2>
+<p>${drafts.focus}</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Variables y unidades</p><p>${drafts.variables}</p></div>
+<div class="card"><p class="card-label">Modelos preliminares</p><p>${drafts.models}</p></div>
+</div>
+
+<h2>Evidencia inicial</h2>
+<p>${drafts.evidence}</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Conjetura</p><p>${currentPrompts.conjecture}</p></div>
+<div class="card"><p class="card-label">Limitaciones</p><p>${currentPrompts.limits}</p></div>
+</div>
+
+<h2>Enfoque metodológico</h2>
+<ol>${methodologicalSteps.map(s => `<li>${s}</li>`).join('')}</ol>
+
+<h2>Ayudas</h2>
+<ol>${[...helpItems, ...referenceItems].map(s => `<li>${s}</li>`).join('')}</ol>
+
+<h2>Siguiente paso</h2>
+<p>${selectedExploration?.nextStep || ''}</p>
+
+<div class="footer">
+  <p>Generado en MathModels Lab — mathmodels.astridto.com</p>
+  <p>Este documento es un borrador inicial. Debe desarrollarse fuera de la plataforma.</p>
+</div>
+</body>
+</html>`
+    const w = window.open('', 'planeacion', 'width=800,height=900')
+    w.document.write(html)
+    w.document.close()
+    w.focus()
+    w.print()
+  }
+
   return (
     <section className="px-5 pb-24 pt-4 md:px-8 md:pb-28 md:pt-6">
       <Breadcrumb items={[
@@ -349,19 +416,19 @@ export const ExplorationBlockPage = () => {
         { label: block.title },
       ]} />
       <div className="mx-auto max-w-7xl mt-6">
+        {/* ── Header compacto ── */}
         <motion.div {...fadeIn} className="max-w-5xl">
-          <p className="section-kicker">Exploraciones matemáticas</p>
+          <p className="section-kicker">Exploración matemática</p>
           <h1 className="mt-4 font-display text-[clamp(2.8rem,7vw,5.8rem)] font-bold leading-[0.94] tracking-[-0.05em]">
             {block.title}
           </h1>
           <p className="mt-4 text-xl text-ink/76">{block.subtitle}</p>
-          <p className="mt-6 max-w-4xl text-lg leading-8 text-ink/72">{block.overview}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             {explorationBlocks.map((b) => (
               <Link
                 key={b.id}
                 to={`/exploraciones/${b.id}`}
-                className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
                   b.id === block.id
                     ? 'bg-ink text-paper shadow-md'
                     : 'border border-ink/12 bg-white text-ink hover:border-ink/30'
@@ -373,27 +440,25 @@ export const ExplorationBlockPage = () => {
           </div>
         </motion.div>
 
-        {/* ── Ramas de investigación — expandibles ── */}
-        <motion.div {...fadeIn} className="mt-10 grid gap-4 md:grid-cols-1 max-w-3xl">
+        {/* ── ¿Qué es? — expandible con workflow integrado ── */}
+        <motion.div {...fadeIn} className="mt-8">
           {researchBranches.filter(b => b.id === 'exploracion').map((branch) => {
-            const [open, setOpen] = [expandedBranch === branch.id, (v) => setExpandedBranch(v ? branch.id : null)]
+            const isOpen = expandedBranch === branch.id
             return (
               <div key={branch.id} className="rounded-[1.8rem] border border-ink/10 bg-white/82 shadow-[0_12px_40px_rgba(18,23,35,0.06)] overflow-hidden">
                 <button
-                  onClick={() => setOpen(!open)}
+                  onClick={() => setExpandedBranch(isOpen ? null : branch.id)}
                   className="flex w-full items-center gap-3 px-6 py-5 text-left transition-colors hover:bg-ink/3"
                 >
                   <span className="text-2xl">{branch.icon}</span>
                   <span className="flex-1 font-display text-lg font-semibold text-ink">{branch.title}</span>
-                  <svg
-                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
-                    className={`shrink-0 text-ink/40 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
-                  >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                    className={`shrink-0 text-ink/40 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
                     <path d="M6 9l6 6 6-6" />
                   </svg>
                 </button>
                 <AnimatePresence>
-                  {open && (
+                  {isOpen && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
@@ -401,37 +466,42 @@ export const ExplorationBlockPage = () => {
                       transition={{ duration: 0.3, ease: 'easeOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="border-t border-ink/8 px-6 py-5 space-y-4">
+                      <div className="border-t border-ink/8 px-6 py-5 space-y-5">
                         <p className="text-base leading-7 text-ink/75">{branch.objective}</p>
 
-                        <div className="space-y-2">
-                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Lo que desarrolla</p>
-                          <div className="grid gap-2 sm:grid-cols-2">
-                            {branch.develops.map((d) => (
-                              <div key={d.label} className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-                                <p className="text-sm font-semibold text-ink">{d.label}</p>
-                                <p className="mt-1 text-xs leading-5 text-ink/55">{d.detail}</p>
+                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                          {branch.develops.map((d) => (
+                            <div key={d.label} className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
+                              <p className="text-sm font-semibold text-ink">{d.label}</p>
+                              <p className="mt-1 text-xs leading-5 text-ink/55">{d.detail}</p>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Workflow integrado */}
+                        <div>
+                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-2">Cómo funciona este taller</p>
+                          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                            {block.workflow.map((item, index) => (
+                              <div key={item.step} className="rounded-xl border border-ink/8 bg-ink/3 px-3 py-2.5">
+                                <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Paso {index + 1}</p>
+                                <p className="mt-1 text-sm font-semibold text-ink">{item.step}</p>
+                                <p className="mt-0.5 text-xs leading-5 text-ink/55">{item.detail}</p>
                               </div>
                             ))}
                           </div>
                         </div>
 
-                        <div className="rounded-xl bg-ink/4 px-4 py-3">
-                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Alcance</p>
-                          <p className="text-sm leading-6 text-ink/65">{branch.scope}</p>
-                        </div>
-
-                        <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-3">
-                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Entregable</p>
-                          <p className="text-sm leading-6 text-ink/70 font-medium">{branch.deliverable}</p>
-                        </div>
-
-                        {branch.difference && (
-                          <div className="rounded-xl border border-signal/20 bg-signal/5 px-4 py-3">
-                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Diferencia clave</p>
-                            <p className="text-sm leading-6 text-ink/65">{branch.difference}</p>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-xl bg-ink/4 px-4 py-3">
+                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Alcance</p>
+                            <p className="text-sm leading-6 text-ink/65">{branch.scope}</p>
                           </div>
-                        )}
+                          <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-3">
+                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Entregable</p>
+                            <p className="text-sm leading-6 text-ink/70 font-medium">{branch.deliverable}</p>
+                          </div>
+                        </div>
                       </div>
                     </motion.div>
                   )}
@@ -441,65 +511,9 @@ export const ExplorationBlockPage = () => {
           })}
         </motion.div>
 
-        <motion.article
-          {...fadeIn}
-          className="mt-10 rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]"
-        >
-          <div className="grid gap-6 xl:grid-cols-[1.02fr_0.98fr]">
-            <div>
-              <p className="section-kicker">Así funciona</p>
-              <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.4rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                Activa una línea, elige un formato y construye un borrador inicial de exploración.
-              </h2>
-              <p className="mt-4 text-base leading-8 text-ink/70">{block.purpose}</p>
-              <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                {block.workflow.map((item, index) => (
-                  <div key={item.step} className="rounded-[1.15rem] border border-ink/10 bg-paper/78 px-4 py-4">
-                    <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">Paso {index + 1}</p>
-                    <p className="mt-2 font-semibold text-ink">{item.step}</p>
-                    <p className="mt-2 text-sm leading-6 text-ink/64">{item.detail}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[1.75rem] border border-ink/10 bg-ink p-6 text-paper shadow-[0_28px_82px_rgba(18,23,35,0.16)]">
-              <p className="section-kicker text-paper/52">Salida esperada</p>
-              <h2 className="mt-3 font-display text-[clamp(1.7rem,3vw,2.6rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                {block.deliverable.title}
-              </h2>
-              <p className="mt-4 text-sm leading-7 text-paper/74">{block.deliverable.description}</p>
-              <div className="mt-5 grid gap-3 md:grid-cols-2">
-                {block.deliverable.sections.map((section) => (
-                  <div key={section} className="rounded-[1.1rem] border border-white/10 bg-white/6 px-4 py-4 text-sm leading-6 text-paper/76">
-                    {section}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.article>
-
+        {/* ── Ejercicio: pasos 1-5 (izq) + planeación en vivo (der) ── */}
         <motion.div {...fadeIn} className="mt-10 grid gap-6 xl:grid-cols-[0.98fr_1.02fr]">
-          <div className="space-y-6">
-            <article className="rounded-[2rem] border border-signal/18 bg-signal/8 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.05)]">
-              <p className="section-kicker">Lo que ya hace este bloque</p>
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
-                <div className="rounded-[1.2rem] border border-signal/18 bg-white/78 px-4 py-4">
-                  <p className="font-semibold text-ink">Te orienta</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/66">Eliges línea, formato e idea de arranque sin empezar desde cero.</p>
-                </div>
-                <div className="rounded-[1.2rem] border border-signal/18 bg-white/78 px-4 py-4">
-                  <p className="font-semibold text-ink">Te ayuda a formular</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/66">Convierte una idea general en pregunta, variables, evidencia y modelo preliminar.</p>
-                </div>
-                <div className="rounded-[1.2rem] border border-signal/18 bg-white/78 px-4 py-4">
-                  <p className="font-semibold text-ink">Te deja una salida real</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/66">Genera una planeación inicial que puedes imprimir o copiar para seguir fuera de la plataforma.</p>
-                </div>
-              </div>
-            </article>
-
+          <div className="space-y-5">
             <article className="rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
               <p className="section-kicker">1. Elige la línea</p>
               <div className="mt-5 grid gap-3">
@@ -679,10 +693,10 @@ export const ExplorationBlockPage = () => {
                   ) : null}
                   <button
                     type="button"
-                    onClick={() => window.print()}
+                    onClick={handlePrintPlanning}
                     className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
                   >
-                    Imprimir planeación
+                    Imprimir / PDF
                   </button>
                   <button
                     type="button"
@@ -695,163 +709,100 @@ export const ExplorationBlockPage = () => {
               </div>
             </article>
 
-            <article className="rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
-              <p className="section-kicker">6. Enfoque metodológico sugerido</p>
-              <div className="mt-5 grid gap-3">
-                {methodologicalSteps.map((step, index) => (
-                  <div key={step} className="rounded-[1.2rem] border border-ink/10 bg-paper/78 px-4 py-4">
-                    <p className="text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">Paso metodológico {index + 1}</p>
-                    <p className="mt-2 text-sm leading-7 text-ink/72">{step}</p>
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
-              <p className="section-kicker">7. Ayudas y referentes</p>
-              <div className="mt-5 grid gap-3">
-                {helpItems.map((item) => (
-                  <div key={item} className="rounded-[1.2rem] border border-ink/10 bg-paper/78 px-4 py-4 text-sm leading-7 text-ink/72">
-                    {item}
-                  </div>
-                ))}
-                {referenceItems.map((item) => (
-                  <div key={item} className="rounded-[1.2rem] border border-signal/18 bg-signal/8 px-4 py-4 text-sm leading-7 text-ink/72">
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </article>
           </div>
 
           <motion.article
             {...fadeIn}
             className="rounded-[2rem] border border-ink/10 bg-white/84 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]"
           >
-            <p className="section-kicker">Planeación inicial</p>
-            <h2 className="mt-3 font-display text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-              Borrador de trabajo para continuar fuera de la plataforma.
-            </h2>
-            <div className="mt-6 space-y-4">
-              <div className="rounded-[1.3rem] border border-signal/18 bg-signal/8 px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Título provisional</p>
-                <p className="mt-2 text-lg font-semibold text-ink">{drafts.title}</p>
+            <p className="section-kicker">Tu planeación inicial</p>
+            <p className="mt-2 text-sm text-ink/55">Se actualiza en tiempo real mientras eliges opciones a la izquierda.</p>
+            <div className="mt-5 space-y-3">
+              <div className="rounded-xl border border-signal/18 bg-signal/8 px-4 py-4">
+                <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Título</p>
+                <p className="mt-1 text-lg font-semibold text-ink">{drafts.title}</p>
               </div>
 
-              <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Contexto elegido</p>
-                <p className="mt-2 font-semibold text-ink">{selectedContext?.title ?? 'Idea abierta sin contexto específico'}</p>
-                <p className="mt-2 text-sm leading-7 text-ink/68">{selectedContext?.description ?? 'Esta exploración se encuentra formulada como una idea matemática abierta.'}</p>
+              <div className="rounded-xl border border-ink/10 bg-white px-4 py-4">
+                <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Pregunta</p>
+                <p className="mt-1 text-sm leading-7 text-ink/74">{drafts.question}</p>
               </div>
 
-              <div className="rounded-[1.3rem] border border-ink/10 bg-paper/78 px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Tema o fenómeno elegido</p>
-                <p className="mt-2 text-base leading-7 text-ink/74">{drafts.focus}</p>
+              <div className="rounded-xl border border-ink/10 bg-paper/78 px-4 py-4">
+                <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Fenómeno o foco</p>
+                <p className="mt-1 text-sm leading-7 text-ink/74">{drafts.focus}</p>
               </div>
 
-              <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Pregunta inicial de exploración</p>
-                <p className="mt-2 text-base leading-7 text-ink/74">{drafts.question}</p>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-[1.3rem] border border-ink/10 bg-paper/78 px-5 py-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Línea del bloque</p>
-                  <p className="mt-2 font-semibold text-ink">{selectedLine?.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/64">{selectedLine?.description}</p>
+              <div className="grid gap-3 grid-cols-2">
+                <div className="rounded-xl border border-ink/10 bg-white px-4 py-3">
+                  <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Variables</p>
+                  <p className="mt-1 text-xs leading-5 text-ink/65">{drafts.variables}</p>
                 </div>
-                <div className="rounded-[1.3rem] border border-ink/10 bg-paper/78 px-5 py-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Formato elegido</p>
-                  <p className="mt-2 font-semibold text-ink">{selectedFormat?.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/64">{selectedFormat?.description}</p>
+                <div className="rounded-xl border border-ink/10 bg-white px-4 py-3">
+                  <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Modelos</p>
+                  <p className="mt-1 text-xs leading-5 text-ink/65">{drafts.models}</p>
                 </div>
               </div>
 
-              <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Variables y unidades</p>
-                <p className="mt-2 text-sm leading-7 text-ink/72">{drafts.variables}</p>
+              <div className="rounded-xl border border-ink/10 bg-white px-4 py-4">
+                <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Evidencia inicial</p>
+                <p className="mt-1 text-sm leading-6 text-ink/65">{drafts.evidence}</p>
               </div>
 
-              <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Datos o registros iniciales</p>
-                <p className="mt-2 text-sm leading-7 text-ink/72">{drafts.evidence}</p>
-              </div>
-
-              <div className="rounded-[1.3rem] border border-ink/10 bg-paper/78 px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Modelo preliminar y justificación</p>
-                <p className="mt-2 text-sm leading-7 text-ink/72">Modelos sugeridos para esta exploración: {drafts.models}.</p>
-                <p className="mt-3 text-sm leading-7 text-ink/64">
-                  La selección preliminar del modelo debe justificarse con forma global, comportamiento de los datos, interpretación de parámetros y ajuste al contexto.
-                </p>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Conjeturas iniciales</p>
-                  <p className="mt-2 text-sm leading-7 text-ink/72">{currentPrompts.conjecture}</p>
+              <div className="grid gap-3 grid-cols-2">
+                <div className="rounded-xl border border-ink/10 bg-paper/78 px-4 py-3">
+                  <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Conjetura</p>
+                  <p className="mt-1 text-xs leading-5 text-ink/60">{currentPrompts.conjecture}</p>
                 </div>
-                <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Límites observados del modelo</p>
-                  <p className="mt-2 text-sm leading-7 text-ink/72">{currentPrompts.limits}</p>
+                <div className="rounded-xl border border-ink/10 bg-paper/78 px-4 py-3">
+                  <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Limitaciones</p>
+                  <p className="mt-1 text-xs leading-5 text-ink/60">{currentPrompts.limits}</p>
                 </div>
               </div>
 
-              <div className="rounded-[1.3rem] border border-ink/10 bg-paper/78 px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Enfoque metodológico sugerido</p>
-                <div className="mt-4 space-y-3">
-                  {methodologicalSteps.map((step) => (
-                    <div key={step} className="rounded-[1rem] border border-ink/10 bg-white px-4 py-3 text-sm leading-7 text-ink/72">
-                      {step}
-                    </div>
+              <div className="rounded-xl border border-ink/10 bg-ink px-4 py-4 text-paper">
+                <p className="text-[0.6rem] uppercase tracking-widest text-paper/40">Siguiente paso</p>
+                <p className="mt-1 text-sm leading-6 text-paper/75">{selectedExploration?.nextStep}</p>
+              </div>
+
+              {/* Metodología y ayudas — colapsables */}
+              <details className="rounded-xl border border-ink/10 bg-white overflow-hidden">
+                <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Enfoque metodológico sugerido</summary>
+                <div className="border-t border-ink/8 px-4 py-3 space-y-2">
+                  {methodologicalSteps.map((step, i) => (
+                    <p key={i} className="text-xs leading-5 text-ink/60">{i + 1}. {step}</p>
                   ))}
                 </div>
-              </div>
+              </details>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Ayudas para orientar el trabajo</p>
-                  <div className="mt-4 space-y-3">
-                    {helpItems.map((item) => (
-                      <div key={item} className="rounded-[1rem] border border-ink/10 bg-paper/78 px-4 py-3 text-sm leading-7 text-ink/72">
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                  <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Referentes dentro de la plataforma</p>
-                  <div className="mt-4 space-y-3">
-                    {referenceItems.length ? (
-                      referenceItems.map((item) => (
-                        <div key={item} className="rounded-[1rem] border border-signal/18 bg-signal/8 px-4 py-3 text-sm leading-7 text-ink/72">
-                          {item}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="rounded-[1rem] border border-ink/10 bg-paper/78 px-4 py-3 text-sm leading-7 text-ink/72">
-                        Esta idea todavía no depende de un laboratorio base específico. Puede crecer cuando se incorporen nuevos recursos.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-[1.3rem] border border-ink/10 bg-ink px-5 py-5 text-paper">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-paper/46">Siguientes pasos para continuar el trabajo</p>
-                <div className="mt-4 space-y-3">
-                  {nextSteps.map((step) => (
-                    <div key={step} className="rounded-[1rem] border border-white/10 bg-white/6 px-4 py-3 text-sm leading-6 text-paper/78">
-                      {step}
-                    </div>
+              <details className="rounded-xl border border-ink/10 bg-white overflow-hidden">
+                <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Ayudas y referentes</summary>
+                <div className="border-t border-ink/8 px-4 py-3 space-y-2">
+                  {helpItems.map((item, i) => (
+                    <p key={i} className="text-xs leading-5 text-ink/60">{item}</p>
+                  ))}
+                  {referenceItems.map((item, i) => (
+                    <p key={`r-${i}`} className="text-xs leading-5 text-signal/70">{item}</p>
                   ))}
                 </div>
-              </div>
+              </details>
 
-              <div className="rounded-[1.3rem] border border-ink/10 bg-white px-5 py-5">
-                <p className="text-[0.68rem] uppercase tracking-[0.18em] text-ink/44">Versión de texto para llevar fuera de la plataforma</p>
-                <pre className="mt-3 overflow-x-auto whitespace-pre-wrap rounded-[1rem] bg-paper/78 px-4 py-4 font-mono text-sm leading-7 text-ink/74">
-                  {planningText}
-                </pre>
+              {/* Acciones */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {recommendedLab && (
+                  <Link to={`/laboratorios/${recommendedLab.id}`}
+                    className="rounded-full bg-ink px-4 py-2.5 text-xs font-semibold text-paper">
+                    Abrir laboratorio sugerido
+                  </Link>
+                )}
+                <button onClick={handlePrintPlanning}
+                  className="rounded-full border border-ink/12 bg-white px-4 py-2.5 text-xs font-semibold text-ink">
+                  Imprimir / PDF
+                </button>
+                <button onClick={handleCopyPlanning}
+                  className="rounded-full border border-ink/12 bg-white px-4 py-2.5 text-xs font-semibold text-ink">
+                  {copied ? 'Copiado' : 'Copiar texto'}
+                </button>
               </div>
             </div>
           </motion.article>
