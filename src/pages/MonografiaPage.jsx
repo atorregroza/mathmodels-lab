@@ -165,6 +165,11 @@ export function MonografiaPage() {
                     <h3 className="font-bold text-gray-800">{it.title}</h3>
                     <p className="text-xs font-medium" style={{ color: it.color }}>{it.subtitle}</p>
                     <p className="text-sm text-gray-600 leading-relaxed">{it.description}</p>
+                    {it.nota && (
+                      <p className="text-[11px] text-purple-600 bg-purple-50 px-3 py-1.5 rounded-lg leading-relaxed">
+                        &#128218; {it.nota}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex flex-col items-center gap-1 shrink-0 pt-1">
@@ -206,9 +211,6 @@ export function MonografiaPage() {
       {/* ===== MARCOS INTERDISCIPLINARIOS (siempre visible) ===== */}
       <motion.section {...fadeIn} className="space-y-6">
         <h2 className="text-xl font-bold text-gray-800 text-center">Los marcos interdisciplinarios</h2>
-        <p className="text-sm text-gray-500 text-center max-w-xl mx-auto">
-          Este es uno de los conceptos que más confusión genera en la nueva guía. Vamos a aclararlo.
-        </p>
 
         <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center">
           <p className="text-sm text-purple-700">
@@ -265,8 +267,11 @@ export function MonografiaPage() {
               <p className="text-xs text-gray-500 leading-relaxed">{m.descripcion}</p>
               <div className="pt-2 border-t border-gray-100 space-y-1">
                 <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide">Preguntas ejemplo</p>
-                {m.ejemplosRQ.map((rq, i) => (
-                  <p key={i} className="text-xs text-gray-600 italic leading-relaxed">&#10132; {rq}</p>
+                {m.ejemplosRQ.map((ej, i) => (
+                  <div key={i} className="text-xs leading-relaxed">
+                    <span className="text-gray-600 italic">&#10132; {ej.rq}</span>
+                    <span className="ml-1 text-[10px] text-purple-500 font-medium not-italic">{ej.asignaturas}</span>
+                  </div>
                 ))}
               </div>
             </div>
