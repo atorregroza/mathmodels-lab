@@ -20,11 +20,11 @@ const ChevronDown = (p) => <Icon {...p} size={18} d="M6 9l6 6 6-6" />
 const ArrowRight = ({ className }) => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className={className}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
 
 const CRITERIO_COLORS = {
-  A: { bg: 'bg-aqua/12', border: 'border-aqua/25', text: 'text-aqua', badge: 'bg-aqua', shadow: 'hover:shadow-[0_12px_30px_rgba(80,150,255,0.12)]' },
-  B: { bg: 'bg-graph/12', border: 'border-graph/25', text: 'text-graph', badge: 'bg-graph', shadow: 'hover:shadow-[0_12px_30px_rgba(34,197,160,0.12)]' },
-  C: { bg: 'bg-signal/12', border: 'border-signal/25', text: 'text-signal', badge: 'bg-signal', shadow: 'hover:shadow-[0_12px_30px_rgba(255,107,53,0.1)]' },
-  D: { bg: 'bg-rose/12', border: 'border-rose/25', text: 'text-rose', badge: 'bg-rose', shadow: 'hover:shadow-[0_12px_30px_rgba(244,63,94,0.12)]' },
-  E: { bg: 'bg-violet/12', border: 'border-violet/25', text: 'text-violet', badge: 'bg-violet', shadow: 'hover:shadow-[0_12px_30px_rgba(139,92,246,0.12)]' },
+  A: { bg: 'bg-aqua/20', border: 'border-aqua/35', text: 'text-aqua', badge: 'bg-aqua', shadow: 'hover:shadow-[0_16px_40px_rgba(80,150,255,0.18)]' },
+  B: { bg: 'bg-graph/20', border: 'border-graph/35', text: 'text-graph', badge: 'bg-graph', shadow: 'hover:shadow-[0_16px_40px_rgba(34,197,160,0.18)]' },
+  C: { bg: 'bg-signal/20', border: 'border-signal/35', text: 'text-signal', badge: 'bg-signal', shadow: 'hover:shadow-[0_16px_40px_rgba(255,107,53,0.15)]' },
+  D: { bg: 'bg-rose/20', border: 'border-rose/35', text: 'text-rose', badge: 'bg-rose', shadow: 'hover:shadow-[0_16px_40px_rgba(244,63,94,0.18)]' },
+  E: { bg: 'bg-violet/20', border: 'border-violet/35', text: 'text-violet', badge: 'bg-violet', shadow: 'hover:shadow-[0_16px_40px_rgba(139,92,246,0.18)]' },
 }
 
 function CriterioCard({ criterio, isOpen, onToggle }) {
@@ -127,7 +127,7 @@ export function MonografiaPage() {
           <p className="mt-4 mx-auto max-w-2xl text-base leading-7 text-ink/60">
             {hero.description}
           </p>
-          <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-signal/10 px-5 py-2.5 text-sm font-semibold text-signal">
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-signal/20 px-5 py-2.5 text-sm font-semibold text-signal">
             <SparkleIcon size={16} />
             {hero.highlight}
           </div>
@@ -145,7 +145,7 @@ export function MonografiaPage() {
                 className="rounded-[1.4rem] border border-ink/8 bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_30px_rgba(18,23,35,0.06)]"
               >
                 <div className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-signal/12 font-display text-sm font-bold text-signal">{p.paso}</span>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-signal/12 font-display text-sm font-bold text-signal">{p.paso}</span>
                   <h3 className="font-display text-sm font-semibold tracking-[-0.01em]">{p.titulo}</h3>
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-ink/55">{p.descripcion}</p>
@@ -179,7 +179,7 @@ export function MonografiaPage() {
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-4">
-                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-${colorClass}/15 text-${colorClass}`}>
+                      <span className={`flex h-13 w-13 shrink-0 items-center justify-center rounded-xl bg-${colorClass}/15 text-${colorClass}`}>
                         {isDisc ? <MicroscopeIcon /> : <GlobeIcon />}
                       </span>
                       <div>
@@ -228,25 +228,25 @@ export function MonografiaPage() {
             El lente para tu investigación.
           </h2>
 
-          <div className="mt-6 rounded-[1.4rem] border border-violet/20 bg-violet/5 p-5 text-center">
+          <div className="mt-6 rounded-[1.4rem] border border-violet/30 bg-violet/15 p-5 text-center">
             <p className="text-sm text-violet leading-relaxed">
               <span className="font-semibold">Solo aplica al itinerario interdisciplinario.</span> Si tu monografía se centra en una sola asignatura, no necesitas elegir un marco.
             </p>
           </div>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <div className="rounded-[1.4rem] border border-graph/20 bg-graph/5 p-5 space-y-2">
+            <div className="rounded-[1.4rem] border border-graph/30 bg-graph/15 p-5 space-y-2">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-graph/15 text-graph">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-graph/25 text-graph">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
                 </span>
                 <h3 className="font-display text-sm font-semibold text-graph">Qué ES un marco</h3>
               </div>
               <p className="text-sm leading-relaxed text-ink/60">{monografiaContent.marcosInfo.queEs}</p>
             </div>
-            <div className="rounded-[1.4rem] border border-signal/20 bg-signal/5 p-5 space-y-2">
+            <div className="rounded-[1.4rem] border border-signal/30 bg-signal/15 p-5 space-y-2">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-signal/15 text-signal">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-signal/25 text-signal">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
                 </span>
                 <h3 className="font-display text-sm font-semibold text-signal">Qué NO es un marco</h3>
@@ -255,7 +255,7 @@ export function MonografiaPage() {
             </div>
           </div>
 
-          <div className="mt-4 rounded-[1.4rem] border border-aqua/20 bg-aqua/5 p-5">
+          <div className="mt-4 rounded-[1.4rem] border border-aqua/30 bg-aqua/15 p-5">
             <p className="text-sm text-ink/60 leading-relaxed">
               <span className="font-semibold text-aqua">Importante:</span> {monografiaContent.marcosInfo.importante}
             </p>
@@ -266,12 +266,12 @@ export function MonografiaPage() {
             <div className="space-y-3">
               {monografiaContent.marcosInfo.secuencia.map((paso, i) => (
                 <div key={i} className="flex items-start gap-3 text-sm text-ink/60">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-violet/12 text-[0.65rem] font-bold text-violet">{i + 1}</span>
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-violet/20 text-[0.65rem] font-bold text-violet">{i + 1}</span>
                   <span className="leading-relaxed">{paso}</span>
                 </div>
               ))}
             </div>
-            <div className="rounded-xl bg-rose/8 p-4">
+            <div className="rounded-xl bg-rose/15 p-4">
               <p className="text-sm text-rose leading-relaxed">
                 <span className="font-semibold">Prueba de integración:</span> {monografiaContent.marcosInfo.pruebaIntegracion}
               </p>
@@ -286,12 +286,12 @@ export function MonografiaPage() {
                 <div key={m.id}
                   onClick={() => setOpenMarco(isOpen ? null : m.id)}
                   className={`cursor-pointer rounded-[1.4rem] border p-5 transition-all ${
-                    isOpen ? 'border-violet/30 bg-violet/5 shadow-lg' : 'border-ink/10 bg-white hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(139,92,246,0.08)]'
+                    isOpen ? 'border-violet/30 bg-violet/15 shadow-lg' : 'border-ink/10 bg-white hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(139,92,246,0.08)]'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet/12 text-lg">{m.emoji}</span>
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet/20 text-lg">{m.emoji}</span>
                       <h4 className="font-display text-sm font-semibold tracking-[-0.01em]">{m.titulo}</h4>
                     </div>
                     <div className="flex shrink-0 flex-col items-center gap-0.5">
@@ -353,7 +353,7 @@ export function MonografiaPage() {
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {simulaciones.map(sim => (
               <Link key={sim.id} to={`/monografias/${sim.id}`}
-                className="group rounded-[1.6rem] border border-signal/20 bg-signal/4 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(255,107,53,0.1)]"
+                className="group rounded-[1.6rem] border border-signal/30 bg-signal/12 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(255,107,53,0.1)]"
               >
                 <div className="flex items-center gap-4">
                   <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-signal/15 text-2xl">
@@ -367,7 +367,7 @@ export function MonografiaPage() {
                 <p className="mt-4 text-sm leading-relaxed text-ink/60">{sim.descripcion}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {sim.temas.map((t, i) => (
-                    <span key={i} className="rounded-full bg-signal/10 px-3 py-1 text-xs font-medium text-signal/80">{t}</span>
+                    <span key={i} className="rounded-full bg-signal/20 px-3 py-1 text-xs font-medium text-signal/80">{t}</span>
                   ))}
                 </div>
                 <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-signal transition-transform group-hover:translate-x-1">
