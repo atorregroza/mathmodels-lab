@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId, useState } from 'react'
 
 // Supports three special patterns inside formula strings:
 //   frac(num, den)  → proper vertical fraction (denominator supports one level of nested parens)
@@ -162,79 +162,118 @@ export const CartesianFrame = ({
   className = 'w-full h-auto overflow-visible rounded-[1.3rem]',
 }) => {
   const clipId = useId().replace(/:/g, '')
+  const [expanded, setExpanded] = useState(false)
   const padding = 28
+  const expW = 960, expH = 520, expPad = 36, expFont = 14
   const scaleX = (value) => padding + (((value - xMin) / ((xMax - xMin) || 1)) * (width - (padding * 2)))
   const scaleY = (value) => height - padding - (((value - yMin) / ((yMax - yMin) || 1)) * (height - (padding * 2)))
+  const expScaleX = (value) => expPad + (((value - xMin) / ((xMax - xMin) || 1)) * (expW - (expPad * 2)))
+  const expScaleY = (value) => expH - expPad - (((value - yMin) / ((yMax - yMin) || 1)) * (expH - (expPad * 2)))
   const axisStroke = dark ? 'rgba(255,255,255,0.55)' : 'rgba(18,23,35,0.35)'
   const gridStrokeX = dark ? 'rgba(255,255,255,0.10)' : 'rgba(18,23,35,0.12)'
   const gridStrokeY = dark ? 'rgba(255,255,255,0.10)' : 'rgba(18,23,35,0.12)'
   const tickFill = dark ? 'rgba(255,255,255,0.80)' : 'rgba(18,23,35,0.72)'
+  const btnFill = dark ? 'rgba(255,255,255,0.35)' : 'rgba(18,23,35,0.3)'
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className={className}>
-      <defs>
-        <clipPath id={clipId}>
-          <rect x={padding} y={padding} width={width - (padding * 2)} height={height - (padding * 2)} rx="12" ry="12" />
-        </clipPath>
-      </defs>
-      {yTicks.map((tick) => (
-        <line key={`y-${tick}`} x1={padding} y1={scaleY(tick)} x2={width - padding} y2={scaleY(tick)} stroke={gridStrokeY} strokeWidth="1" />
-      ))}
-      {xTicks.map((tick) => (
-        <line key={`x-${tick}`} x1={scaleX(tick)} y1={padding} x2={scaleX(tick)} y2={height - padding} stroke={gridStrokeX} strokeWidth="1" />
-      ))}
-
-      {xMin <= 0 && xMax >= 0 && (
-        <line x1={scaleX(0)} y1={padding} x2={scaleX(0)} y2={height - padding} stroke={axisStroke} strokeWidth="2" />
+    <div className="relative">
+      {/* expanded overlay */}
+      {expanded && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-sm p-6" onClick={() => setExpanded(false)}>
+          <div className="relative w-full max-w-5xl rounded-2xl bg-ink border border-white/10 p-5 shadow-[0_32px_80px_rgba(0,0,0,0.5)]" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setExpanded(false)} className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-paper/60 hover:bg-white/20 hover:text-paper transition">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+            <svg viewBox={`0 0 ${expW} ${expH}`} className="w-full h-auto overflow-visible rounded-xl">
+              <defs><clipPath id={`${clipId}-exp`}><rect x={expPad} y={expPad} width={expW - expPad * 2} height={expH - expPad * 2} rx="12" ry="12" /></clipPath></defs>
+              {yTicks.map((tick) => (<line key={`y-${tick}`} x1={expPad} y1={expScaleY(tick)} x2={expW - expPad} y2={expScaleY(tick)} stroke="rgba(255,255,255,0.10)" strokeWidth="1" />))}
+              {xTicks.map((tick) => (<line key={`x-${tick}`} x1={expScaleX(tick)} y1={expPad} x2={expScaleX(tick)} y2={expH - expPad} stroke="rgba(255,255,255,0.10)" strokeWidth="1" />))}
+              {xMin <= 0 && xMax >= 0 && <line x1={expScaleX(0)} y1={expPad} x2={expScaleX(0)} y2={expH - expPad} stroke="rgba(255,255,255,0.55)" strokeWidth="2" />}
+              {yMin <= 0 && yMax >= 0 && <line x1={expPad} y1={expScaleY(0)} x2={expW - expPad} y2={expScaleY(0)} stroke="rgba(255,255,255,0.55)" strokeWidth="2" />}
+              {xTicks.map((tick) => { const ay = (yMin <= 0 && yMax >= 0) ? expScaleY(0) : expH - expPad; return Math.abs(tick) > 0.001 ? <text key={`xt-${tick}`} x={expScaleX(tick)} y={ay + 20} fill="rgba(255,255,255,0.8)" fontSize={expFont} textAnchor="middle">{xTickFormatter ? xTickFormatter(tick) : tick}</text> : null })}
+              {yTicks.map((tick) => { const ax = (xMin <= 0 && xMax >= 0) ? expScaleX(0) : expPad; return Math.abs(tick) > 0.001 ? <text key={`yt-${tick}`} x={ax - 10} y={expScaleY(tick) + 5} fill="rgba(255,255,255,0.8)" fontSize={expFont} textAnchor="end">{yTickFormatter ? yTickFormatter(tick) : tick}</text> : null })}
+              <g clipPath={`url(#${clipId}-exp)`}>{children({ scaleX: expScaleX, scaleY: expScaleY, padding: expPad, width: expW, height: expH })}</g>
+              {xLabel && <text x={expW / 2} y={expH - 4} fill="rgba(255,255,255,0.7)" fontSize={expFont} textAnchor="middle" fontWeight="600">{xLabel}</text>}
+              {yLabel && <text x={12} y={expH / 2} fill="rgba(255,255,255,0.7)" fontSize={expFont} textAnchor="middle" fontWeight="600" transform={`rotate(-90, 12, ${expH / 2})`}>{yLabel}</text>}
+            </svg>
+          </div>
+        </div>
       )}
-      {yMin <= 0 && yMax >= 0 && (
-        <line x1={padding} y1={scaleY(0)} x2={width - padding} y2={scaleY(0)} stroke={axisStroke} strokeWidth="2" />
-      )}
+      <svg viewBox={`0 0 ${width} ${height}`} className={className}>
+        <defs>
+          <clipPath id={clipId}>
+            <rect x={padding} y={padding} width={width - (padding * 2)} height={height - (padding * 2)} rx="12" ry="12" />
+          </clipPath>
+        </defs>
+        {yTicks.map((tick) => (
+          <line key={`y-${tick}`} x1={padding} y1={scaleY(tick)} x2={width - padding} y2={scaleY(tick)} stroke={gridStrokeY} strokeWidth="1" />
+        ))}
+        {xTicks.map((tick) => (
+          <line key={`x-${tick}`} x1={scaleX(tick)} y1={padding} x2={scaleX(tick)} y2={height - padding} stroke={gridStrokeX} strokeWidth="1" />
+        ))}
 
-      {xTicks.map((tick) => {
-        const hasXAxis = yMin <= 0 && yMax >= 0
-        const anchorY = hasXAxis ? scaleY(0) : height - padding
-        return (
-          <g key={`xt-${tick}`}>
-            {hasXAxis && <line x1={scaleX(tick)} y1={anchorY - 4} x2={scaleX(tick)} y2={anchorY + 4} stroke={axisStroke} strokeWidth="1" />}
-            {Math.abs(tick) > 0.001 && (
-              <text x={scaleX(tick)} y={anchorY + 16} fill={tickFill} fontSize="11" textAnchor="middle">
-                {xTickFormatter ? xTickFormatter(tick) : tick}
-              </text>
-            )}
-          </g>
-        )
-      })}
-      {yTicks.map((tick) => {
-        const hasYAxis = xMin <= 0 && xMax >= 0
-        const anchorX = hasYAxis ? scaleX(0) : padding
-        return (
-          <g key={`yt-${tick}`}>
-            {hasYAxis && <line x1={anchorX - 4} y1={scaleY(tick)} x2={anchorX + 4} y2={scaleY(tick)} stroke={axisStroke} strokeWidth="1" />}
-            {Math.abs(tick) > 0.001 && (
-              <text x={anchorX - 8} y={scaleY(tick) + 4} fill={tickFill} fontSize="11" textAnchor="end">
-                {yTickFormatter ? yTickFormatter(tick) : tick}
-              </text>
-            )}
-          </g>
-        )
-      })}
+        {xMin <= 0 && xMax >= 0 && (
+          <line x1={scaleX(0)} y1={padding} x2={scaleX(0)} y2={height - padding} stroke={axisStroke} strokeWidth="2" />
+        )}
+        {yMin <= 0 && yMax >= 0 && (
+          <line x1={padding} y1={scaleY(0)} x2={width - padding} y2={scaleY(0)} stroke={axisStroke} strokeWidth="2" />
+        )}
 
-      <g clipPath={`url(#${clipId})`}>
-        {children({ scaleX, scaleY, padding, width, height })}
-      </g>
+        {xTicks.map((tick) => {
+          const hasXAxis = yMin <= 0 && yMax >= 0
+          const anchorY = hasXAxis ? scaleY(0) : height - padding
+          return (
+            <g key={`xt-${tick}`}>
+              {hasXAxis && <line x1={scaleX(tick)} y1={anchorY - 4} x2={scaleX(tick)} y2={anchorY + 4} stroke={axisStroke} strokeWidth="1" />}
+              {Math.abs(tick) > 0.001 && (
+                <text x={scaleX(tick)} y={anchorY + 16} fill={tickFill} fontSize="11" textAnchor="middle">
+                  {xTickFormatter ? xTickFormatter(tick) : tick}
+                </text>
+              )}
+            </g>
+          )
+        })}
+        {yTicks.map((tick) => {
+          const hasYAxis = xMin <= 0 && xMax >= 0
+          const anchorX = hasYAxis ? scaleX(0) : padding
+          return (
+            <g key={`yt-${tick}`}>
+              {hasYAxis && <line x1={anchorX - 4} y1={scaleY(tick)} x2={anchorX + 4} y2={scaleY(tick)} stroke={axisStroke} strokeWidth="1" />}
+              {Math.abs(tick) > 0.001 && (
+                <text x={anchorX - 8} y={scaleY(tick) + 4} fill={tickFill} fontSize="11" textAnchor="end">
+                  {yTickFormatter ? yTickFormatter(tick) : tick}
+                </text>
+              )}
+            </g>
+          )
+        })}
 
-      {xLabel && (
-        <text x={width / 2} y={height - 2} fill={tickFill} fontSize="11" textAnchor="middle" fontWeight="600" opacity="0.7">
-          {xLabel}
-        </text>
-      )}
-      {yLabel && (
-        <text x={8} y={height / 2} fill={tickFill} fontSize="11" textAnchor="middle" fontWeight="600" opacity="0.7"
-          transform={`rotate(-90, 8, ${height / 2})`}>
-          {yLabel}
-        </text>
-      )}
-    </svg>
+        <g clipPath={`url(#${clipId})`}>
+          {children({ scaleX, scaleY, padding, width: width, height: height })}
+        </g>
+
+        {xLabel && (
+          <text x={width / 2} y={height - 2} fill={tickFill} fontSize="11" textAnchor="middle" fontWeight="600" opacity="0.7">
+            {xLabel}
+          </text>
+        )}
+        {yLabel && (
+          <text x={8} y={height / 2} fill={tickFill} fontSize="11" textAnchor="middle" fontWeight="600" opacity="0.7"
+            transform={`rotate(-90, 8, ${height / 2})`}>
+            {yLabel}
+          </text>
+        )}
+
+        {/* expand/collapse button inside SVG */}
+        <g onClick={() => setExpanded(v => !v)} cursor="pointer" opacity="0.6" className="hover:opacity-100">
+          <rect x={width - padding - 22} y={6} width="22" height="22" rx="5" fill={dark ? 'rgba(255,255,255,0.08)' : 'rgba(18,23,35,0.06)'} />
+          {expanded ? (
+            <path d={`M ${width - padding - 16} 12 l 4 4 4 -4 M ${width - padding - 16} 22 l 4 -4 4 4`} stroke={btnFill} strokeWidth="1.8" fill="none" strokeLinecap="round" />
+          ) : (
+            <path d={`M ${width - padding - 16} 15 l 4 -4 4 4 M ${width - padding - 16} 19 l 4 4 4 -4`} stroke={btnFill} strokeWidth="1.8" fill="none" strokeLinecap="round" />
+          )}
+        </g>
+      </svg>
+    </div>
   )
 }
