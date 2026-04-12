@@ -530,72 +530,52 @@ ${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
           </div>
         </motion.div>
 
-        {/* ── SECCIÓN 1: Sobre la exploración ── */}
+        {/* ── Sobre la exploración — compacto ── */}
         {researchBranches.filter(b => b.id === 'exploracion').map((branch) => (
-          <motion.div key={branch.id} {...fadeIn} className="mt-8 space-y-4">
-            <div className="rounded-[1.8rem] border border-ink/10 bg-white/82 p-6 shadow-[0_12px_40px_rgba(18,23,35,0.06)]">
-              <p className="text-base leading-7 text-ink/75">{branch.objective}</p>
-              <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                {branch.develops.map((d) => (
-                  <div key={d.label} className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-                    <p className="text-sm font-semibold text-ink">{d.label}</p>
-                    <p className="mt-1 text-xs leading-5 text-ink/55">{d.detail}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl bg-ink/4 px-4 py-3">
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Alcance</p>
-                  <p className="text-sm leading-6 text-ink/65">{branch.scope}</p>
-                </div>
-                <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-3">
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Entregable</p>
-                  <p className="text-sm leading-6 text-ink/70 font-medium">{branch.deliverable}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Expandibles de referencia */}
-            <div className="grid gap-3 md:grid-cols-3">
-              {branch.documentStructure && (
-                <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
-                  <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Estructura del documento</summary>
-                  <div className="border-t border-ink/8 px-4 py-3 space-y-2">
-                    {branch.documentStructure.map((s, i) => (
-                      <div key={s.section} className="flex gap-2">
-                        <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-ink/8 text-[0.6rem] font-bold text-ink/50">{i + 1}</span>
-                        <div>
-                          <p className="text-xs font-semibold text-ink">{s.section}</p>
-                          <p className="text-[0.7rem] leading-4 text-ink/50">{s.detail}</p>
+          <motion.div key={branch.id} {...fadeIn} className="mt-8">
+            <div className="rounded-[1.8rem] border border-ink/10 bg-white/82 p-5 shadow-[0_12px_40px_rgba(18,23,35,0.06)]">
+              <p className="text-sm leading-7 text-ink/70">{branch.objective}</p>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                {branch.documentStructure && (
+                  <details className="rounded-xl border border-ink/8 bg-paper overflow-hidden">
+                    <summary className="px-4 py-3 text-sm font-semibold text-ink/65 cursor-pointer hover:bg-ink/3">Estructura del documento</summary>
+                    <div className="border-t border-ink/8 px-4 py-3 space-y-2">
+                      {branch.documentStructure.map((s, i) => (
+                        <div key={s.section} className="flex gap-2">
+                          <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-ink/8 text-[0.6rem] font-bold text-ink/50">{i + 1}</span>
+                          <div>
+                            <p className="text-xs font-semibold text-ink">{s.section}</p>
+                            <p className="text-[0.7rem] leading-4 text-ink/50">{s.detail}</p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </details>
-              )}
-              {branch.guidelines && (
-                <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
-                  <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Lineamientos</summary>
-                  <div className="border-t border-ink/8 px-4 py-3 space-y-1">
-                    {branch.guidelines.map((g, i) => (
-                      <p key={i} className="text-xs leading-5 text-ink/60">• {g}</p>
-                    ))}
-                  </div>
-                </details>
-              )}
-              {branch.excellenceTips && (
-                <details className="rounded-xl border border-signal/15 bg-signal/5 overflow-hidden">
-                  <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-signal/8">Mejor calificación</summary>
-                  <div className="border-t border-signal/10 px-4 py-3 space-y-2">
-                    {branch.excellenceTips.map((t) => (
-                      <div key={t.area}>
-                        <p className="text-xs font-semibold text-ink">{t.area}</p>
-                        <p className="text-[0.7rem] leading-4 text-ink/55">{t.tip}</p>
-                      </div>
-                    ))}
-                  </div>
-                </details>
-              )}
+                      ))}
+                    </div>
+                  </details>
+                )}
+                {branch.guidelines && (
+                  <details className="rounded-xl border border-ink/8 bg-paper overflow-hidden">
+                    <summary className="px-4 py-3 text-sm font-semibold text-ink/65 cursor-pointer hover:bg-ink/3">Lineamientos de presentación</summary>
+                    <div className="border-t border-ink/8 px-4 py-3 space-y-1">
+                      {branch.guidelines.map((g, i) => (
+                        <p key={i} className="text-xs leading-5 text-ink/60">• {g}</p>
+                      ))}
+                    </div>
+                  </details>
+                )}
+                {branch.excellenceTips && (
+                  <details className="rounded-xl border border-signal/15 bg-signal/5 overflow-hidden">
+                    <summary className="px-4 py-3 text-sm font-semibold text-ink/65 cursor-pointer hover:bg-signal/8">Cómo lograr la mejor calificación</summary>
+                    <div className="border-t border-signal/10 px-4 py-3 space-y-2">
+                      {branch.excellenceTips.map((t) => (
+                        <div key={t.area}>
+                          <p className="text-xs font-semibold text-ink">{t.area}</p>
+                          <p className="text-[0.7rem] leading-4 text-ink/55">{t.tip}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+              </div>
             </div>
           </motion.div>
         ))}
