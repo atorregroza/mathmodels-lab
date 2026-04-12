@@ -104,11 +104,97 @@ function PuntuacionBar() {
   )
 }
 
+const TALLER_KEY = 'mcu2026'
+const WA_NUMBER = '573153189366'
+const WA_MESSAGE = encodeURIComponent('Hola Astrid, vi la sección de Monografía IB en MathModels Lab y me interesa conocer más sobre el taller. ¿Podrías darme información sobre fechas, contenido y cómo participar?')
+
+function TallerGate({ onUnlock }) {
+  const [clave, setClave] = useState('')
+  const [error, setError] = useState(false)
+
+  const verificar = (e) => {
+    e.preventDefault()
+    if (clave.toLowerCase().trim() === TALLER_KEY) { onUnlock(); setError(false) }
+    else { setError(true); setClave('') }
+  }
+
+  return (
+    <section className="px-5 pb-24 pt-10 md:px-8">
+      <div className="mx-auto max-w-3xl">
+        <motion.div {...fadeIn} className="text-center mt-12 md:mt-20">
+          <p className="section-kicker">Monografía IB &middot; Primera evaluación 2027</p>
+          <h1 className="mt-5 font-display text-[clamp(2rem,5vw,3.6rem)] font-bold leading-[0.94] tracking-[-0.04em]">
+            Tu monografía matemática,<br/>
+            <span className="text-signal">con las herramientas correctas.</span>
+          </h1>
+          <p className="mt-6 mx-auto max-w-xl text-base leading-7 text-ink/55">
+            Simulaciones interactivas con datos reales, planeación desde los dos itinerarios, ejemplos por criterio, y propuestas interdisciplinarias con asignaturas del DP.
+          </p>
+        </motion.div>
+
+        <motion.div {...fadeIn} className="mt-12 grid gap-5 md:grid-cols-3">
+          {[
+            { icon: '🎡', title: 'Simulaciones', desc: 'Modelos interactivos con datos reales para recolectar evidencia y visualizar fenómenos.' },
+            { icon: '📋', title: 'Planeación guiada', desc: 'Preguntas de investigación, modelos matemáticos y mapeo a los 5 criterios A–E.' },
+            { icon: '🌐', title: 'Interdisciplinario', desc: 'Propuestas con asignaturas del DP, marcos del IB y doble lente en criterio D.' },
+          ].map((f, i) => (
+            <div key={i} className="rounded-[1.4rem] border border-ink/10 bg-white p-5 text-center space-y-2">
+              <span className="text-3xl">{f.icon}</span>
+              <h3 className="font-display text-base font-semibold tracking-[-0.02em]">{f.title}</h3>
+              <p className="text-sm text-ink/50 leading-relaxed">{f.desc}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.div {...fadeIn} className="mt-12 rounded-[1.8rem] border border-signal/25 bg-signal/8 p-8 md:p-10 text-center space-y-5">
+          <h2 className="font-display text-2xl md:text-3xl font-bold tracking-[-0.03em]">
+            Accede a través del taller
+          </h2>
+          <p className="text-sm text-ink/55 leading-relaxed max-w-lg mx-auto">
+            Este módulo es parte del taller de Monografía IB en Matemáticas. Solicita información y te contamos todo sobre fechas, contenido y cómo participar.
+          </p>
+          <a
+            href={`https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 rounded-full bg-[#25D366] px-8 py-4 text-white font-semibold text-base shadow-[0_8px_30px_rgba(37,211,102,0.3)] hover:shadow-[0_12px_40px_rgba(37,211,102,0.4)] hover:-translate-y-0.5 transition-all"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Solicitar información del taller
+          </a>
+        </motion.div>
+
+        <motion.div {...fadeIn} className="mt-8 text-center">
+          <p className="text-xs text-ink/30 mb-3">¿Ya participaste en el taller?</p>
+          <form onSubmit={verificar} className="inline-flex items-center gap-2">
+            <input
+              type="password"
+              value={clave}
+              onChange={(e) => { setClave(e.target.value); setError(false) }}
+              placeholder="Clave de acceso"
+              className={`px-4 py-2 rounded-full border text-sm text-center w-44 outline-none transition-colors ${
+                error ? 'border-rose/50 bg-rose/5 text-rose' : 'border-ink/15 bg-white text-ink/60 focus:border-signal/40'
+              }`}
+            />
+            <button type="submit" className="px-4 py-2 rounded-full bg-ink/8 text-ink/50 text-sm font-medium hover:bg-ink/15 transition-colors">
+              Entrar
+            </button>
+          </form>
+          {error && <p className="text-xs text-rose mt-2">Clave incorrecta</p>}
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
 export function MonografiaPage() {
+  const [unlocked, setUnlocked] = useState(false)
   const [openCriterio, setOpenCriterio] = useState(null)
   const [selectedItinerario, setSelectedItinerario] = useState(null)
   const [openMarco, setOpenMarco] = useState(null)
   const { hero, itinerarios, criterios, marcos, simulaciones, proceso } = monografiaContent
+
+  if (!unlocked) return <TallerGate onUnlock={() => setUnlocked(true)} />
 
   return (
     <section className="px-5 pb-24 pt-8 md:px-8 md:pb-28 md:pt-10">
