@@ -927,19 +927,19 @@ export const explorationBlocks = [
     ],
     formats: [
       {
-        id: 'guiada',
-        title: 'Exploración guiada',
-        description: 'La plataforma propone fenómeno, variables y una pregunta de partida. El estudiante analiza, ajusta y concluye.',
+        id: 'paso-a-paso',
+        title: 'Paso a paso',
+        description: 'La plataforma propone el fenómeno, las variables y la pregunta. Tú analizas, ajustas y concluyes.',
       },
       {
-        id: 'semiabierta',
-        title: 'Exploración semiabierta',
-        description: 'El fenómeno está dado, pero la pregunta se afina dentro de varios caminos posibles según lo que el estudiante observe.',
+        id: 'con-punto-de-partida',
+        title: 'Con punto de partida',
+        description: 'El fenómeno viene dado, pero tú afinas la pregunta y decides qué camino tomar según lo que observes.',
       },
       {
-        id: 'abierta',
-        title: 'Exploración abierta',
-        description: 'El estudiante elige fenómeno, recorte de variables y pregunta, con apoyo de plantillas y laboratorios base.',
+        id: 'desde-tu-idea',
+        title: 'Desde tu propia idea',
+        description: 'Tú eliges el fenómeno, defines las variables y formulas la pregunta. La plataforma te acompaña con herramientas.',
       },
     ],
     workflow: [
@@ -1283,19 +1283,19 @@ export const explorationBlocks = [
     ],
     formats: [
       {
-        id: 'guiada',
-        title: 'Exploración guiada',
-        description: 'La plataforma propone los datos, la pregunta y las herramientas. El estudiante analiza, interpreta y concluye.',
+        id: 'paso-a-paso',
+        title: 'Paso a paso',
+        description: 'La plataforma propone los datos, la pregunta y las herramientas. Tú analizas, interpretas y concluyes.',
       },
       {
-        id: 'semiabierta',
-        title: 'Exploración semiabierta',
-        description: 'El contexto está dado, pero la pregunta se afina según lo que el estudiante descubra en los datos.',
+        id: 'con-punto-de-partida',
+        title: 'Con punto de partida',
+        description: 'El contexto viene dado, pero tú afinas la pregunta según lo que descubras en los datos.',
       },
       {
-        id: 'abierta',
-        title: 'Exploración abierta',
-        description: 'El estudiante elige el fenómeno, recoge sus propios datos y formula la pregunta con apoyo de los laboratorios base.',
+        id: 'desde-tu-idea',
+        title: 'Desde tu propia idea',
+        description: 'Tú eliges el fenómeno, recoges tus propios datos y formulas la pregunta. La plataforma te acompaña.',
       },
     ],
     workflow: [

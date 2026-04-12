@@ -88,15 +88,15 @@ const methodologyByLine = {
 }
 
 const methodologyByFormat = {
-  guiada: [
+  'paso-a-paso': [
     'Usa la pregunta propuesta como punto de partida y concéntrate en justificar con evidencia cada decisión.',
     'No cambies demasiadas variables al mismo tiempo; primero consolida una lectura base.',
   ],
-  semiabierta: [
+  'con-punto-de-partida': [
     'Refina la pregunta inicial hasta que sea investigable y no demasiado amplia.',
     'Explica por qué elegiste ese recorte del problema y no otro.',
   ],
-  abierta: [
+  'desde-tu-idea': [
     'Delimita el fenómeno y el foco de análisis antes de recoger datos.',
     'Define desde el principio qué evidencia te permitirá decidir si el modelo funciona o no.',
   ],
