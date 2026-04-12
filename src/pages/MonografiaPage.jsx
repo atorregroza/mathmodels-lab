@@ -90,13 +90,14 @@ function PuntuacionBar() {
   const { criterios } = monografiaContent
   const total = criterios.reduce((s, c) => s + c.puntos, 0)
   return (
-    <div className="flex rounded-full overflow-hidden h-5">
+    <div className="flex items-center gap-1.5">
       {criterios.map(c => {
         const col = CRITERIO_COLORS[c.id]
         return (
-          <div key={c.id} className={`flex items-center justify-center ${col.badge} text-[0.6rem] font-bold text-white tracking-wider`}
-            style={{ width: `${(c.puntos / total) * 100}%` }} title={`${c.id}: ${c.title} (${c.puntos})`}
-          >{c.id} <span className="ml-0.5 opacity-70 text-[0.5rem]">{c.puntos}</span></div>
+          <div key={c.id} className="flex flex-col items-center gap-1" style={{ width: `${(c.puntos / total) * 100}%` }}>
+            <div className={`w-full h-1.5 rounded-full ${col.badge} opacity-40`} />
+            <span className={`text-[0.65rem] font-semibold ${col.text} opacity-70`}>{c.id} · {c.puntos}</span>
+          </div>
         )
       })}
     </div>

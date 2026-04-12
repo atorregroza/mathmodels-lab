@@ -4,9 +4,8 @@ import { Link, Navigate, useParams } from 'react-router-dom'
 import { monografiaContent } from '../data/platformContent'
 import { Breadcrumb } from '../components/layout/PlatformShell'
 
-function PlanPanel({ planeacion }) {
+function PlanPanel({ planeacion, open, setOpen }) {
   const [tab, setTab] = useState('disciplinar')
-  const [open, setOpen] = useState(true)
   const disc = planeacion.disciplinar
   const inter = planeacion.interdisciplinario
 
@@ -149,37 +148,46 @@ function PlanPanel({ planeacion }) {
 export function MonografiaSimPage() {
   const { simId } = useParams()
   const sim = monografiaContent.simulaciones.find(s => s.id === simId)
+  const [planOpen, setPlanOpen] = useState(false)
 
   if (!sim) return <Navigate to="/monografias" replace />
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)]">
-      <div className="px-3 py-2 border-b border-gray-100 bg-white flex items-center justify-between gap-3">
+      <div className="px-3 py-2 border-b border-ink/8 bg-white flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link
             to="/monografias"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-amber-100 text-gray-600 hover:text-amber-700 text-xs font-medium transition-colors shrink-0"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ink/5 hover:bg-signal/10 text-ink/60 hover:text-signal text-xs font-medium transition-colors shrink-0"
           >
-            <span>&#8592;</span> Volver a Monografía
+            <span>&#8592;</span> Volver
           </Link>
           <Breadcrumb items={[
             { label: 'Monografía IB', to: '/monografias' },
             { label: sim.titulo },
           ]} />
         </div>
-        <div className="flex items-center gap-2 text-xs text-gray-400 shrink-0">
-          <span>{sim.emoji}</span>
-          <span className="hidden sm:inline">{sim.subtitulo}</span>
+        <div className="flex items-center gap-3 shrink-0">
+          <button
+            onClick={() => setPlanOpen(!planOpen)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+              planOpen ? 'bg-signal text-white' : 'bg-signal/10 text-signal hover:bg-signal/20'
+            }`}
+          >
+            <span>&#128203;</span> {planOpen ? 'Ver simulación' : 'Ver planeación'}
+          </button>
         </div>
       </div>
 
-      {sim.planeacion && <PlanPanel planeacion={sim.planeacion} />}
+      {sim.planeacion && planOpen && <PlanPanel planeacion={sim.planeacion} open={planOpen} setOpen={setPlanOpen} />}
 
-      <iframe
-        src={sim.ruta}
-        className="flex-1 w-full border-0"
-        title={sim.titulo}
-      />
+      {!planOpen && (
+        <iframe
+          src={sim.ruta}
+          className="flex-1 w-full border-0"
+          title={sim.titulo}
+        />
+      )}
     </div>
   )
 }
