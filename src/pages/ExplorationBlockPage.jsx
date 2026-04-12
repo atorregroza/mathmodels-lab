@@ -89,47 +89,60 @@ const methodologyByLine = {
 
 const methodologyByFormat = {
   'paso-a-paso': [
-    'Usa la pregunta propuesta como punto de partida y concéntrate en justificar con evidencia cada decisión.',
+    'Usa la pregunta propuesta como punto de partida — no necesitas inventarla, pero sí entenderla.',
+    'Concéntrate en justificar cada decisión con evidencia matemática, no solo con intuición.',
     'No cambies demasiadas variables al mismo tiempo; primero consolida una lectura base.',
   ],
   'con-punto-de-partida': [
-    'Refina la pregunta inicial hasta que sea investigable y no demasiado amplia.',
-    'Explica por qué elegiste ese recorte del problema y no otro.',
+    'Antes de refinar la pregunta, explora los datos o el fenómeno sin hipótesis preconcebida.',
+    'Formula la pregunta de modo que sea investigable: específica, acotada y respondible con matemáticas.',
+    'Explica por qué elegiste ese recorte del problema y no otro — la justificación es parte del trabajo.',
+    'Verifica que tu pregunta no sea tan amplia que no puedas responderla, ni tan estrecha que la respuesta sea trivial.',
   ],
   'desde-tu-idea': [
-    'Delimita el fenómeno y el foco de análisis antes de recoger datos.',
-    'Define desde el principio qué evidencia te permitirá decidir si el modelo funciona o no.',
+    'Elige un fenómeno que realmente te interese — la motivación personal es lo que sostiene una buena exploración.',
+    'Delimita el fenómeno y define variables antes de recoger datos; sin este paso, el trabajo se dispersa.',
+    'Formula una pregunta que conecte el fenómeno con una herramienta matemática concreta.',
+    'Define desde el principio qué evidencia te permitirá decidir si tu modelo o argumento funciona o no.',
+    'Busca al menos un laboratorio de la plataforma que te ayude a explorar tu idea antes de formalizarla.',
   ],
 }
 
 const helpByLine = {
   'patrones-algebra': [
-    'Busca cuatro o cinco casos bien organizados antes de generalizar.',
-    'Las diferencias sucesivas pueden ayudarte a decidir si el crecimiento es lineal, cuadrático o de otro tipo.',
+    'Busca al menos cinco casos bien organizados antes de generalizar — una fórmula que solo funciona para tres casos no es confiable.',
+    'Las diferencias sucesivas son tu mejor herramienta: si la primera diferencia es constante, el patrón es lineal; si la segunda es constante, es cuadrático.',
+    'Siempre verifica tu expresión general sustituyendo valores que no usaste para construirla.',
   ],
   'modelacion-funcional': [
-    'Conviene superponer datos y modelo para discutir ajuste, no solo mirar la expresión.',
-    'Un modelo útil no es solo el que se parece, sino el que permite interpretar parámetros con sentido.',
+    'Superpón datos y modelo en una misma gráfica — el ajuste visual es el primer filtro, pero no el único.',
+    'Un buen modelo no es solo el que se parece a los datos: es el que permite interpretar sus parámetros con sentido en el contexto.',
+    'Compara al menos dos familias y argumenta con R², residuos y lectura de parámetros por qué una es mejor que otra.',
   ],
   'cambio-analisis': [
-    'Revisa siempre si estás hablando de cambio neto, acumulación o razón de cambio; no son lo mismo.',
-    'Cuando una aproximación parece buena, intenta justificar desde qué punto deja de mejorar de forma relevante.',
+    'Distingue siempre entre cambio neto, acumulación y razón de cambio — son conceptos relacionados pero diferentes.',
+    'Cuando una aproximación parece buena, justifica con evidencia desde qué punto deja de mejorar de forma relevante.',
+    'Relaciona la lectura gráfica (pendiente, área, concavidad) con la lectura numérica para que tu argumento sea más sólido.',
   ],
   'periodicidad-geometria': [
-    'Si el patrón se repite, compara varios ciclos antes de afirmar que el modelo es trigonométrico.',
-    'En movimientos periódicos, la línea media y el período suelen ser más estables que los valores extremos aislados.',
+    'Compara varios ciclos antes de afirmar que el modelo es trigonométrico — un solo ciclo no es evidencia suficiente.',
+    'La línea media y el período suelen ser más estables que los valores extremos; empieza por ahí.',
+    'Si la amplitud cambia con el tiempo, el modelo simple ya no alcanza — discute qué se pierde y qué se gana al complicarlo.',
   ],
   'datos-distribuciones': [
-    'Antes de concluir sobre la forma, verifica con al menos 20-30 datos; con pocos, el histograma es engañoso.',
-    'El diagrama de caja y el resumen de 5 números cuentan una historia que el histograma solo no muestra.',
+    'Con menos de 20-30 datos, el histograma puede ser engañoso — no saques conclusiones prematuras sobre la forma.',
+    'El diagrama de caja y el resumen de 5 números complementan al histograma: juntos cuentan una historia más completa.',
+    'Cuando compares dos grupos, usa las mismas escalas y medidas para que la comparación sea justa.',
   ],
   'probabilidad-simulacion': [
-    'La intuición sobre probabilidad suele fallar; deja que los datos hablen antes de concluir.',
-    'Documenta cada ronda de simulación para poder comparar cómo cambia la evidencia con más repeticiones.',
+    'La intuición sobre probabilidad suele fallar — deja que los datos hablen antes de concluir. Eso es lo que hace un buen investigador.',
+    'Documenta cada ronda de simulación: cuántos ensayos, qué observaste, cómo cambió la evidencia.',
+    'No confundas un resultado raro con un resultado imposible — los eventos de baja probabilidad ocurren, solo que con poca frecuencia.',
   ],
   'inferencia-prediccion': [
-    'Un r² alto no garantiza que el modelo sea correcto — revisa siempre la gráfica de residuos.',
-    'Predecir dentro del rango es interpolar; predecir fuera es extrapolar — y la confianza cambia radicalmente.',
+    'Un r² alto no garantiza que el modelo sea correcto — revisa siempre la gráfica de residuos para detectar patrones ocultos.',
+    'Predecir dentro del rango de datos es interpolar; predecir fuera es extrapolar — y la confianza cambia radicalmente.',
+    'Correlación no implica causalidad: siempre pregúntate si hay una variable oculta que explique la relación que observas.',
   ],
 }
 
