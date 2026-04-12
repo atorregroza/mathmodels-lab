@@ -851,9 +851,9 @@ export const researchBranches = [
     id: 'exploracion',
     title: '¿Qué es una exploración matemática?',
     icon: '🔍',
-    objective: 'Vivir la experiencia de investigar en matemáticas: formular una pregunta propia, desarrollar razonamiento matemático original y comunicar hallazgos con rigor.',
+    objective: 'Vivir la experiencia de explorar en matemáticas: formular una pregunta propia, desarrollar razonamiento matemático original y comunicar hallazgos con rigor.',
     develops: [
-      { label: 'Formular preguntas', detail: 'Convertir curiosidad en una pregunta matemática investigable sobre un tema de interés personal.' },
+      { label: 'Formular preguntas', detail: 'Convertir curiosidad en una pregunta matemática explorable sobre un tema de interés personal.' },
       { label: 'Aplicar con propósito', detail: 'Usar conceptos del curso de forma creativa — no solo repetir procedimientos, sino elegir herramientas con criterio.' },
       { label: 'Comunicar con precisión', detail: 'Expresar ideas con notación correcta, gráficas claras, diagramas y argumentos bien estructurados.' },
       { label: 'Reflexionar críticamente', detail: '¿Por qué funciona este enfoque? ¿Cuáles son sus limitaciones? ¿Qué haría distinto?' },
@@ -868,11 +868,11 @@ export const researchBranches = [
       { area: 'Uso de las matemáticas', tip: 'Las matemáticas deben ser pertinentes, acordes con el nivel del curso y correctas. Los aspectos matemáticos explorados deben demostrar un conocimiento y una comprensión sólidos. No basta con aplicar fórmulas — demuestra que entiendes el porqué detrás de cada procedimiento.' },
     ],
     documentStructure: [
-      { section: 'Portada', detail: 'Título (menos de 20 palabras, atractivo y relacionado con el tema), pregunta de investigación formulada con claridad, nombre del estudiante y curso.' },
-      { section: 'Introducción', detail: 'Tres párrafos: (1) Motivación y pregunta de investigación, (2) Relevancia del tema desde las matemáticas, (3) Metodología general y herramientas a usar.' },
+      { section: 'Portada', detail: 'Título (menos de 20 palabras, atractivo y relacionado con el tema), pregunta de exploración formulada con claridad, nombre del estudiante y curso.' },
+      { section: 'Introducción', detail: 'Tres párrafos: (1) Motivación y pregunta de exploración, (2) Relevancia del tema desde las matemáticas, (3) Metodología general y herramientas a usar.' },
       { section: 'Contextualización', detail: 'Ampliación del contexto presentado en la introducción, explicando el problema y la situación real. Sitúa al lector antes de comenzar el desarrollo matemático.' },
       { section: 'Desarrollo matemático', detail: 'El corazón del trabajo. Incluye fundamentación teórica, procedimientos explicados paso a paso con editor de ecuaciones, tablas y gráficas explicadas y referenciadas.' },
-      { section: 'Análisis de resultados', detail: 'Discute los resultados obtenidos, explica qué significan y cómo responden a la pregunta de investigación. Aquí se interpretan los hallazgos y se verifica si se cumplen los objetivos.' },
+      { section: 'Análisis de resultados', detail: 'Discute los resultados obtenidos, explica qué significan y cómo responden a la pregunta de exploración. Aquí se interpretan los hallazgos y se verifica si se cumplen los objetivos.' },
       { section: 'Referencias', detail: 'Listado en orden alfabético de todas las fuentes primarias y secundarias usadas, siguiendo norma APA.' },
       { section: 'Anexos (opcional)', detail: 'Solo si es estrictamente necesario incluir tablas extensas, imágenes o datos complementarios.' },
     ],
@@ -972,7 +972,7 @@ export const explorationBlocks = [
       },
       {
         step: 'Pregunta',
-        detail: 'Formular una pregunta inicial investigable, acotada y matemáticamente significativa.',
+        detail: 'Formular una pregunta inicial explorable, acotada y matemáticamente significativa.',
       },
       {
         step: 'Variables y datos',
@@ -1274,7 +1274,7 @@ export const explorationBlocks = [
     subtitle: 'Estadística, probabilidad y distribuciones',
     purpose: 'Agrupa exploraciones donde la pregunta gira alrededor de datos reales, variabilidad, distribuciones y la toma de decisiones con incertidumbre.',
     overview: 'Exploraciones donde el estudiante recoge datos, describe distribuciones, experimenta con probabilidad y construye argumentos estadísticos para responder preguntas sobre el mundo real.',
-    audience: 'Estudiantes y docentes que quieren conectar estadística descriptiva, probabilidad y distribuciones con preguntas investigables.',
+    audience: 'Estudiantes y docentes que quieren conectar estadística descriptiva, probabilidad y distribuciones con preguntas explorables.',
     lines: [
       {
         id: 'datos-distribuciones',
@@ -1328,7 +1328,7 @@ export const explorationBlocks = [
       },
       {
         step: 'Pregunta',
-        detail: 'Formular una pregunta investigable que pueda responderse con evidencia estadística o probabilística.',
+        detail: 'Formular una pregunta explorable que pueda responderse con evidencia estadística o probabilística.',
       },
       {
         step: 'Variables y datos',

@@ -95,7 +95,7 @@ const methodologyByFormat = {
   ],
   'con-punto-de-partida': [
     'Antes de refinar la pregunta, explora los datos o el fenómeno sin hipótesis preconcebida.',
-    'Formula la pregunta de modo que sea investigable: específica, acotada y respondible con matemáticas.',
+    'Formula la pregunta de modo que sea explorable: específica, acotada y respondible con matemáticas.',
     'Explica por qué elegiste ese recorte del problema y no otro — la justificación es parte del trabajo.',
     'Verifica que tu pregunta no sea tan amplia que no puedas responderla, ni tan estrecha que la respuesta sea trivial.',
   ],
@@ -279,7 +279,7 @@ export const ExplorationBlockPage = () => {
 
   const currentPrompts = linePrompts[selectedLine?.id] ?? linePrompts['modelacion-funcional']
   const nextSteps = [
-    'Delimitar mejor la pregunta para que sea investigable y no demasiado amplia.',
+    'Delimitar mejor la pregunta para que sea explorable y no demasiado amplia.',
     'Recoger una primera muestra de datos o registros desde el laboratorio base.',
     'Comparar al menos un segundo modelo o una segunda forma de representar el fenómeno.',
     selectedExploration?.nextStep ?? 'Profundizar el análisis con evidencia y justificación matemática.',
@@ -464,7 +464,7 @@ ${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
 <h2>Ayudas</h2>
 <ol>${[...helpItems, ...referenceItems].map(s => `<li>${s}</li>`).join('')}</ol>
 
-<h2>Referentes para investigar</h2>
+<h2>Referentes para explorar</h2>
 <div class="referentes">
 <ul>${referentesHTML.map(s => `<li>${s}</li>`).join('')}</ul>
 </div>
