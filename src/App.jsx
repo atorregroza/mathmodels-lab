@@ -11,6 +11,7 @@ const LabsLibraryPage = lazy(() => import('./pages/LabsLibraryPage').then(m => (
 const LabPage = lazy(() => import('./pages/LabPage').then(m => ({ default: m.LabPage })))
 const ModelacionPage = lazy(() => import('./pages/ModelacionPage').then(m => ({ default: m.ModelacionPage })))
 const CalculadoraPage = lazy(() => import('./pages/CalculadoraPage').then(m => ({ default: m.CalculadoraPage })))
+const MonografiaPage = lazy(() => import('./pages/MonografiaPage').then(m => ({ default: m.MonografiaPage })))
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
                   <Route path="/laboratorios" element={<LabsLibraryPage />} />
                   <Route path="/laboratorios/:labId" element={<LabPage />} />
                   <Route path="/modelacion" element={<ModelacionPage />} />
+                  <Route path="/monografia/mcu" element={<MonografiaPage />} />
                 </Routes>
               </PlatformShell>
             } />

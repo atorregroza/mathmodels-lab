@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCU — La Luna de Barranquilla</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:#0a0e1a;
+    color:#e0e0e0;
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    overflow:hidden;
+    user-select:none;
+  }
+  #top-row{ display:flex; flex:1 1 100%; min-height:0; transition:flex-basis .3s; }
+  body.data-open #top-row{ flex:1 1 50%; }
+  #canvas-wrap{ flex:1; position:relative; min-width:0; }
+  canvas#c{ display:block; width:100%; height:100%; }
+
+  #panel{
+    width:330px;
+    background:linear-gradient(180deg,#0d1b2a 0%,#1b2838 100%);
+    padding:16px 14px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    overflow-y:auto;
+    border-left:1px solid rgba(255,200,50,.08);
+    flex-shrink:0;
+  }
+  #panel h1{ font-size:15px; font-weight:700; text-align:center; color:#fbbf24; letter-spacing:.3px; }
+  #panel h1 small{ display:block; font-size:10px; font-weight:400; color:#94a3b8; margin-top:2px; }
+  .section{ background:rgba(255,255,255,.04); border-radius:10px; padding:11px 13px; }
+  .section-title{ font-size:10px; text-transform:uppercase; letter-spacing:1.2px; color:#64748b; margin-bottom:7px; font-weight:600; }
+
+  /* Info cards */
+  .info-grid{ display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+  .info-card{ background:rgba(251,191,36,.06); border:1px solid rgba(251,191,36,.12); border-radius:6px; padding:6px; text-align:center; }
+  .info-card .ic-label{ font-size:9px; color:#94a3b8; }
+  .info-card .ic-val{ font-size:13px; font-weight:700; color:#fbbf24; }
+  .info-card .ic-unit{ font-size:8px; color:#64748b; }
+
+  .slider-group{ margin-bottom:9px }
+  .slider-group:last-child{ margin-bottom:0 }
+  .slider-label{ display:flex; justify-content:space-between; font-size:11px; margin-bottom:3px; }
+  .slider-label .val{ font-weight:600; color:#fbbf24; font-variant-numeric:tabular-nums; }
+  input[type=range]{ -webkit-appearance:none; width:100%; height:5px; border-radius:3px; background:#1e293b; outline:none; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:#fbbf24; cursor:grab; box-shadow:0 0 8px rgba(251,191,36,.4); }
+
+  .mag-grid{ display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+  .mag-card{ background:rgba(0,0,0,.3); border-radius:6px; padding:6px; text-align:center; }
+  .mag-card .symbol{ font-size:9px; color:#94a3b8; margin-bottom:1px; }
+  .mag-card .value{ font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .mag-card .unit{ font-size:8px; color:#64748b; margin-left:2px; }
+  .mag-card.blue .value{color:#38bdf8}
+  .mag-card.red .value{color:#ef4444}
+  .mag-card.green .value{color:#22c55e}
+  .mag-card.purple .value{color:#a78bfa}
+  .mag-card.amber .value{color:#fbbf24}
+  .mag-card.cyan .value{color:#06b6d4}
+
+  .check-row{ display:flex; align-items:center; gap:6px; font-size:11px; margin-bottom:4px; cursor:pointer; }
+  .check-row:last-child{margin-bottom:0}
+  .check-row input{display:none}
+  .check-box{ width:15px;height:15px;border-radius:3px;border:2px solid #475569;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0; }
+  .check-row input:checked + .check-box{ border-color:var(--c); background:var(--c); }
+  .check-box svg{width:10px;height:10px;stroke:#fff;stroke-width:2.5;fill:none;opacity:0;transition:opacity .15s;}
+  .check-row input:checked + .check-box svg{opacity:1}
+  .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+  .btn-row{display:flex;gap:5px}
+  .btn{flex:1;padding:7px 0;border:none;border-radius:6px;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+  .btn-play{background:#fbbf24;color:#0f172a}
+  .btn-play:hover{background:#fcd34d}
+  .btn-play.paused{background:#22c55e}
+  .btn-play.paused:hover{background:#4ade80}
+  .btn-reset{background:rgba(255,255,255,.08);color:#e2e8f0}
+  .btn-reset:hover{background:rgba(255,255,255,.15)}
+
+  .speed-row{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+  .speed-btn{padding:3px 8px;border:1px solid #334155;border-radius:4px;background:transparent;color:#94a3b8;font-family:inherit;font-size:10px;cursor:pointer;transition:all .15s}
+  .speed-btn.active{background:#fbbf24;color:#0f172a;border-color:#fbbf24;font-weight:600}
+
+  .btn-rec{width:100%;padding:9px 0;border:2px solid #f97316;border-radius:7px;background:transparent;color:#f97316;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px}
+  .btn-rec:hover{background:rgba(249,115,22,.1)}
+  .btn-rec.recording{background:#f97316;color:#0f172a;animation:pulse-rec 1.5s infinite}
+  .rec-dot{width:9px;height:9px;border-radius:50%;background:#f97316;flex-shrink:0}
+  .btn-rec.recording .rec-dot{background:#0f172a}
+  @keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(249,115,22,.4)}50%{box-shadow:0 0 0 8px rgba(249,115,22,0)}}
+
+  /* Wheel selector */
+  .wheel-selector{display:flex;gap:5px}
+  .wheel-btn{flex:1;padding:8px 4px;border:2px solid #334155;border-radius:8px;background:rgba(255,255,255,.03);color:#94a3b8;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center;line-height:1.3}
+  .wheel-btn .wb-flag{font-size:16px;display:block;margin-bottom:2px}
+  .wheel-btn.active{border-color:#fbbf24;color:#fbbf24;background:rgba(251,191,36,.08)}
+  .wheel-btn:hover:not(.active){border-color:#64748b;color:#e2e8f0}
+
+  .footer{margin-top:auto;text-align:center;font-size:8px;color:#475569;padding-top:4px}
+
+  /* Data panel */
+  #data-panel{flex:0 0 0px;overflow:hidden;background:#0b1120;border-top:2px solid #1e3a5f;transition:flex-basis .3s ease;display:flex;position:relative;z-index:5}
+  body.data-open #data-panel{flex:1 1 50%}
+  #data-table-wrap{width:340px;flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid #1e293b}
+  #data-table-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #1e293b}
+  #data-table-header h2{font-size:12px;font-weight:600;color:#e2e8f0}
+  .data-count{font-size:10px;color:#64748b;font-variant-numeric:tabular-nums}
+  #data-table-scroll{flex:1;overflow-y:auto}
+  #data-table{width:100%;border-collapse:collapse;font-size:10px;font-variant-numeric:tabular-nums}
+  #data-table thead{position:sticky;top:0;z-index:2}
+  #data-table th{background:#1e293b;color:#94a3b8;font-weight:600;padding:5px 6px;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+  #data-table td{padding:4px 6px;text-align:center;border-bottom:1px solid rgba(255,255,255,.04);color:#cbd5e1}
+  #data-table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  .data-actions{display:flex;gap:5px;padding:7px 12px;border-top:1px solid #1e293b}
+  .data-btn{flex:1;padding:6px 0;border:1px solid #334155;border-radius:5px;background:transparent;color:#94a3b8;font-family:inherit;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s}
+  .data-btn:hover{background:rgba(255,255,255,.08);color:#e2e8f0}
+  .data-btn.csv{border-color:#22c55e;color:#22c55e}
+  .data-btn.csv:hover{background:rgba(34,197,94,.15)}
+  .data-btn.clear{border-color:#ef4444;color:#ef4444}
+  .data-btn.clear:hover{background:rgba(239,68,68,.15)}
+  #graphs-wrap{flex:1;display:flex;flex-direction:column;min-width:0;padding:8px;gap:5px}
+  .graph-container{flex:1;position:relative;min-height:0;background:#0f172a;border-radius:7px;border:1px solid #1e293b;overflow:hidden}
+  .graph-label{position:absolute;top:5px;left:8px;font-size:10px;font-weight:600;z-index:1;display:flex;align-items:center;gap:4px}
+  .graph-label .gl-dot{width:7px;height:7px;border-radius:50%}
+  .graph-canvas{width:100%;height:100%;display:block}
+</style>
+</head>
+<body>
+<div id="top-row">
+  <div id="canvas-wrap"><canvas id="c"></canvas></div>
+  <div id="panel">
+    <h1 id="wheel-title">La Luna de Barranquilla<small id="wheel-subtitle">Movimiento Circular Uniforme &mdash; Gran Malecon</small></h1>
+
+    <!-- Selector de ruedas -->
+    <div class="wheel-selector">
+      <button class="wheel-btn active" data-wheel="luna"><span class="wb-flag">&#127464;&#127476;</span>La Luna<br>Barranquilla</button>
+      <button class="wheel-btn" data-wheel="chicago"><span class="wb-flag">&#127482;&#127480;</span>Ferris Wheel<br>Chicago 1893</button>
+      <button class="wheel-btn" data-wheel="compare"><span class="wb-flag">&#9878;</span>Comparar<br>ambas</button>
+    </div>
+
+    <!-- Specs reales -->
+    <div class="section">
+      <div class="section-title" id="specs-title">Especificaciones Reales</div>
+      <div class="info-grid" id="specs-grid">
+        <div class="info-card"><div class="ic-label">Altura</div><div class="ic-val" id="spec-altura">65<span class="ic-unit"> m</span></div></div>
+        <div class="info-card"><div class="ic-label">Cabinas</div><div class="ic-val" id="spec-cabinas">44</div></div>
+        <div class="info-card"><div class="ic-label">Peso</div><div class="ic-val" id="spec-peso">240<span class="ic-unit"> ton</span></div></div>
+        <div class="info-card"><div class="ic-label">Periodo</div><div class="ic-val" id="spec-periodo">~17<span class="ic-unit"> min</span></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Controles</div>
+      <div class="slider-group">
+        <div class="slider-label"><span>Radio <b>r</b></span><span class="val" id="r-val">32.5 m</span></div>
+        <input type="range" id="r-slider" min="10" max="50" step="0.5" value="32.5">
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>Vel. angular <b>&omega;</b></span><span class="val" id="w-val">0.006 rad/s</span></div>
+        <input type="range" id="w-slider" min="0.001" max="0.05" step="0.0005" value="0.006">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Magnitudes</div>
+      <div class="mag-grid">
+        <div class="mag-card blue"><div class="symbol">Vel. tangencial</div><div><span class="value" id="v-disp">0.20</span><span class="unit">m/s</span></div></div>
+        <div class="mag-card red"><div class="symbol">Acel. centripeta</div><div><span class="value" id="ac-disp">0.001</span><span class="unit">m/s&sup2;</span></div></div>
+        <div class="mag-card green"><div class="symbol">Radio</div><div><span class="value" id="rd-disp">32.50</span><span class="unit">m</span></div></div>
+        <div class="mag-card purple"><div class="symbol">Periodo</div><div><span class="value" id="t-disp">1047</span><span class="unit">s</span></div></div>
+        <div class="mag-card amber"><div class="symbol">Frecuencia</div><div><span class="value" id="f-disp">0.001</span><span class="unit">Hz</span></div></div>
+        <div class="mag-card cyan"><div class="symbol">&theta;</div><div><span class="value" id="th-disp">0.0</span><span class="unit">&deg;</span></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Vectores</div>
+      <label class="check-row" style="--c:#38bdf8"><input type="checkbox" id="chk-v" checked><span class="check-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span><span class="dot" style="background:#38bdf8"></span>Vel. tangencial <b>v</b></label>
+      <label class="check-row" style="--c:#ef4444"><input type="checkbox" id="chk-ac" checked><span class="check-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span><span class="dot" style="background:#ef4444"></span>Acel. centripeta <b>a<sub>c</sub></b></label>
+      <label class="check-row" style="--c:#22c55e"><input type="checkbox" id="chk-r" checked><span class="check-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span><span class="dot" style="background:#22c55e"></span>Radio <b>r</b></label>
+      <label class="check-row" style="--c:#06b6d4"><input type="checkbox" id="chk-wind"><span class="check-box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span><span class="dot" style="background:#06b6d4"></span>Resistencia del viento <b>F<sub>d</sub></b></label>
+    </div>
+
+    <div class="section">
+      <div class="btn-row">
+        <button class="btn btn-play" id="btn-play">&#10074;&#10074; Pausar</button>
+        <button class="btn btn-reset" id="btn-reset">&#8634; Reset</button>
+      </div>
+      <div style="height:6px"></div>
+      <div class="section-title" style="margin-bottom:4px">Velocidad simulacion</div>
+      <div class="speed-row">
+        <button class="speed-btn" data-s="1">&times;1</button>
+        <button class="speed-btn" data-s="10">&times;10</button>
+        <button class="speed-btn active" data-s="50">&times;50</button>
+        <button class="speed-btn" data-s="100">&times;100</button>
+        <button class="speed-btn" data-s="500">&times;500</button>
+      </div>
+      <div style="height:6px"></div>
+      <div class="section-title" style="margin-bottom:4px">Vueltas</div>
+      <div class="speed-row">
+        <button class="speed-btn laps-btn" data-l="1">1</button>
+        <button class="speed-btn laps-btn" data-l="2">2</button>
+        <button class="speed-btn laps-btn active" data-l="3">3</button>
+        <button class="speed-btn laps-btn" data-l="5">5</button>
+        <button class="speed-btn laps-btn" data-l="10">10</button>
+      </div>
+    </div>
+
+    <button class="btn-rec" id="btn-rec"><span class="rec-dot"></span>Grabar Datos</button>
+    <div class="footer">Simulacion educativa &mdash; MCU<br>Basada en La Luna del Rio, Barranquilla</div>
+  </div>
+</div>
+
+<div id="data-panel">
+  <div id="data-table-wrap">
+    <div id="data-table-header"><h2>Datos Registrados</h2><span class="data-count" id="data-count">0 registros</span></div>
+    <div id="data-table-scroll">
+      <table id="data-table">
+        <thead id="data-thead"><tr><th>#</th><th>t (s)</th><th>x (m)</th><th>y (m)</th><th>&theta; (&deg;)</th><th>v (m/s)</th><th>a<sub>c</sub> (m/s&sup2;)</th></tr></thead>
+        <tbody id="data-tbody"></tbody>
+      </table>
+    </div>
+    <div class="data-actions">
+      <button class="data-btn csv" id="btn-csv">&#11015; Exportar CSV</button>
+      <button class="data-btn clear" id="btn-clear-data">&#10005; Limpiar</button>
+    </div>
+  </div>
+  <div id="graphs-wrap">
+    <div class="graph-container"><div class="graph-label" style="color:#22c55e"><span class="gl-dot" style="background:#22c55e"></span>x(t) = r&middot;cos(&omega;t)</div><canvas class="graph-canvas" id="graph-x"></canvas></div>
+    <div class="graph-container"><div class="graph-label" style="color:#a855f7"><span class="gl-dot" style="background:#a855f7"></span>y(t) = r&middot;sin(&omega;t)</div><canvas class="graph-canvas" id="graph-y"></canvas></div>
+    <div class="graph-container"><div class="graph-label" style="color:#fbbf24"><span class="gl-dot" style="background:#fbbf24"></span>&theta;(t)</div><canvas class="graph-canvas" id="graph-theta"></canvas></div>
+    <div class="graph-container" id="torque-container" style="display:none"><div class="graph-label" style="color:#06b6d4"><span class="gl-dot" style="background:#06b6d4"></span>F<sub>drag</sub> cabina (N)</div><canvas class="graph-canvas" id="graph-torque"></canvas></div>
+  </div>
+</div>
+
+<script>
+// ===================== PRESETS DE RUEDAS =====================
+const WHEELS = {
+  luna: {
+    name: 'La Luna de Barranquilla',
+    subtitle: 'Movimiento Circular Uniforme — Gran Malecon',
+    location: 'Barranquilla, Colombia',
+    year: 2022,
+    r: 32.5,           // 65m altura / 2
+    periodMin: 17.5,   // minutos
+    cabins: 44,
+    pesoTon: 240,
+    capacidadCabina: 6,
+    style: 'modern',   // LED colors
+    centerLabel: 'LA LUNA',
+    // Viento: brisa del Caribe, promedio 19 km/h = 5.3 m/s (NE)
+    windSpeed: 5.3,    // m/s promedio anual
+    windLabel: 'Brisa Caribe NE',
+    cabinArea: 5,      // area frontal cabina m² (2m x 2.5m, 6 personas)
+    cabinCd: 1.0,      // coeficiente de arrastre (cabina cerrada moderna)
+  },
+  chicago: {
+    name: 'Rueda de Chicago',
+    subtitle: 'Exposicion Mundial Colombina — 1893',
+    location: 'Chicago, EE.UU.',
+    year: 1893,
+    r: 40,             // 80m altura / 2
+    periodMin: 20,     // ~20 min por vuelta
+    cabins: 36,
+    pesoTon: 2000,     // estructura completa ~2000 ton
+    capacidadCabina: 60,
+    style: 'vintage',  // sepia/madera
+    centerLabel: 'FERRIS 1893',
+    // Viento: brisa Lago Michigan, promedio 16.6 km/h = 4.6 m/s
+    windSpeed: 4.6,    // m/s promedio anual
+    windLabel: 'Brisa Lago Michigan',
+    cabinArea: 20,     // area frontal cabina m² (4m x 5m, vagon de 60 personas)
+    cabinCd: 1.2,      // coeficiente de arrastre (vagon rectangular de madera)
+  }
+};
+
+let currentWheel = 'luna';
+let compareMode = false;
+const w = WHEELS[currentWheel];
+
+const state = {
+  r: w.r,
+  omega: (2 * Math.PI) / (w.periodMin * 60),
+  theta: 0,
+  // Movimiento con viento (paralelo al ideal)
+  thetaWind: 0,
+  omegaWind: (2 * Math.PI) / (w.periodMin * 60),
+  paused: false, speed: 50, laps: 3,
+  showV: true, showAc: true, showR: true,
+  showWind: false,
+};
+
+// Compare mode: independent state for each wheel
+const compareState = {
+  luna: { theta: 0, thetaWind: 0, omegaWind: (2*Math.PI)/(WHEELS.luna.periodMin*60), omega: (2*Math.PI)/(WHEELS.luna.periodMin*60), r: WHEELS.luna.r },
+  chicago: { theta: 0, thetaWind: 0, omegaWind: (2*Math.PI)/(WHEELS.chicago.periodMin*60), omega: (2*Math.PI)/(WHEELS.chicago.periodMin*60), r: WHEELS.chicago.r },
+};
+
+// Masa por cabina (estructura + pasajeros) para momento de inercia
+const CABIN_MASS = {
+  luna: 500 + 6 * 70,      // 920 kg (cabina moderna + 6 personas)
+  chicago: 3000 + 60 * 70,  // 7200 kg (vagon madera + 60 personas)
+};
+
+// Torque RIGUROSO del viento sobre TODAS las cabinas
+// Cada cabina tiene velocidad tangencial diferente segun su posicion
+// El drag depende de la velocidad relativa cabina-viento
+function calcNetWindTorque(wheelKey, thetaRef, omega) {
+  const wh = WHEELS[wheelKey];
+  const n = wh.cabins;
+  const r = wh.r;
+  const vW = wh.windSpeed;
+  let totalTorque = 0;
+
+  for (let i = 0; i < n; i++) {
+    const a = thetaRef + (i * 2 * Math.PI) / n;
+
+    // Velocidad tangencial de esta cabina (perpendicular al radio)
+    const vx = -omega * r * Math.sin(a);
+    const vy = omega * r * Math.cos(a);
+
+    // Velocidad relativa cabina - viento (viento sopla en +x)
+    const vrx = vx - vW;
+    const vry = vy;
+    const vrMag = Math.sqrt(vrx * vrx + vry * vry);
+    if (vrMag < 0.0001) continue;
+
+    // Fuerza de drag (opuesta a velocidad relativa)
+    const Fd = 0.5 * RHO * vrMag * vrMag * wh.cabinCd * wh.cabinArea;
+    const fx = -Fd * vrx / vrMag;
+    const fy = -Fd * vry / vrMag;
+
+    // Torque = r × F (componente z del producto cruz)
+    // posicion cabina: (r·cos a, r·sin a)
+    const px = r * Math.cos(a);
+    const py = r * Math.sin(a);
+    totalTorque += px * fy - py * fx;
+  }
+  return totalTorque;
+}
+
+// Momento de inercia: I = N * m * r²
+function getInertia(wheelKey) {
+  const wh = WHEELS[wheelKey];
+  return wh.cabins * CABIN_MASS[wheelKey] * wh.r * wh.r;
+}
+
+// Torque del motor: intenta mantener omega cerca del objetivo
+// El motor actua como un resorte restaurador: τ_motor = K * (ω_target - ω_actual)
+// K se calibra para que el motor domine pero el viento cause perturbaciones visibles
+function getMotorTorque(wheelKey, omegaCurrent) {
+  const wh = WHEELS[wheelKey];
+  const omegaTarget = (2 * Math.PI) / (wh.periodMin * 60);
+  const I = getInertia(wheelKey);
+  // K = I * factor — factor alto = motor fuerte, poca perturbacion
+  // factor 0.5 da buena visibilidad del efecto del viento
+  const K = I * 0.5;
+  return K * (omegaTarget - omegaCurrent);
+}
+
+function getNumCabins() { return WHEELS[currentWheel].cabins; }
+function getWheelStyle() { return WHEELS[currentWheel].style; }
+
+// Escala adaptativa
+function getPxPerM() {
+  return Math.min(W, H) * 0.0055;
+}
+
+// ===================== DATOS =====================
+const dataLog = [];
+let recording = false;
+let recStartTime = 0;
+let simTime = 0;
+let lastRecordTime = -1;
+const REC_INTERVAL = 0.5;
+
+// ===================== CANVAS =====================
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H, cx, cy;
+
+function resize() {
+  const wrap = document.getElementById('canvas-wrap');
+  const dpr = window.devicePixelRatio || 1;
+  W = wrap.clientWidth;
+  H = wrap.clientHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cx = W * 0.48;
+  cy = H * 0.44;
+  try { resizeGraphs(); } catch(e) {}
+}
+window.addEventListener('resize', resize);
+window.addEventListener('load', resize);
+resize();
+
+// ===================== COLORES CABINAS =====================
+function getCabinColor(i, total) {
+  if (getWheelStyle() === 'vintage') {
+    // Madera oscura con variaciones sutiles (Chicago 1893)
+    const base = 25 + (i % 3) * 8;
+    return `rgb(${base + 60}, ${base + 35}, ${base + 10})`;
+  }
+  // LED arcoiris (La Luna)
+  const hue = (i * 360 / total) % 360;
+  return `hsl(${hue}, 80%, 55%)`;
+}
+
+// ===================== DIBUJO =====================
+
+function drawSky() {
+  const isChicago = !compareMode && currentWheel === 'chicago';
+  const isNeutral = compareMode;
+
+  if (isChicago) {
+    // Dia sepia — Chicago 1893 Exposicion Colombina
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#c8b898');
+    grad.addColorStop(0.3, '#b8a888');
+    grad.addColorStop(0.6, '#a89878');
+    grad.addColorStop(1, '#988868');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Nubes suaves sepia
+    ctx.fillStyle = 'rgba(210,195,170,0.3)';
+    const t = performance.now() / 8000;
+    for (let i = 0; i < 5; i++) {
+      const cx2 = (i * W / 4 + t * 30 + i * 100) % (W + 200) - 100;
+      ctx.beginPath();
+      ctx.ellipse(cx2, 50 + i * 15, 80 + i * 20, 20 + i * 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Silueta de edificios de 1893 al fondo
+    ctx.fillStyle = '#8a7a65';
+    const bldgY = H - 55;
+    // Edificios bajos variados
+    for (let i = 0; i < 20; i++) {
+      const bx = i * (W / 20);
+      const bh = 15 + ((i * 7 + 3) % 25);
+      const bw = W / 22;
+      ctx.fillRect(bx, bldgY - bh, bw, bh);
+      // Ventanitas
+      ctx.fillStyle = 'rgba(200,185,160,0.4)';
+      for (let wy = bldgY - bh + 4; wy < bldgY - 3; wy += 6) {
+        for (let wx = bx + 3; wx < bx + bw - 3; wx += 5) {
+          ctx.fillRect(wx, wy, 2, 3);
+        }
+      }
+      ctx.fillStyle = '#8a7a65';
+    }
+    // Torre (como la del fondo de la foto original)
+    ctx.fillStyle = '#7a6a55';
+    ctx.fillRect(W * 0.75, bldgY - 50, 15, 50);
+    ctx.beginPath();
+    ctx.moveTo(W * 0.75 - 3, bldgY - 50);
+    ctx.lineTo(W * 0.75 + 7.5, bldgY - 62);
+    ctx.lineTo(W * 0.75 + 18, bldgY - 50);
+    ctx.fill();
+
+  } else if (isNeutral) {
+    // Fondo neutro oscuro para comparacion
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#0a0f1e');
+    grad.addColorStop(0.5, '#0e1528');
+    grad.addColorStop(1, '#121a30');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid sutil de fondo
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 60) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += 60) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+  } else {
+    // Noche de Barranquilla sobre el Magdalena
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, '#050a18');
+    grad.addColorStop(0.5, '#0c1629');
+    grad.addColorStop(0.75, '#0f1b33');
+    grad.addColorStop(1, '#162240');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Estrellas
+    if (!drawSky._stars) {
+      drawSky._stars = [];
+      for (let i = 0; i < 120; i++) {
+        drawSky._stars.push({ x: Math.random(), y: Math.random() * 0.6, s: Math.random() * 1.5 + 0.3, b: Math.random() });
+      }
+    }
+    const t = performance.now() / 2000;
+    drawSky._stars.forEach(st => {
+      const alpha = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(t + st.b * 10));
+      ctx.fillStyle = `rgba(255,255,255,${alpha * 0.5})`;
+      ctx.beginPath();
+      ctx.arc(st.x * W, st.y * H, st.s, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Luna en el cielo
+    const moonX = W * 0.15, moonY = H * 0.12;
+    ctx.fillStyle = '#f5f0d0';
+    ctx.shadowColor = 'rgba(245,240,208,0.3)';
+    ctx.shadowBlur = 30;
+    ctx.beginPath();
+    ctx.arc(moonX, moonY, 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+}
+
+function drawRiver() {
+  const isChicago = !compareMode && currentWheel === 'chicago';
+  const isNeutral = compareMode;
+
+  if (isChicago) {
+    // Suelo de la Exposicion — tierra/camino
+    const groundY = H - 55;
+    ctx.fillStyle = '#7a6a55';
+    ctx.fillRect(0, groundY, W, H - groundY);
+    ctx.strokeStyle = '#6a5a45';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(W, groundY); ctx.stroke();
+    return;
+  }
+
+  if (isNeutral) {
+    // Suelo neutro sutil
+    const groundY = H - 55;
+    ctx.fillStyle = '#0a0f1a';
+    ctx.fillRect(0, groundY, W, H - groundY);
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(W, groundY); ctx.stroke();
+    return;
+  }
+
+  // Rio Magdalena (original)
+  const riverY = H - 55;
+  const grad = ctx.createLinearGradient(0, riverY, 0, H);
+  grad.addColorStop(0, '#0a2540');
+  grad.addColorStop(0.3, '#0d2d4a');
+  grad.addColorStop(1, '#081e36');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, riverY, W, H - riverY);
+
+  // Reflejos en el agua
+  const t = performance.now() / 1500;
+  for (let i = 0; i < 15; i++) {
+    const rx = (i / 15 + Math.sin(t + i) * 0.02) * W;
+    const ry = riverY + 10 + Math.sin(t * 0.7 + i * 2) * 8;
+    const alpha = 0.08 + 0.05 * Math.sin(t + i * 3);
+    ctx.fillStyle = `rgba(251,191,36,${alpha})`;
+    ctx.fillRect(rx - 15, ry, 30, 1.5);
+  }
+
+  // Linea del malecon
+  ctx.strokeStyle = '#3d4f6a';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, riverY);
+  ctx.lineTo(W, riverY);
+  ctx.stroke();
+}
+
+function drawSupport(rPx) {
+  const groundY = H - 55;
+  // Soporte tipo A robusto
+  ctx.strokeStyle = '#5a6a80';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(cx - 50, groundY);
+  ctx.lineTo(cx, cy);
+  ctx.lineTo(cx + 50, groundY);
+  ctx.stroke();
+  // Refuerzo
+  ctx.lineWidth = 2;
+  const midY = (cy + groundY) / 2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 28, midY);
+  ctx.lineTo(cx + 28, midY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx - 36, midY + (groundY - midY) * 0.5);
+  ctx.lineTo(cx + 36, midY + (groundY - midY) * 0.5);
+  ctx.stroke();
+}
+
+function drawWheel(rPx, theta) {
+  const n = getNumCabins();
+  const isVintage = getWheelStyle() === 'vintage';
+  const glowT = performance.now() / 1000;
+
+  if (!isVintage) {
+    // LED glow (La Luna)
+    ctx.shadowColor = `hsla(${(glowT*30)%360}, 80%, 50%, 0.15)`;
+    ctx.shadowBlur = 20;
+  }
+
+  // Rim exterior
+  ctx.strokeStyle = isVintage ? '#8B7355' : '#7a8a9e';
+  ctx.lineWidth = isVintage ? 6 : 5;
+  ctx.beginPath(); ctx.arc(cx, cy, rPx, 0, Math.PI*2); ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  if (!isVintage) {
+    // LED ring (La Luna)
+    for (let i = 0; i < 72; i++) {
+      const a = (i/72)*Math.PI*2;
+      ctx.fillStyle = `hsla(${((i*5)+glowT*30)%360}, 90%, 60%, 0.7)`;
+      ctx.beginPath(); ctx.arc(cx+(rPx+3)*Math.cos(a), cy-(rPx+3)*Math.sin(a), 1.5, 0, Math.PI*2); ctx.fill();
+    }
+  } else {
+    // Anillo decorativo de acero (Chicago)
+    ctx.strokeStyle = '#6B5B45'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(cx, cy, rPx+4, 0, Math.PI*2); ctx.stroke();
+    // Rivets
+    for (let i = 0; i < 48; i++) {
+      const a = (i/48)*Math.PI*2;
+      ctx.fillStyle = '#9B8B75';
+      ctx.beginPath(); ctx.arc(cx+(rPx+4)*Math.cos(a), cy-(rPx+4)*Math.sin(a), 1.5, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Rim interior
+  ctx.strokeStyle = isVintage ? '#6B5B45' : '#4a5568'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(cx, cy, rPx*0.92, 0, Math.PI*2); ctx.stroke();
+
+  // Hub central
+  ctx.fillStyle = isVintage ? '#8B7355' : '#5a6a80';
+  ctx.beginPath(); ctx.arc(cx, cy, isVintage ? 10 : 8, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = isVintage ? '#C0A070' : '#fbbf24';
+  ctx.beginPath(); ctx.arc(cx, cy, isVintage ? 5 : 4, 0, Math.PI*2); ctx.fill();
+
+  // Spokes y cabinas
+  for (let i = 0; i < n; i++) {
+    const angle = theta + (i*Math.PI*2)/n;
+    const ex = cx + rPx*Math.cos(angle), ey = cy - rPx*Math.sin(angle);
+    ctx.strokeStyle = isVintage ? 'rgba(107,91,69,0.6)' : 'rgba(90,106,128,0.5)';
+    ctx.lineWidth = isVintage ? 1.5 : 1;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke();
+    drawCabin(ex, ey, getCabinColor(i, n), i === 0);
+  }
+
+  // Cross-spokes
+  const crossStep = isVintage ? 3 : 4;
+  for (let i = 0; i < n; i += crossStep) {
+    const a1 = theta+(i*Math.PI*2)/n, a2 = theta+((i+crossStep)*Math.PI*2)/n;
+    const midR = rPx*0.5;
+    ctx.strokeStyle = isVintage ? 'rgba(107,91,69,0.3)' : 'rgba(90,106,128,0.3)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx+midR*Math.cos(a1), cy-midR*Math.sin(a1)); ctx.lineTo(cx+midR*Math.cos(a2), cy-midR*Math.sin(a2)); ctx.stroke();
+  }
+
+  // Nombre central
+  const wh = WHEELS[currentWheel];
+  ctx.font = '600 9px Inter, sans-serif';
+  ctx.fillStyle = isVintage ? 'rgba(192,160,112,0.5)' : 'rgba(251,191,36,0.5)';
+  ctx.textAlign = 'center';
+  ctx.fillText(wh.centerLabel, cx, cy + 20);
+}
+
+function drawCabin(x, y, color, isHighlight) {
+  const isVintage = getWheelStyle() === 'vintage';
+  // Chicago: bigger cabins (60 people!), Luna: smaller (6 people)
+  const w = isVintage ? 16 : 10, h = isVintage ? 18 : 13;
+  const topY = y + 3;
+
+  ctx.strokeStyle = isVintage ? '#6B5B45' : '#5a6a80';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, topY); ctx.stroke();
+
+  if (isHighlight) {
+    ctx.shadowColor = isVintage ? 'rgba(192,160,112,0.6)' : 'rgba(251,191,36,0.6)';
+    ctx.shadowBlur = 12;
+  }
+
+  ctx.fillStyle = isHighlight ? (isVintage ? '#C0A070' : '#fbbf24') : color;
+  ctx.beginPath(); ctx.roundRect(x-w/2, topY, w, h, [0,0,2,2]); ctx.fill();
+
+  if (isVintage) {
+    // Ventanas (cabinas grandes con ventanas)
+    ctx.fillStyle = 'rgba(200,180,140,0.3)';
+    ctx.fillRect(x-w/2+2, topY+3, 4, 4);
+    ctx.fillRect(x+w/2-6, topY+3, 4, 4);
+  }
+
+  ctx.fillStyle = isHighlight ? (isVintage ? '#8B7355' : '#d4a017') : 'rgba(0,0,0,0.3)';
+  ctx.fillRect(x-w/2-1, topY-2, w+2, 3);
+  ctx.shadowBlur = 0;
+
+  if (isHighlight) {
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(x-w/2-1, topY-3, w+2, h+4, 3); ctx.stroke();
+  }
+}
+
+// ===================== VECTORES =====================
+
+function drawArrow(fromX, fromY, toX, toY, color, label, labelOffset) {
+  const dx = toX - fromX, dy = toY - fromY;
+  const len = Math.sqrt(dx * dx + dy * dy);
+  if (len < 2) return;
+  const ux = dx / len, uy = dy / len;
+  ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(fromX, fromY); ctx.lineTo(toX, toY); ctx.stroke();
+  const headLen = 10, headAngle = 0.4;
+  ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(toX, toY);
+  ctx.lineTo(toX - headLen*(ux*Math.cos(headAngle)-uy*Math.sin(headAngle)), toY - headLen*(uy*Math.cos(headAngle)+ux*Math.sin(headAngle)));
+  ctx.lineTo(toX - headLen*(ux*Math.cos(-headAngle)-uy*Math.sin(-headAngle)), toY - headLen*(uy*Math.cos(-headAngle)+ux*Math.sin(-headAngle)));
+  ctx.closePath(); ctx.fill();
+  if (label) {
+    const lx = (fromX+toX)/2 + (labelOffset?.x||0), ly = (fromY+toY)/2 + (labelOffset?.y||0);
+    ctx.font = '600 11px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const m = ctx.measureText(label); const p = 3;
+    ctx.fillStyle = 'rgba(5,10,24,0.85)'; ctx.beginPath(); ctx.roundRect(lx-m.width/2-p, ly-8, m.width+p*2, 16, 3); ctx.fill();
+    ctx.fillStyle = color; ctx.fillText(label, lx, ly);
+  }
+}
+
+function drawVectors(rPx) {
+  const angle = state.theta;
+  const px = cx + rPx * Math.cos(angle), py = cy - rPx * Math.sin(angle);
+  const v = state.omega * state.r, ac = state.omega * state.omega * state.r;
+  const vScale = Math.min(80, v * 200), acScale = Math.min(80, ac * 20000);
+  const cosA = Math.cos(angle), sinA = Math.sin(angle);
+
+  if (state.showR) {
+    ctx.setLineDash([5, 3]);
+    drawArrow(cx, cy, px, py, '#22c55e', `r = ${state.r.toFixed(1)} m`, {x: sinA*18, y: cosA*18});
+    ctx.setLineDash([]);
+  }
+  if (state.showV) {
+    drawArrow(px, py, px + vScale*sinA, py + vScale*cosA, '#38bdf8', `v = ${v.toFixed(3)} m/s`, {x: cosA*16, y: sinA*16});
+  }
+  if (state.showAc) {
+    const dirX = cx-px, dirY = cy-py, dirLen = Math.sqrt(dirX*dirX+dirY*dirY);
+    if (dirLen > 0) drawArrow(px, py, px+(dirX/dirLen)*acScale, py+(dirY/dirLen)*acScale, '#ef4444', `ac = ${ac.toFixed(5)} m/s²`, {x: -sinA*16, y: -cosA*16});
+  }
+
+  // Arco theta — color adaptado al fondo
+  const thetaMod = ((state.theta%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+  const isChicagoBg = !compareMode && currentWheel === 'chicago';
+  const thetaColor = isChicagoBg ? '#1e40af' : '#fbbf24'; // azul oscuro sobre sepia, dorado sobre noche
+  const thetaAlpha = isChicagoBg ? 'rgba(30,64,175,0.7)' : 'rgba(251,191,36,0.5)';
+  if (thetaMod > 0.05) {
+    ctx.strokeStyle = thetaAlpha; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(cx, cy, 25, 0, -thetaMod, true); ctx.stroke();
+    ctx.font = '600 12px Inter, sans-serif'; ctx.fillStyle = thetaColor; ctx.textAlign = 'center';
+    ctx.fillText('θ', cx + 38*Math.cos(-thetaMod/2), cy + 38*Math.sin(-thetaMod/2));
+  }
+
+  // Trayectoria circular
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+  ctx.setLineDash([3,5]); ctx.beginPath(); ctx.arc(cx, cy, rPx, 0, Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
+}
+
+// ===================== VIENTO Y RESISTENCIA =====================
+const RHO = 1.225; // densidad del aire kg/m³
+
+function calcDragForce(wheelKey, theta) {
+  const wh = WHEELS[wheelKey];
+  const vCabin = wh.r * (2 * Math.PI / (wh.periodMin * 60)); // v tangencial
+  // Componente horizontal de velocidad de la cabina
+  const vCabinX = -vCabin * Math.sin(theta);
+  // Velocidad relativa cabina-viento (viento sopla de izquierda a derecha)
+  const vRel = vCabinX - wh.windSpeed; // negativo = contra el viento
+  const Fd = 0.5 * RHO * vRel * vRel * wh.cabinCd * wh.cabinArea;
+  return { Fd, vRel, vWind: wh.windSpeed };
+}
+
+function drawWind(rPx, theta, wheelKey) {
+  if (!state.showWind) return;
+  const wh = WHEELS[wheelKey || currentWheel];
+  const ppm = getPxPerM();
+
+  // Flechas de viento animadas — color por rueda
+  const t = performance.now() / 1000;
+  const wKey = wheelKey || currentWheel;
+  const isChicagoWind = wKey === 'chicago';
+  // Luna: cian (brisa caribe calida), Chicago: blanco frio (viento del lago invernal)
+  const windColor = isChicagoWind ? 'rgba(220,230,245,0.5)' : 'rgba(6,182,212,0.55)';
+  const windColorHead = isChicagoWind ? 'rgba(235,240,250,0.7)' : 'rgba(6,182,212,0.75)';
+  // Limitar flechas al area de esta rueda
+  const areaLeft = compareMode ? cx - rPx * 1.5 : W * 0.03;
+  const areaWidth = compareMode ? rPx * 3 : W * 0.7;
+  ctx.lineWidth = 2.5;
+  const numArrows = compareMode ? 6 : 10;
+  for (let i = 0; i < numArrows; i++) {
+    const wy = cy - rPx * 1.2 + i * (rPx * 2.4 / (numArrows - 1));
+    const wx = areaLeft + ((t * 50 + i * 70) % areaWidth);
+    const len = 25 + wh.windSpeed * 5;
+    // Linea
+    ctx.strokeStyle = windColor;
+    ctx.beginPath();
+    ctx.moveTo(wx, wy);
+    ctx.lineTo(wx + len, wy);
+    ctx.stroke();
+    // Cabeza de flecha rellena
+    ctx.fillStyle = windColorHead;
+    ctx.beginPath();
+    ctx.moveTo(wx + len + 4, wy);
+    ctx.lineTo(wx + len - 6, wy - 5);
+    ctx.lineTo(wx + len - 6, wy + 5);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Calcular F_drag en la cabina resaltada
+  const { Fd, vRel, vWind } = calcDragForce(wheelKey || currentWheel, theta);
+  const px = cx + rPx * Math.cos(theta);
+  const py = cy - rPx * Math.sin(theta);
+
+  // Dibujar vector F_drag en la cabina (horizontal, en dirección del viento)
+  const fdScale = Math.min(60, Fd * 300);
+  const fdDir = vRel < 0 ? 1 : -1; // dirección opuesta a vRel
+  const fdEndX = px + fdDir * fdScale;
+
+  ctx.strokeStyle = '#06b6d4';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(px, py + 15);
+  ctx.lineTo(fdEndX, py + 15);
+  ctx.stroke();
+  // Cabeza
+  ctx.fillStyle = '#06b6d4';
+  ctx.beginPath();
+  ctx.moveTo(fdEndX, py + 15);
+  ctx.lineTo(fdEndX - fdDir * 8, py + 11);
+  ctx.lineTo(fdEndX - fdDir * 8, py + 19);
+  ctx.closePath();
+  ctx.fill();
+
+  // Label F_drag
+  ctx.font = '600 10px Inter, sans-serif';
+  ctx.fillStyle = '#06b6d4';
+  ctx.textAlign = 'center';
+  const labelX = (px + fdEndX) / 2;
+  ctx.fillStyle = 'rgba(5,10,24,0.85)';
+  ctx.beginPath();
+  ctx.roundRect(labelX - 45, py + 22, 90, 14, 3);
+  ctx.fill();
+  ctx.fillStyle = '#06b6d4';
+  ctx.fillText(`Fd = ${Fd.toFixed(2)} N`, labelX, py + 32);
+
+  // Info de viento en esquina (solo en modo individual)
+  if (!compareMode) {
+    ctx.font = '600 11px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = 'rgba(5,10,24,0.8)';
+    ctx.beginPath();
+    ctx.roundRect(10, 14, 170, 38, 6);
+    ctx.fill();
+    ctx.fillStyle = '#06b6d4';
+    ctx.fillText(`Viento: ${vWind.toFixed(1)} m/s`, 18, 30);
+    ctx.font = '10px Inter, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(wh.windLabel, 18, 44);
+  }
+}
+
+function drawRecIndicator() {
+  if (!recording) return;
+  const pulse = 0.5 + 0.5 * Math.sin(performance.now() / 300);
+  ctx.fillStyle = `rgba(249,115,22,${0.6+pulse*0.4})`; ctx.beginPath(); ctx.arc(W-28, 22, 7, 0, Math.PI*2); ctx.fill();
+  ctx.font = '600 11px Inter, sans-serif'; ctx.fillStyle = '#f97316'; ctx.textAlign = 'right';
+  ctx.fillText('REC', W-40, 26);
+  ctx.fillStyle = 'rgba(249,115,22,0.6)'; ctx.fillText(formatTime(simTime - recStartTime), W-40, 40);
+}
+
+function formatTime(s) { const m = Math.floor(s/60); const sec = (s%60).toFixed(1); return m>0 ? `${m}:${sec.padStart(4,'0')}` : `${sec}s`; }
+
+// ===================== INTERACCION DRAG =====================
+let dragging = null;
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  const rPx = state.r * getPxPerM();
+  const cabX = cx + rPx*Math.cos(state.theta), cabY = cy - rPx*Math.sin(state.theta);
+  if (Math.sqrt((mx-cabX)**2+(my-cabY)**2) < 25) { dragging = 'cabin'; return; }
+  if (Math.abs(Math.sqrt((mx-cx)**2+(my-cy)**2) - rPx) < 20) { dragging = 'radius'; }
+});
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  const ppm = getPxPerM();
+  if (dragging === 'radius') {
+    state.r = Math.round(Math.max(10, Math.min(50, Math.sqrt((mx-cx)**2+(my-cy)**2)/ppm))*10)/10;
+    document.getElementById('r-slider').value = state.r; updateDisplays();
+  } else if (dragging === 'cabin') { state.theta = Math.atan2(-(my-cy), mx-cx); }
+  if (!dragging) {
+    const rPx = state.r*ppm;
+    const cabX = cx+rPx*Math.cos(state.theta), cabY = cy-rPx*Math.sin(state.theta);
+    canvas.style.cursor = (Math.sqrt((mx-cabX)**2+(my-cabY)**2)<25 || Math.abs(Math.sqrt((mx-cx)**2+(my-cy)**2)-rPx)<20) ? 'grab' : 'default';
+  } else canvas.style.cursor = 'grabbing';
+});
+canvas.addEventListener('mouseup', () => dragging = null);
+canvas.addEventListener('mouseleave', () => dragging = null);
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault(); const t=e.touches[0], rect=canvas.getBoundingClientRect();
+  const mx=t.clientX-rect.left, my=t.clientY-rect.top, ppm=getPxPerM(), rPx=state.r*ppm;
+  const cabX=cx+rPx*Math.cos(state.theta), cabY=cy-rPx*Math.sin(state.theta);
+  if (Math.sqrt((mx-cabX)**2+(my-cabY)**2)<35) { dragging='cabin'; return; }
+  if (Math.abs(Math.sqrt((mx-cx)**2+(my-cy)**2)-rPx)<25) dragging='radius';
+}, {passive:false});
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault(); if (!dragging) return;
+  const t=e.touches[0], rect=canvas.getBoundingClientRect(), mx=t.clientX-rect.left, my=t.clientY-rect.top, ppm=getPxPerM();
+  if (dragging==='radius') { state.r=Math.round(Math.max(10,Math.min(50,Math.sqrt((mx-cx)**2+(my-cy)**2)/ppm))*10)/10; document.getElementById('r-slider').value=state.r; updateDisplays(); }
+  else if (dragging==='cabin') state.theta=Math.atan2(-(my-cy),mx-cx);
+}, {passive:false});
+canvas.addEventListener('touchend', () => dragging = null);
+
+// ===================== CONTROLES =====================
+const rSlider = document.getElementById('r-slider');
+const wSlider = document.getElementById('w-slider');
+rSlider.addEventListener('input', () => { state.r = parseFloat(rSlider.value); updateDisplays(); });
+wSlider.addEventListener('input', () => { state.omega = parseFloat(wSlider.value); updateDisplays(); });
+document.getElementById('chk-v').addEventListener('change', e => state.showV = e.target.checked);
+document.getElementById('chk-ac').addEventListener('change', e => state.showAc = e.target.checked);
+document.getElementById('chk-r').addEventListener('change', e => state.showR = e.target.checked);
+document.getElementById('chk-wind').addEventListener('change', e => {
+  state.showWind = e.target.checked;
+  document.getElementById('torque-container').style.display = e.target.checked ? '' : 'none';
+  rebuildTable();
+  setTimeout(resizeGraphs, 100);
+});
+
+// Re-renderiza la tabla segun el estado actual de showWind
+function rebuildTable() {
+  const tbody = document.getElementById('data-tbody');
+  const thead = document.getElementById('data-thead');
+  const sw = state.showWind;
+
+  if (compareMode) {
+    thead.innerHTML = sw
+      ? '<tr><th>#</th><th>t (s)</th><th style="color:#22c55e">x Luna</th><th style="color:#f97316">x Chi</th><th style="color:#a855f7">y Luna</th><th style="color:#38bdf8">y Chi</th><th style="color:#06b6d4">Fd L</th><th style="color:#06b6d4">Fd C</th></tr>'
+      : '<tr><th>#</th><th>t (s)</th><th style="color:#22c55e">x Luna</th><th style="color:#f97316">x Chi</th><th style="color:#a855f7">y Luna</th><th style="color:#38bdf8">y Chi</th></tr>';
+    tbody.innerHTML = '';
+    compareLog.forEach(row => {
+      const xL = sw ? row.x_luna_w : row.x_luna, xC = sw ? row.x_chicago_w : row.x_chicago;
+      const yL = sw ? row.y_luna_w : row.y_luna, yC = sw ? row.y_chicago_w : row.y_chicago;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.n}</td><td>${row.t.toFixed(1)}</td><td style="color:#22c55e">${xL.toFixed(1)}</td><td style="color:#f97316">${xC.toFixed(1)}</td><td style="color:#a855f7">${yL.toFixed(1)}</td><td style="color:#38bdf8">${yC.toFixed(1)}</td>${sw ? `<td style="color:#06b6d4">${row.fd_luna.toFixed(0)}</td><td style="color:#06b6d4">${row.fd_chicago.toFixed(0)}</td>` : ''}`;
+      tbody.appendChild(tr);
+    });
+  } else {
+    thead.innerHTML = sw
+      ? '<tr><th>#</th><th>t</th><th>x</th><th>y</th><th>x<sub>v</sub></th><th>y<sub>v</sub></th><th>&theta;</th><th>Fd</th></tr>'
+      : '<tr><th>#</th><th>t (s)</th><th>x (m)</th><th>y (m)</th><th>&theta; (&deg;)</th><th>v (m/s)</th><th>a<sub>c</sub> (m/s&sup2;)</th></tr>';
+    tbody.innerHTML = '';
+    dataLog.forEach(row => {
+      const tr = document.createElement('tr');
+      if (sw) {
+        tr.innerHTML = `<td>${row.n}</td><td>${row.t.toFixed(1)}</td><td>${row.x.toFixed(1)}</td><td>${row.y.toFixed(1)}</td><td style="color:#f97316">${row.x_wind.toFixed(1)}</td><td style="color:#f97316">${row.y_wind.toFixed(1)}</td><td>${row.theta.toFixed(1)}</td><td style="color:#06b6d4">${row.fd_cabin.toFixed(1)}</td>`;
+      } else {
+        tr.innerHTML = `<td>${row.n}</td><td>${row.t.toFixed(1)}</td><td>${row.x.toFixed(2)}</td><td>${row.y.toFixed(2)}</td><td>${row.theta.toFixed(1)}</td><td>${row.v.toFixed(3)}</td><td>${row.ac.toFixed(5)}</td>`;
+      }
+      tbody.appendChild(tr);
+    });
+  }
+  document.getElementById('data-count').textContent = (compareMode ? compareLog.length : dataLog.length) + ' registros';
+  document.getElementById('data-table-scroll').scrollTop = 99999;
+}
+document.getElementById('btn-play').addEventListener('click', () => { state.paused = !state.paused; updatePlayBtn(); });
+document.getElementById('btn-reset').addEventListener('click', () => {
+  const wh = WHEELS[currentWheel];
+  state.theta=0; state.r=wh.r; state.omega=(2*Math.PI)/(wh.periodMin*60); state.paused=false; state.speed=50; simTime=0;
+  state.thetaWind=0; state.omegaWind=state.omega;
+  compareState.luna.theta=0; compareState.luna.thetaWind=0; compareState.luna.omegaWind=compareState.luna.omega;
+  compareState.chicago.theta=0; compareState.chicago.thetaWind=0; compareState.chicago.omegaWind=compareState.chicago.omega;
+  rSlider.value=state.r; wSlider.value=state.omega; updateDisplays(); updatePlayBtn();
+  document.querySelectorAll('.speed-btn:not(.laps-btn)').forEach(b => b.classList.toggle('active', parseFloat(b.dataset.s)===50));
+  // Limpiar datos y graficas
+  dataLog.length=0; compareLog.length=0;
+  document.getElementById('data-tbody').innerHTML='';
+  document.getElementById('data-count').textContent='0 registros';
+  lastRecordTime=-1; lastCompareRecTime=-1; recStartTime=0;
+  // Detener grabacion si estaba activa
+  recording=false;
+  document.getElementById('btn-rec').innerHTML='<span class="rec-dot"></span>Grabar Datos';
+  document.getElementById('btn-rec').classList.remove('recording');
+});
+
+// ===================== SELECTOR DE RUEDAS =====================
+function switchWheel(key) {
+  compareMode = (key === 'compare');
+
+  if (!compareMode) {
+    currentWheel = key;
+    const wh = WHEELS[key];
+    state.r = wh.r;
+    state.omega = (2 * Math.PI) / (wh.periodMin * 60);
+    state.theta = 0; state.thetaWind = 0; state.omegaWind = state.omega;
+    simTime = 0;
+    rSlider.value = state.r;
+    wSlider.value = state.omega;
+    document.getElementById('wheel-title').innerHTML = wh.name + `<small id="wheel-subtitle">${wh.subtitle}</small>`;
+    document.getElementById('wheel-title').style.color = wh.style === 'vintage' ? '#C0A070' : '#fbbf24';
+    document.getElementById('spec-altura').innerHTML = `${wh.r * 2}<span class="ic-unit"> m</span>`;
+    document.getElementById('spec-cabinas').textContent = wh.cabins;
+    document.getElementById('spec-peso').innerHTML = `${wh.pesoTon.toLocaleString()}<span class="ic-unit"> ton</span>`;
+    document.getElementById('spec-periodo').innerHTML = `~${Math.round(wh.periodMin)}<span class="ic-unit"> min</span>`;
+  } else {
+    // Compare mode
+    simTime = 0;
+    compareState.luna.theta = 0;
+    compareState.chicago.theta = 0;
+    document.getElementById('wheel-title').innerHTML = 'Comparacion<small id="wheel-subtitle">La Luna vs Ferris Wheel 1893</small>';
+    document.getElementById('wheel-title').style.color = '#38bdf8';
+    document.getElementById('spec-altura').innerHTML = `65 vs 80<span class="ic-unit"> m</span>`;
+    document.getElementById('spec-cabinas').textContent = '44 vs 36';
+    document.getElementById('spec-peso').innerHTML = `240 vs 2000<span class="ic-unit"> ton</span>`;
+    document.getElementById('spec-periodo').innerHTML = `17 vs 20<span class="ic-unit"> min</span>`;
+  }
+
+  // Clear data
+  dataLog.length = 0;
+  document.getElementById('data-tbody').innerHTML = '';
+  document.getElementById('data-count').textContent = '0 registros';
+  lastRecordTime = -1;
+  recStartTime = simTime;
+
+  // Update table headers for mode
+  const thead = document.getElementById('data-thead');
+  if (compareMode) {
+    thead.innerHTML = '<tr><th>#</th><th>t (s)</th><th style="color:#22c55e">x Luna</th><th style="color:#f97316">x Chi</th><th style="color:#a855f7">y Luna</th><th style="color:#38bdf8">y Chi</th><th style="color:#06b6d4">Fd L</th><th style="color:#06b6d4">Fd C</th></tr>';
+    compareLog.length = 0;
+    lastCompareRecTime = -1;
+  } else {
+    thead.innerHTML = '<tr><th>#</th><th>t (s)</th><th>x (m)</th><th>y (m)</th><th>&theta; (&deg;)</th><th>v (m/s)</th><th>a<sub>c</sub> (m/s&sup2;)</th></tr>';
+  }
+
+  document.querySelectorAll('.wheel-btn').forEach(b => b.classList.toggle('active', b.dataset.wheel === key));
+  updateDisplays();
+}
+document.querySelectorAll('.wheel-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchWheel(btn.dataset.wheel));
+});
+document.querySelectorAll('.speed-btn:not(.laps-btn)').forEach(btn => {
+  btn.addEventListener('click', () => { state.speed=parseFloat(btn.dataset.s); document.querySelectorAll('.speed-btn:not(.laps-btn)').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); });
+});
+document.querySelectorAll('.laps-btn').forEach(btn => {
+  btn.addEventListener('click', () => { state.laps=parseInt(btn.dataset.l); document.querySelectorAll('.laps-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); });
+});
+function updatePlayBtn() {
+  const btn=document.getElementById('btn-play');
+  if (state.paused) { btn.textContent='▶ Iniciar'; btn.classList.add('paused'); }
+  else { btn.textContent='❚❚ Pausar'; btn.classList.remove('paused'); }
+}
+function updateDisplays() {
+  const v=state.omega*state.r, ac=state.omega**2*state.r, T=(2*Math.PI)/state.omega, f=1/T;
+  const thetaDeg = (((state.theta*180/Math.PI)%360)+360)%360;
+  document.getElementById('r-val').textContent = state.r.toFixed(1)+' m';
+  document.getElementById('w-val').textContent = state.omega.toFixed(4)+' rad/s';
+  document.getElementById('v-disp').textContent = v.toFixed(3);
+  document.getElementById('ac-disp').textContent = ac.toFixed(5);
+  document.getElementById('rd-disp').textContent = state.r.toFixed(1);
+  document.getElementById('t-disp').textContent = T.toFixed(1);
+  document.getElementById('f-disp').textContent = f.toFixed(5);
+  document.getElementById('th-disp').textContent = thetaDeg.toFixed(1);
+}
+
+// ===================== GRABACION =====================
+document.getElementById('btn-rec').addEventListener('click', () => {
+  recording = !recording;
+  const btn = document.getElementById('btn-rec');
+  if (recording) {
+    recStartTime = simTime; lastRecordTime = -1;
+    btn.innerHTML = '<span class="rec-dot"></span> Detener Grabacion';
+    btn.classList.add('recording');
+    document.body.classList.add('data-open');
+    [50,200,400,800].forEach(ms => setTimeout(() => { resize(); resizeGraphs(); }, ms));
+  } else { btn.innerHTML = '<span class="rec-dot"></span> Grabar Datos'; btn.classList.remove('recording'); }
+});
+
+function recordDataPoint() {
+  if (!recording || state.paused) return;
+  const elapsed = simTime - recStartTime;
+  if (elapsed - lastRecordTime < REC_INTERVAL - 0.01) return;
+  lastRecordTime = elapsed;
+  const v=state.omega*state.r, ac=state.omega**2*state.r;
+  const thetaDeg = (((state.theta*180/Math.PI)%360)+360)%360;
+  const x = state.r * Math.cos(state.theta), y = state.r * Math.sin(state.theta);
+  // Datos con viento
+  const xw = state.r * Math.cos(state.thetaWind), yw = state.r * Math.sin(state.thetaWind);
+  const thetaDegW = (((state.thetaWind*180/Math.PI)%360)+360)%360;
+  // Fuerza de arrastre en la cabina resaltada (cabina #0) — varía con posición
+  const fdCabin = calcDragForce(currentWheel, state.theta).Fd;
+  const row = { n:dataLog.length+1, t:elapsed, theta:thetaDeg, x, y, x_wind:xw, y_wind:yw, theta_wind:thetaDegW, fd_cabin:fdCabin, omega:state.omega, r:state.r, v, ac };
+  dataLog.push(row);
+  const tbody = document.getElementById('data-tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${row.n}</td><td>${row.t.toFixed(1)}</td><td>${row.x.toFixed(2)}</td><td>${row.y.toFixed(2)}</td><td>${row.theta.toFixed(1)}</td><td>${row.v.toFixed(3)}</td><td>${row.ac.toFixed(5)}</td>${state.showWind ? `<td style="color:#06b6d4">${row.fd_cabin.toFixed(1)}</td>` : ''}`;
+  tbody.appendChild(tr);
+  document.getElementById('data-count').textContent = dataLog.length+' registros';
+  document.getElementById('data-table-scroll').scrollTop = 99999;
+}
+
+// Compare mode data: records both wheels in same row
+const compareLog = [];
+let lastCompareRecTime = -1;
+
+function recordCompareDataPoint() {
+  if (!recording || state.paused) return;
+  const elapsed = simTime - recStartTime;
+  if (elapsed - lastCompareRecTime < REC_INTERVAL - 0.01) return;
+  lastCompareRecTime = elapsed;
+
+  const lw = WHEELS.luna, cw = WHEELS.chicago;
+  const ls = compareState.luna, cs = compareState.chicago;
+  const row = {
+    n: compareLog.length + 1,
+    t: elapsed,
+    // Luna ideal
+    x_luna: lw.r * Math.cos(ls.theta),
+    y_luna: lw.r * Math.sin(ls.theta),
+    theta_luna: (((ls.theta * 180 / Math.PI) % 360) + 360) % 360,
+    // Luna con viento
+    x_luna_w: lw.r * Math.cos(ls.thetaWind),
+    y_luna_w: lw.r * Math.sin(ls.thetaWind),
+    theta_luna_w: (((ls.thetaWind * 180 / Math.PI) % 360) + 360) % 360,
+    // Chicago ideal
+    x_chicago: cw.r * Math.cos(cs.theta),
+    y_chicago: cw.r * Math.sin(cs.theta),
+    theta_chicago: (((cs.theta * 180 / Math.PI) % 360) + 360) % 360,
+    // Chicago con viento
+    x_chicago_w: cw.r * Math.cos(cs.thetaWind),
+    y_chicago_w: cw.r * Math.sin(cs.thetaWind),
+    theta_chicago_w: (((cs.thetaWind * 180 / Math.PI) % 360) + 360) % 360,
+    // Torque del motor para cada rueda
+    fd_luna: calcDragForce('luna', ls.theta).Fd,
+    fd_chicago: calcDragForce('chicago', cs.theta).Fd,
+  };
+  compareLog.push(row);
+
+  const tbody = document.getElementById('data-tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${row.n}</td><td>${row.t.toFixed(1)}</td><td style="color:#22c55e">${row.x_luna.toFixed(1)}</td><td style="color:#f97316">${row.x_chicago.toFixed(1)}</td><td style="color:#a855f7">${row.y_luna.toFixed(1)}</td><td style="color:#38bdf8">${row.y_chicago.toFixed(1)}</td><td style="color:#06b6d4">${row.fd_luna.toFixed(0)}</td><td style="color:#06b6d4">${row.fd_chicago.toFixed(0)}</td>`;
+  tbody.appendChild(tr);
+  document.getElementById('data-count').textContent = compareLog.length + ' registros';
+  document.getElementById('data-table-scroll').scrollTop = 99999;
+}
+
+document.getElementById('btn-csv').addEventListener('click', () => {
+  const ts = new Date().toISOString().slice(0,16).replace(':','-');
+  let csv, fname;
+  if (compareMode) {
+    if (!compareLog.length) return;
+    csv = '#,t (s),x_Luna (m),x_Chicago (m),y_Luna (m),y_Chicago (m),θ_Luna (°),θ_Chicago (°),Fd_Luna (N),Fd_Chicago (N)\n';
+    compareLog.forEach(d => { csv += `${d.n},${d.t.toFixed(2)},${d.x_luna.toFixed(3)},${d.x_chicago.toFixed(3)},${d.y_luna.toFixed(3)},${d.y_chicago.toFixed(3)},${d.theta_luna.toFixed(2)},${d.theta_chicago.toFixed(2)},${d.fd_luna.toFixed(1)},${d.fd_chicago.toFixed(1)}\n`; });
+    fname = `MCU_Comparacion_${ts}.csv`;
+  } else {
+    if (!dataLog.length) return;
+    csv = '#,t (s),x (m),y (m),θ (°),ω (rad/s),r (m),v (m/s),ac (m/s²)\n';
+    dataLog.forEach(d => { csv += `${d.n},${d.t.toFixed(2)},${d.x.toFixed(3)},${d.y.toFixed(3)},${d.theta.toFixed(2)},${d.omega.toFixed(4)},${d.r.toFixed(1)},${d.v.toFixed(4)},${d.ac.toFixed(6)}\n`; });
+    fname = `MCU_${WHEELS[currentWheel].name.replace(/\s/g,'_')}_${ts}.csv`;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = fname; a.click();
+});
+document.getElementById('btn-clear-data').addEventListener('click', () => {
+  dataLog.length=0; compareLog.length=0; document.getElementById('data-tbody').innerHTML='';
+  document.getElementById('data-count').textContent='0 registros'; lastRecordTime=-1; lastCompareRecTime=-1; recStartTime=simTime;
+});
+
+// ===================== GRAFICAS =====================
+const graphCanvases = { x:document.getElementById('graph-x'), y:document.getElementById('graph-y'), theta:document.getElementById('graph-theta'), torque:document.getElementById('graph-torque') };
+const graphCtxs = {};
+Object.keys(graphCanvases).forEach(k => { graphCtxs[k] = graphCanvases[k].getContext('2d'); });
+
+function resizeGraphs() {
+  Object.keys(graphCanvases).forEach(k => {
+    const c=graphCanvases[k], p=c.parentElement, dpr=window.devicePixelRatio||1;
+    c.width=p.clientWidth*dpr; c.height=p.clientHeight*dpr;
+    c.style.width=p.clientWidth+'px'; c.style.height=p.clientHeight+'px';
+    graphCtxs[k].setTransform(dpr,0,0,dpr,0,0);
+  });
+}
+
+function drawGraph(key, color, field, unit) {
+  const c=graphCanvases[key], gx=graphCtxs[key], w=c.clientWidth, h=c.clientHeight;
+  if (w===0||h===0) return;
+  gx.fillStyle='#0f172a'; gx.fillRect(0,0,w,h);
+  if (dataLog.length<2) { gx.font='11px Inter,sans-serif'; gx.fillStyle='#475569'; gx.textAlign='center'; gx.fillText('Esperando datos...',w/2,h/2); return; }
+  const pad={top:24,right:12,bottom:22,left:48}, pw=w-pad.left-pad.right, ph=h-pad.top-pad.bottom;
+  const values=dataLog.map(d=>d[field]), times=dataLog.map(d=>d.t);
+  const tMin=times[0], tMax=times[times.length-1];
+  let vMin=Math.min(...values), vMax=Math.max(...values);
+  if (vMax-vMin<0.01) { vMin-=1; vMax+=1; }
+  const vRange=vMax-vMin; vMin-=vRange*0.05; vMax+=vRange*0.05;
+  gx.strokeStyle='rgba(255,255,255,0.06)'; gx.lineWidth=1;
+  for (let i=0;i<=4;i++){const y=pad.top+(i/4)*ph; gx.beginPath(); gx.moveTo(pad.left,y); gx.lineTo(pad.left+pw,y); gx.stroke();}
+  // Zero line
+  if (vMin < 0 && vMax > 0) {
+    const zeroY = pad.top + (1 - (0 - vMin)/(vMax-vMin)) * ph;
+    gx.strokeStyle='rgba(255,255,255,0.15)'; gx.setLineDash([4,4]);
+    gx.beginPath(); gx.moveTo(pad.left, zeroY); gx.lineTo(pad.left+pw, zeroY); gx.stroke();
+    gx.setLineDash([]);
+  }
+  gx.font='8px Inter,sans-serif'; gx.fillStyle='#64748b'; gx.textAlign='right';
+  for (let i=0;i<=4;i++){gx.fillText((vMax-(i/4)*(vMax-vMin)).toFixed(1),pad.left-5,pad.top+(i/4)*ph+3);}
+  gx.textAlign='center';
+  const tRange=tMax-tMin||1;
+  for (let i=0;i<=4;i++){gx.fillText((tMin+(i/4)*tRange).toFixed(1)+'s',pad.left+(i/4)*pw,h-5);}
+
+  // Lineas de cuartos de vuelta (T/4, T/2, 3T/4, T)
+  const wKey = compareMode ? 'luna' : currentWheel;
+  const Tperiod = WHEELS[wKey].periodMin * 60; // periodo en segundos
+  const quarterLabels = ['T/4','T/2','3T/4','T'];
+  gx.font = '7px Inter,sans-serif';
+  for (let q = 1; q <= 4; q++) {
+    const tq = q * Tperiod / 4;
+    if (tq >= tMin && tq <= tMax) {
+      const qx = pad.left + ((tq - tMin) / tRange) * pw;
+      gx.strokeStyle = 'rgba(251,191,36,0.15)';
+      gx.lineWidth = 1;
+      gx.setLineDash([3, 3]);
+      gx.beginPath(); gx.moveTo(qx, pad.top); gx.lineTo(qx, pad.top + ph); gx.stroke();
+      gx.setLineDash([]);
+      gx.fillStyle = 'rgba(251,191,36,0.35)';
+      gx.fillText(quarterLabels[q-1], qx, pad.top - 4);
+    }
+  }
+  gx.strokeStyle=color; gx.lineWidth=2; gx.lineJoin='round'; gx.beginPath();
+  let started = false;
+  dataLog.forEach((d,i)=>{
+    const px=pad.left+((d.t-tMin)/tRange)*pw, py=pad.top+(1-(d[field]-vMin)/(vMax-vMin))*ph;
+    // Break line at theta wraparound (jump > 180°)
+    const shouldBreak = field === 'theta' && i > 0 && Math.abs(d[field] - dataLog[i-1][field]) > 180;
+    if (!started || shouldBreak) { gx.moveTo(px, py); started = true; }
+    else gx.lineTo(px, py);
+  });
+  gx.stroke();
+  // Punto y label ideal
+  const lastD=dataLog[dataLog.length-1], lx=pad.left+((lastD.t-tMin)/tRange)*pw, ly=pad.top+(1-(lastD[field]-vMin)/(vMax-vMin))*ph;
+  gx.fillStyle=color; gx.beginPath(); gx.arc(lx,ly,3,0,Math.PI*2); gx.fill();
+  gx.font='600 9px Inter,sans-serif'; gx.fillStyle=color; gx.textAlign='left';
+  gx.fillText(state.showWind ? `Ideal: ${lastD[field].toFixed(1)}` : `${lastD[field].toFixed(2)} ${unit}`, lx+7, ly-2);
+
+  // Curva con viento superpuesta (punteada, color diferente)
+  const windField = field + '_wind';
+  if (state.showWind && lastD[windField] !== undefined) {
+    const windColor = '#f97316'; // naranja para viento
+    // Include wind values in axis range
+    const wVals = dataLog.map(d => d[windField]);
+    // Re-draw with adjusted range if needed
+    gx.strokeStyle = windColor; gx.lineWidth = 2; gx.lineJoin = 'round';
+    gx.setLineDash([6, 3]);
+    gx.beginPath();
+    let ws = false;
+    dataLog.forEach((d, i) => {
+      const px2 = pad.left + ((d.t - tMin) / tRange) * pw;
+      const py2 = pad.top + (1 - (d[windField] - vMin) / (vMax - vMin)) * ph;
+      const brk = windField.includes('theta') && i > 0 && Math.abs(d[windField] - dataLog[i-1][windField]) > 180;
+      if (!ws || brk) { gx.moveTo(px2, py2); ws = true; } else gx.lineTo(px2, py2);
+    });
+    gx.stroke();
+    gx.setLineDash([]);
+    // Punto y label viento
+    const lwx = pad.left + ((lastD.t - tMin) / tRange) * pw;
+    const lwy = pad.top + (1 - (lastD[windField] - vMin) / (vMax - vMin)) * ph;
+    gx.fillStyle = windColor; gx.beginPath(); gx.arc(lwx, lwy, 3, 0, Math.PI * 2); gx.fill();
+    gx.font = '600 9px Inter,sans-serif'; gx.fillStyle = windColor; gx.textAlign = 'left';
+    gx.fillText(`Viento: ${lastD[windField].toFixed(1)}`, lwx + 7, lwy + 10);
+  }
+}
+
+// Compare graph: overlays two series from compareLog
+function drawCompareGraph(key, field1, color1, label1, field2, color2, label2, unit) {
+  const c=graphCanvases[key], gx=graphCtxs[key], w=c.clientWidth, h=c.clientHeight;
+  if (w===0||h===0) return;
+  gx.fillStyle='#0f172a'; gx.fillRect(0,0,w,h);
+  if (compareLog.length<2) { gx.font='11px Inter,sans-serif'; gx.fillStyle='#475569'; gx.textAlign='center'; gx.fillText('Esperando datos...',w/2,h/2); return; }
+  const pad={top:24,right:12,bottom:22,left:48}, pw=w-pad.left-pad.right, ph=h-pad.top-pad.bottom;
+  const v1=compareLog.map(d=>d[field1]), v2=compareLog.map(d=>d[field2]);
+  const times=compareLog.map(d=>d.t);
+  const tMin=times[0], tMax=times[times.length-1], tRange=tMax-tMin||1;
+  const allVals=[...v1,...v2];
+  let vMin=Math.min(...allVals), vMax=Math.max(...allVals);
+  if(vMax-vMin<0.01){vMin-=1;vMax+=1;}
+  const vRange=vMax-vMin; vMin-=vRange*0.05; vMax+=vRange*0.05;
+
+  // Grid
+  gx.strokeStyle='rgba(255,255,255,0.06)'; gx.lineWidth=1;
+  for(let i=0;i<=4;i++){const y=pad.top+(i/4)*ph;gx.beginPath();gx.moveTo(pad.left,y);gx.lineTo(pad.left+pw,y);gx.stroke();}
+  // Zero
+  if(vMin<0&&vMax>0){const zy=pad.top+(1-(0-vMin)/(vMax-vMin))*ph;gx.strokeStyle='rgba(255,255,255,0.15)';gx.setLineDash([4,4]);gx.beginPath();gx.moveTo(pad.left,zy);gx.lineTo(pad.left+pw,zy);gx.stroke();gx.setLineDash([]);}
+  // Axes
+  gx.font='8px Inter,sans-serif';gx.fillStyle='#64748b';gx.textAlign='right';
+  for(let i=0;i<=4;i++)gx.fillText((vMax-(i/4)*(vMax-vMin)).toFixed(1),pad.left-5,pad.top+(i/4)*ph+3);
+  gx.textAlign='center';
+  for(let i=0;i<=4;i++)gx.fillText((tMin+(i/4)*tRange).toFixed(1)+'s',pad.left+(i/4)*pw,h-5);
+
+  // Lineas de cuartos de vuelta (usa periodo mas largo = Chicago)
+  const TpComp = Math.max(WHEELS.luna.periodMin, WHEELS.chicago.periodMin) * 60;
+  const qLabels = ['T/4','T/2','3T/4','T'];
+  gx.font='7px Inter,sans-serif';
+  for(let q=1;q<=4;q++){
+    const tq=q*TpComp/4;
+    if(tq>=tMin&&tq<=tMax){
+      const qx=pad.left+((tq-tMin)/tRange)*pw;
+      gx.strokeStyle='rgba(251,191,36,0.15)';gx.lineWidth=1;gx.setLineDash([3,3]);
+      gx.beginPath();gx.moveTo(qx,pad.top);gx.lineTo(qx,pad.top+ph);gx.stroke();gx.setLineDash([]);
+      gx.fillStyle='rgba(251,191,36,0.35)';gx.fillText(qLabels[q-1],qx,pad.top-4);
+    }
+  }
+
+  // Draw both lines
+  [[v1,color1,field1,label1],[v2,color2,field2,label2]].forEach(([vals,col,fld,lbl])=>{
+    gx.strokeStyle=col;gx.lineWidth=2;gx.lineJoin='round';gx.beginPath();
+    let s=false;
+    compareLog.forEach((d,i)=>{
+      const px=pad.left+((d.t-tMin)/tRange)*pw, py=pad.top+(1-(vals[i]-vMin)/(vMax-vMin))*ph;
+      const brk=fld.includes('theta')&&i>0&&Math.abs(vals[i]-vals[i-1])>180;
+      if(!s||brk){gx.moveTo(px,py);s=true;}else gx.lineTo(px,py);
+    });
+    gx.stroke();
+    // Last point
+    const last=vals[vals.length-1];
+    const lx=pad.left+((times[times.length-1]-tMin)/tRange)*pw;
+    const ly=pad.top+(1-(last-vMin)/(vMax-vMin))*ph;
+    gx.fillStyle=col;gx.beginPath();gx.arc(lx,ly,3,0,Math.PI*2);gx.fill();
+    gx.font='600 9px Inter,sans-serif';gx.textAlign='left';
+    gx.fillText(`${lbl}: ${last.toFixed(1)} ${unit}`,lx+7,ly+ (col===color1?-5:10));
+  });
+}
+
+let lastGraphResize = 0;
+function updateGraphs() {
+  if (!document.body.classList.contains('data-open')) return;
+  const now=Date.now();
+  if (now-lastGraphResize>500){lastGraphResize=now;const c=graphCanvases.x,p=c.parentElement;if(Math.abs(c.clientWidth-p.clientWidth)>2||Math.abs(c.clientHeight-p.clientHeight)>2)resizeGraphs();}
+
+  if (compareMode) {
+    // Con viento: usa campos _w, sin viento: campos normales
+    const sw = state.showWind;
+    const xL = sw ? 'x_luna_w' : 'x_luna', xC = sw ? 'x_chicago_w' : 'x_chicago';
+    const yL = sw ? 'y_luna_w' : 'y_luna', yC = sw ? 'y_chicago_w' : 'y_chicago';
+    const tL = sw ? 'theta_luna_w' : 'theta_luna', tC = sw ? 'theta_chicago_w' : 'theta_chicago';
+    const suffix = sw ? ' (viento)' : '';
+    drawCompareGraph('x', xL,'#22c55e','Luna'+suffix, xC,'#f97316','Chicago'+suffix, 'm');
+    drawCompareGraph('y', yL,'#a855f7','Luna'+suffix, yC,'#38bdf8','Chicago'+suffix, 'm');
+    drawCompareGraph('theta', tL,'#fbbf24','Luna'+suffix, tC,'#ef4444','Chicago'+suffix, '°');
+    if (sw) drawCompareGraph('torque', 'fd_luna','#22c55e','Luna', 'fd_chicago','#f97316','Chicago', 'N');
+  } else {
+    drawGraph('x','#22c55e','x','m');
+    drawGraph('y','#a855f7','y','m');
+    drawGraph('theta','#fbbf24','theta','°');
+    if (state.showWind) drawGraph('torque','#06b6d4','fd_cabin','N');
+  }
+}
+
+// ===================== LOOP PRINCIPAL =====================
+let lastWallTime = Date.now();
+
+function drawCompareMode(dt) {
+  const ppm = getPxPerM() * 0.7; // slightly smaller to fit both
+  const keys = ['luna', 'chicago'];
+
+  // Update both thetas (ideal + con viento)
+  if (!state.paused) {
+    const dts = dt * state.speed;
+    keys.forEach(k => {
+      compareState[k].theta += compareState[k].omega * dts;
+      // Con viento: motor + drag riguroso
+      const Ik = getInertia(k);
+      const subSteps = 10, subDt = dts / subSteps;
+      for (let s = 0; s < subSteps; s++) {
+        const tW = calcNetWindTorque(k, compareState[k].thetaWind, compareState[k].omegaWind);
+        const tM = getMotorTorque(k, compareState[k].omegaWind);
+        compareState[k].omegaWind += ((tW + tM) / Ik) * subDt;
+        compareState[k].omegaWind = Math.max(compareState[k].omegaWind, compareState[k].omega * 0.1);
+        compareState[k].thetaWind += compareState[k].omegaWind * subDt;
+      }
+    });
+    simTime += dts;
+    // Auto-pause when the slower wheel completes N revolutions
+    const maxTheta = state.laps * 2 * Math.PI;
+    const allDone = keys.every(k => compareState[k].theta >= maxTheta);
+    if (allDone) {
+      keys.forEach(k => { compareState[k].theta = Math.min(compareState[k].theta, maxTheta + 0.5); });
+      state.paused = true; updatePlayBtn();
+    }
+  }
+
+  ctx.clearRect(0, 0, W, H);
+  drawSky(); drawRiver();
+
+  // Draw both wheels side by side
+  const spacing = W * 0.28;
+  const centers = [
+    { x: cx - spacing, y: cy },
+    { x: cx + spacing, y: cy }
+  ];
+
+  keys.forEach((k, idx) => {
+    const wh = WHEELS[k];
+    const cs = compareState[k];
+    const rPx = wh.r * ppm;
+    const ccx = centers[idx].x, ccy = centers[idx].y;
+
+    // Temporarily shift drawing center
+    const savedCx = cx, savedCy = cy;
+    cx = ccx; cy = ccy;
+    currentWheel = k;
+
+    drawSupport(rPx);
+    drawWheel(rPx, cs.theta);
+    drawWind(rPx, cs.theta, k);
+
+    // Label under each wheel
+    ctx.font = '600 13px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = k === 'luna' ? '#fbbf24' : '#C0A070';
+    const groundY = H - 55;
+    ctx.fillText(wh.name, ccx, groundY + 20);
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    const windInfo = state.showWind ? `  Viento:${wh.windSpeed}m/s` : '';
+    ctx.fillText(`r=${wh.r}m  T=${wh.periodMin}min  ${wh.cabins} cab.${windInfo}`, ccx, groundY + 36);
+
+    cx = savedCx; cy = savedCy;
+  });
+
+  // Reset currentWheel for other functions
+  currentWheel = 'luna';
+
+  // Divider line
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.setLineDash([4, 6]);
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(W/2 - spacing/8, 30);
+  ctx.lineTo(W/2 - spacing/8, H - 60);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  drawRecIndicator();
+
+  // Formulas
+  ctx.font = '11px "Inter",monospace';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ['v = ω · r', 'ac = ω² · r', 'T = 2π / ω', 'x = r·cos(θ)', 'y = r·sin(θ)'].forEach((f, i) => ctx.fillText(f, 14, H - 115 + i * 16));
+}
+
+function frame() {
+  const now=Date.now(), dt=Math.min((now-lastWallTime)/1000, 0.1);
+  lastWallTime=now;
+
+  if (compareMode) {
+    drawCompareMode(dt);
+    recordCompareDataPoint();
+    updateGraphs();
+    requestAnimationFrame(frame);
+    return;
+  }
+
+  if (!state.paused && !dragging) {
+    const dts = dt * state.speed;
+    // Ideal (sin viento)
+    state.theta += state.omega * dts;
+    simTime += dts;
+    // Con viento: motor + drag riguroso (sub-pasos para estabilidad)
+    const I_w = getInertia(currentWheel);
+    const subSteps = 10, subDt = dts / subSteps;
+    for (let s = 0; s < subSteps; s++) {
+      const tWind = calcNetWindTorque(currentWheel, state.thetaWind, state.omegaWind);
+      const tMotor = getMotorTorque(currentWheel, state.omegaWind);
+      state.omegaWind += ((tWind + tMotor) / I_w) * subDt;
+      state.omegaWind = Math.max(state.omegaWind, state.omega * 0.1);
+      state.thetaWind += state.omegaWind * subDt;
+    }
+    // Auto-pause after N revolutions
+    const maxTheta = state.laps * 2 * Math.PI;
+    if (state.theta >= maxTheta) { state.theta = maxTheta; state.paused = true; updatePlayBtn(); }
+  }
+  const rPx = state.r * getPxPerM();
+  ctx.clearRect(0,0,W,H);
+  drawSky(); drawRiver(); drawSupport(rPx); drawWheel(rPx, state.theta); drawVectors(rPx); drawWind(rPx, state.theta); drawRecIndicator();
+  ctx.font='11px "Inter",monospace'; ctx.textAlign='left'; ctx.fillStyle='rgba(255,255,255,0.3)';
+  ['v = ω · r','ac = ω² · r','T = 2π / ω','x = r·cos(θ)','y = r·sin(θ)'].forEach((f,i)=>ctx.fillText(f,14,H-115+i*16));
+  updateDisplays(); recordDataPoint(); updateGraphs();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+// Fallback timer for background tabs (independent clock)
+let lastFallbackTime = Date.now();
+setInterval(() => {
+  const now=Date.now(), dt=Math.min((now-lastFallbackTime)/1000, 0.2);
+  lastFallbackTime=now;
+  lastWallTime=now; // sync main clock
+  if (dt>0.02){
+    if(!state.paused&&!dragging){
+      const dts=dt*state.speed; const maxTh=state.laps*2*Math.PI;
+      if(compareMode){
+        ['luna','chicago'].forEach(k=>{
+          compareState[k].theta+=compareState[k].omega*dts;
+          const ss=5,sd=dts/ss,Ik2=getInertia(k);
+          for(let s=0;s<ss;s++){const tw2=calcNetWindTorque(k,compareState[k].thetaWind,compareState[k].omegaWind)+getMotorTorque(k,compareState[k].omegaWind);compareState[k].omegaWind+=tw2/Ik2*sd;compareState[k].omegaWind=Math.max(compareState[k].omegaWind,compareState[k].omega*0.1);compareState[k].thetaWind+=compareState[k].omegaWind*sd;}
+        });
+        simTime+=dts;
+        if(['luna','chicago'].every(k=>compareState[k].theta>=maxTh)){state.paused=true;updatePlayBtn();}
+        recordCompareDataPoint();
+      } else {
+        state.theta+=state.omega*dts;simTime+=dts;
+        const ss2=5,sd2=dts/ss2,Iw2=getInertia(currentWheel);
+        for(let s=0;s<ss2;s++){const tw3=calcNetWindTorque(currentWheel,state.thetaWind,state.omegaWind)+getMotorTorque(currentWheel,state.omegaWind);state.omegaWind+=tw3/Iw2*sd2;state.omegaWind=Math.max(state.omegaWind,state.omega*0.1);state.thetaWind+=state.omegaWind*sd2;}
+        if(state.theta>=maxTh){state.theta=maxTh;state.paused=true;updatePlayBtn();}
+        recordDataPoint();
+      }
+    }
+    updateGraphs();
+  }
+}, 100);
+</script>
+</body>
+</html>
