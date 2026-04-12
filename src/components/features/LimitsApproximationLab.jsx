@@ -114,6 +114,8 @@ export const LimitsApproximationLab = () => {
                 yMax={Math.max(...points.map((point) => point.y)) * 1.1}
                 xTicks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter((tick) => tick <= scenario.domainMax)}
                 yTicks={[0, 1, 2, 3, 4, 5, 6]}
+                xLabel="x"
+                yLabel="f(x)"
               >
                 {({ scaleX, scaleY, padding, height }) => (
                   <>

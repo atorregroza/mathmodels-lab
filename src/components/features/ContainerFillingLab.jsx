@@ -585,6 +585,8 @@ export const ContainerFillingLab = () => {
               yMax={yMax}
               xTicks={xTicks}
               yTicks={yTicks}
+              xLabel="Altura h (cm)"
+              yLabel="Volumen V (cm³)"
               dark
             >
               {({ scaleX, scaleY }) => (

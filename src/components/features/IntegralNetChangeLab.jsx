@@ -141,7 +141,7 @@ export const IntegralNetChangeLab = () => {
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Lectura gráfica</p>
             <h3 className="mt-3 font-display text-3xl">Área positiva, área negativa y balance final</h3>
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
-              <CartesianFrame xMin={0} xMax={9} yMin={yMin} yMax={yMax} xTicks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} yTicks={yTicks}>
+              <CartesianFrame xMin={0} xMax={9} yMin={yMin} yMax={yMax} xTicks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} yTicks={yTicks} xLabel="t" yLabel="r(t)">
                 {({ scaleX, scaleY, padding, height }) => (
                   <>
                     {areaSegments.map((segment, index) => (

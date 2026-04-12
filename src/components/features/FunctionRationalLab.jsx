@@ -209,6 +209,8 @@ export const FunctionRationalLab = () => {
                 yMax={config.yWindow[1]}
                 xTicks={[-6, -4, -2, 0, 2, 4, 6].filter((tick) => tick >= config.xWindow[0] && tick <= config.xWindow[1])}
                 yTicks={[-8, -4, 0, 4, 8].filter((tick) => tick >= config.yWindow[0] && tick <= config.yWindow[1])}
+                xLabel="x"
+                yLabel="f(x)"
                 className="w-full h-auto overflow-hidden rounded-[1.1rem]"
               >
                 {({ scaleX, scaleY, padding, width, height }) => (

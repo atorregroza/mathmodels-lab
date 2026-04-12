@@ -250,6 +250,7 @@ export const TrigTransformationsLab = () => {
                 xMin={-2 * PI} xMax={2 * PI} yMin={-5} yMax={5}
                 xTicks={xTicks} yTicks={yTicks}
                 xTickFormatter={formatPiTick}
+                xLabel="x (rad)" yLabel="f(x)"
                 className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
               >
                 {({ scaleX, scaleY, padding, width, height }) => (

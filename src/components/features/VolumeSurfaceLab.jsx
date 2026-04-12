@@ -416,6 +416,8 @@ export const VolumeSurfaceLab = () => {
               yMax={yMax}
               xTicks={xTicks}
               yTicks={yTicks}
+              xLabel={`${sweepParam.key} (cm)`}
+              yLabel={constraint === 'fixV' ? 'A (cm²)' : constraint === 'fixA' ? 'V (cm³)' : 'V, A'}
               dark
             >
               {({ scaleX, scaleY }) => (

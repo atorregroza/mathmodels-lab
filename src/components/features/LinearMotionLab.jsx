@@ -330,7 +330,7 @@ export const LinearMotionLab = () => {
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Posición</p>
             <h3 className="mt-2 font-display text-xl">{sc.sLabel}</h3>
             <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
-              <CartesianFrame xMin={0} xMax={sc.tMax} yMin={sMin} yMax={sMax} xTicks={ticks(0, sc.tMax)} yTicks={ticks(sMin, sMax)}>
+              <CartesianFrame xMin={0} xMax={sc.tMax} yMin={sMin} yMax={sMax} xTicks={ticks(0, sc.tMax)} yTicks={ticks(sMin, sMax)} xLabel="t (s)" yLabel="s(t) (m)">
                 {({ scaleX, scaleY }) => (
                   <>
                     <path d={linePath(sPoints, scaleX, scaleY)} fill="none" stroke="rgba(80,150,255,0.9)" strokeWidth="3" strokeLinecap="round" />
@@ -347,7 +347,7 @@ export const LinearMotionLab = () => {
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Velocidad e integrales</p>
             <h3 className="mt-2 font-display text-xl">{sc.vLabel} — intervalo [{format(left)}, {format(right)}]</h3>
             <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
-              <CartesianFrame xMin={0} xMax={sc.tMax} yMin={vMin} yMax={vMax} xTicks={ticks(0, sc.tMax)} yTicks={ticks(vMin, vMax)}>
+              <CartesianFrame xMin={0} xMax={sc.tMax} yMin={vMin} yMax={vMax} xTicks={ticks(0, sc.tMax)} yTicks={ticks(vMin, vMax)} xLabel="t (s)" yLabel="v(t) (m/s)">
                 {({ scaleX, scaleY, padding, height }) => (
                   <>
                     {/* Shaded areas */}

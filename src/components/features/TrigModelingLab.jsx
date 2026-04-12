@@ -212,6 +212,8 @@ export const TrigModelingLab = () => {
                 xMin={ctx.xWindow[0]} xMax={ctx.xWindow[1]}
                 yMin={ctx.yWindow[0]} yMax={ctx.yWindow[1]}
                 xTicks={ctx.xTicks} yTicks={ctx.yTicks}
+                xLabel={`${ctx.xLabel} (${ctx.xUnit})`}
+                yLabel={`${ctx.yLabel} (${ctx.yUnit})`}
                 className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
               >
                 {({ scaleX, scaleY, padding, width, height }) => (

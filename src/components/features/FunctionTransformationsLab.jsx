@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { format, linePath, sampleRange } from './derivaLabUtils'
+import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
 
 const bases = [
   { id: 'quadratic',    label: 'Cuadrática',   fn: (u) => u ** 2,                              formula: 'f(x) = x²',    xWindow: [-6, 6],    yWindow: [-12, 12] },
@@ -80,6 +80,8 @@ export const FunctionTransformationsLab = () => {
               dark
               xTicks={[-6, -4, -2, 0, 2, 4, 6].filter((t) => t >= base.xWindow[0] && t <= base.xWindow[1])}
               yTicks={[-12, -8, -4, 0, 4, 8, 12].filter((t) => t >= base.yWindow[0] && t <= base.yWindow[1])}
+              xLabel="x"
+              yLabel="f(x)"
             >
               {({ scaleX, scaleY, padding, width, height }) => (
                 <>
@@ -191,6 +193,26 @@ export const FunctionTransformationsLab = () => {
             {flipHorizontal ? ' y la refleja respecto del eje y' : ''}.
           </p>
         </div>
+      </LabCard>
+
+      {/* ── descarga ─────────────────────────────────────────────────────────── */}
+      <LabCard title="Descarga">
+        <button
+          type="button"
+          onClick={() => downloadCsv([
+            ['x', 'f(x)', 'g(x)'],
+            ...Array.from({ length: 12 }, (_, index) => {
+              const x = base.xWindow[0] + (((base.xWindow[1] - base.xWindow[0]) * index) / 11)
+              const fx = base.fn(x)
+              const u = b * (x - h)
+              const gx = a * base.fn(u) + k
+              return [format(x), format(fx), format(gx)]
+            }).filter((row) => !row.includes('NaN')),
+          ], `transformaciones-${base.id}.csv`)}
+          className="inline-flex items-center gap-2 rounded-full bg-aqua px-5 py-3 text-sm font-semibold text-white"
+        >
+          Descargar CSV
+        </button>
       </LabCard>
     </div>
   )

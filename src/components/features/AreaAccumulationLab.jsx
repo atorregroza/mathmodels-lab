@@ -95,7 +95,7 @@ export const AreaAccumulationLab = () => {
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa y acumulación</p>
             <h3 className="mt-3 font-display text-3xl">Lo que entra por unidad de tiempo y lo que se acumula después</h3>
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
-              <CartesianFrame xMin={0} xMax={scenario.domainMax} yMin={0} yMax={Math.max(...points.map((point) => point.y)) * 1.15} xTicks={[0, 2, 4, 6, 8, 10, 12].filter((tick) => tick <= scenario.domainMax)} yTicks={[0, 10, 20, 30, 40, 50, 60, 70]}>
+              <CartesianFrame xMin={0} xMax={scenario.domainMax} yMin={0} yMax={Math.max(...points.map((point) => point.y)) * 1.15} xTicks={[0, 2, 4, 6, 8, 10, 12].filter((tick) => tick <= scenario.domainMax)} yTicks={[0, 10, 20, 30, 40, 50, 60, 70]} xLabel="t" yLabel={scenario.rateLabel}>
                 {({ scaleX, scaleY, height, padding }) => (
                   <>
                     {Array.from({ length: rectangles }, (_, index) => {

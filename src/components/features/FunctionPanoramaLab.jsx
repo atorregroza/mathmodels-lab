@@ -176,6 +176,8 @@ export const FunctionPanoramaLab = () => {
                   yMax={8}
                   xTicks={[-6, -4, -2, 0, 2, 4, 6]}
                   yTicks={[-8, -4, 0, 4, 8]}
+                  xLabel="x"
+                  yLabel="f(x)"
                   className="w-full h-auto overflow-hidden rounded-[1.1rem]"
                 >
                   {({ scaleX, scaleY }) => (

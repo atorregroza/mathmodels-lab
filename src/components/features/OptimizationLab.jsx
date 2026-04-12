@@ -648,6 +648,8 @@ export const OptimizationLab = () => {
               yMax={yMax}
               xTicks={xTicks}
               yTicks={yTicks}
+              xLabel={sc.paramLabel}
+              yLabel={sc.yAxisLabel}
               dark
             >
               {({ scaleX, scaleY }) => (

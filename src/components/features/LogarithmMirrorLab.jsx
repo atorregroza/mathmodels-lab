@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { format } from './derivaLabUtils'
+import { downloadCsv, format } from './derivaLabUtils'
 
 // Square axis range so y = x appears exactly at 45°
 const AX_MIN = -0.4
@@ -54,6 +54,21 @@ export const LogarithmMirrorLab = () => {
   const xTicks = [0, 1, 2, 3, 4, 5]
   const yTicks = [0, 1, 2, 3, 4, 5]
 
+  // ── csv ──────────────────────────────────────────────────────────────────
+  const handleDownload = () => {
+    const rows = [
+      ['exponente', `${bl}^exp`, `log_${bl}(valor)`],
+      ...[0, 1, 2, 3].map((exp) => {
+        const val = a ** exp
+        return [exp, val.toFixed(4), exp]
+      }),
+      ['', '', ''],
+      ['x₀', `f(x₀) = ${bl}^x₀`, `g(f(x₀)) = log_${bl}(f(x₀))`],
+      [format(traceX), traceY.toFixed(4), format(traceX)],
+    ]
+    downloadCsv(rows, `logaritmo-espejo-base${format(a)}.csv`)
+  }
+
   // ── render ────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-5 p-4 md:p-6">
@@ -101,6 +116,8 @@ export const LogarithmMirrorLab = () => {
               dark
               xTicks={xTicks}
               yTicks={yTicks}
+              xLabel="x"
+              yLabel="f(x)"
             >
               {({ scaleX, scaleY }) => (
                 <>
@@ -285,6 +302,14 @@ export const LogarithmMirrorLab = () => {
               logₐ(x) = y  ⟺  aʸ = x
             </p>
           </div>
+
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink hover:border-ink/24 transition-colors"
+          >
+            Descargar datos CSV
+          </button>
         </div>
       </div>
 

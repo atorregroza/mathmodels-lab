@@ -168,6 +168,8 @@ export const SequenceGrowthLab = () => {
               dark
               xTicks={xTicks}
               yTicks={yTicks.map((v) => Math.round(v * 10) / 10)}
+              xLabel="n (término)"
+              yLabel={view === 'sequence' ? 'aₙ' : 'Sₙ'}
             >
               {({ scaleX, scaleY }) => (
                 <>

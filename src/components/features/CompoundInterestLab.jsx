@@ -101,6 +101,8 @@ export const CompoundInterestLab = () => {
                   v >= 1000  ? `${(v / 1000).toFixed(1)}k` :
                     String(Math.round(v))
               }
+              xLabel="Años (n)"
+              yLabel="Monto ($)"
             >
               {({ scaleX, scaleY }) => (
                 <>

@@ -707,6 +707,8 @@ export const SystemsOfEquationsLab = () => {
               width={580} height={400}
               xMin={-AXIS} xMax={AXIS}
               yMin={-AXIS} yMax={AXIS}
+              xLabel="x"
+              yLabel="y"
               dark xTicks={TICKS} yTicks={TICKS}
             >
               {({ scaleX, scaleY }) => (

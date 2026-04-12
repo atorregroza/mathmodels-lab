@@ -100,6 +100,8 @@ export const TrajectoryCalculusLab = () => {
                 yMax={sceneYMax}
                 xTicks={buildTicks(sceneXMax)}
                 yTicks={buildTicks(sceneYMax)}
+                xLabel="x (m)"
+                yLabel="y (m)"
                 className="w-full h-auto overflow-visible rounded-[1.3rem]"
               >
                 {({ scaleX, scaleY }) => (
@@ -143,6 +145,8 @@ export const TrajectoryCalculusLab = () => {
                   dark={false}
                   xTicks={timeTicks}
                   yTicks={heightTicks}
+                  xLabel="t (s)"
+                  yLabel="h(t) (m)"
                   className="w-full h-auto aspect-[6/5] overflow-visible rounded-[1rem]"
                 >
                   {({ scaleX, scaleY, height, padding }) => (
@@ -182,6 +186,8 @@ export const TrajectoryCalculusLab = () => {
                   dark={false}
                   xTicks={timeTicks}
                   yTicks={velocityTicks}
+                  xLabel="t (s)"
+                  yLabel="v(t) (m/s)"
                   className="w-full h-auto aspect-[6/5] overflow-visible rounded-[1rem]"
                 >
                   {({ scaleX, scaleY, padding, width }) => (
@@ -220,6 +226,8 @@ export const TrajectoryCalculusLab = () => {
                   dark={false}
                   xTicks={timeTicks}
                   yTicks={[-gravity * 1.2, -gravity, -gravity * 0.8, 0].map((tick) => Number(tick.toFixed(2)))}
+                  xLabel="t (s)"
+                  yLabel="a(t) (m/s²)"
                   className="w-full h-auto aspect-[6/5] overflow-visible rounded-[1rem]"
                 >
                   {({ scaleX, scaleY, padding, width }) => (
