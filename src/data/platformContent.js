@@ -1604,6 +1604,191 @@ export const navigationItems = [
   { label: 'Modelar', to: '/modelacion', end: true },
   { label: 'Investigar', submenu: [
     { label: 'Exploración', to: '/exploraciones/funciones-modelos', description: 'Investigación guiada con datos y modelos' },
-    { label: 'Monografía', to: '/monografias', description: 'Investigación extendida (próximamente)', disabled: true },
+    { label: 'Monografía IB', to: '/monografias', description: 'Investigación extendida — Marco 2027' },
   ]},
 ]
+
+// ===================== MONOGRAFIA IB =====================
+
+export const monografiaContent = {
+  hero: {
+    title: 'Monografía IB',
+    subtitle: 'Matemáticas — Marco 2027',
+    tagline: 'Tu investigación extendida, paso a paso',
+    description: 'La monografía es una investigación independiente de ~4000 palabras que te permite explorar un tema matemático en profundidad. Es tu oportunidad de demostrar pensamiento crítico, creatividad y rigor académico.',
+    highlight: '30 puntos posibles distribuidos en 5 criterios',
+  },
+
+  itinerarios: [
+    {
+      id: 'disciplinar',
+      title: 'Centrado en una asignatura',
+      emoji: '🔬',
+      subtitle: 'Matemáticas en profundidad',
+      description: 'Profundizas en un tema de matemáticas con una pregunta de investigación clara. Usas herramientas y marcos teóricos de la disciplina.',
+      ejemplos: [
+        '¿Qué modelo trigonométrico describe la posición de un pasajero en una rueda panorámica y cómo varía entre diferentes escalas?',
+        '¿Hasta qué punto un modelo logístico predice el crecimiento de una población de bacterias en condiciones controladas?',
+        '¿Cómo se puede usar la distribución normal para modelar la variabilidad en tiempos de reacción humana?',
+        '¿Qué relación existe entre la longitud de un péndulo y su periodo, y qué tan preciso es el modelo teórico frente a datos experimentales?',
+        '¿Puede la serie de Fourier aproximar una señal de audio con precisión suficiente para su reconstrucción?',
+      ],
+      color: '#2E5090',
+    },
+    {
+      id: 'interdisciplinario',
+      title: 'Interdisciplinario',
+      emoji: '🌐',
+      subtitle: 'Matemáticas + otra disciplina',
+      description: 'Integras matemáticas con otra disciplina. La integración debe ser visible en el diseño, análisis y evaluación — no dos mitades pegadas.',
+      ejemplos: [
+        '¿Cómo se puede usar la geometría de sombras solares para optimizar la ubicación de paneles fotovoltaicos? (Mat + Física)',
+        '¿Qué modelo matemático describe mejor la relación entre el índice de Gini y el acceso a educación en América Latina? (Mat + Economía)',
+        '¿Hasta qué punto la proporción áurea aparece en la composición de obras del Renacimiento? (Mat + Arte)',
+        '¿Puede un modelo de ecuaciones diferenciales predecir la propagación de una epidemia en una población cerrada? (Mat + Biología)',
+        '¿Qué patrón geométrico optimiza la distribución de cultivos en un terreno irregular? (Mat + Ciencias ambientales)',
+      ],
+      color: '#7C3AED',
+    },
+  ],
+
+  criterios: [
+    {
+      id: 'A', title: 'Enfoque y método', puntos: 6, color: '#2E5090',
+      descripcion: 'Claridad de la pregunta de investigación, delimitación del alcance, diseño metodológico y estructura.',
+      preguntas: [
+        '¿Tu pregunta/objetivo es explícito y matemático?',
+        '¿Delimitaste el alcance (contexto, variables, condiciones)?',
+        '¿Describiste y justificaste tu método (fórmulas, datos, software)?',
+        '¿La estructura guía al lector hacia el resultado?',
+      ],
+      tip: 'Una buena RQ dice qué se calcula y para qué. Evita preguntas vagas o cambiantes.',
+    },
+    {
+      id: 'B', title: 'Conocimiento y comprensión', puntos: 6, color: '#059669',
+      descripcion: 'Conceptos y variables definidos, notación consistente, comprensión auténtica — no solo copiar fórmulas.',
+      preguntas: [
+        '¿Defines conceptos y variables (con unidades) antes de usarlos?',
+        '¿Tu notación es consistente y sin ambigüedades?',
+        '¿Explicas por qué las fórmulas aplican, no solo las copias?',
+        '¿Citas correctamente las fuentes matemáticas?',
+      ],
+      tip: 'Demuestra comprensión conceptual, no solo uso de herramientas.',
+    },
+    {
+      id: 'C', title: 'Análisis y argumento', puntos: 6, color: '#D97706',
+      descripcion: 'Pasos esenciales mostrados, resultados interpretados, gráficos conectados con la RQ, lógica sin saltos.',
+      preguntas: [
+        '¿Tus cálculos muestran los pasos esenciales (se entiende el "cómo")?',
+        '¿Interpretas los resultados, no solo los presentas?',
+        '¿Los gráficos y tablas conectan con la pregunta de investigación?',
+        '¿Verificas consistencia (comparación o control)?',
+      ],
+      tip: 'Evita saltos lógicos. Si "aparece" un resultado, explica de dónde viene.',
+    },
+    {
+      id: 'D', title: 'Discusión y evaluación', puntos: 8, color: '#DC2626',
+      descripcion: 'Supuestos y límites del método, error cuantificado, análisis de sensibilidad, comparación de enfoques, extensiones.',
+      preguntas: [
+        '¿Identificas supuestos y límites del modelo/método?',
+        '¿Cuantificas o discutes el error (error relativo, validación)?',
+        '¿Qué pasa si cambia un parámetro o condición (sensibilidad)?',
+        '¿Comparas enfoques (fórmulas vs tecnología, modelos alternativos)?',
+        '¿Propones mejoras, extensiones o alternativas?',
+      ],
+      tip: 'Aquí se distingue un A de un B. No digas solo "tiene limitaciones" — cuantifica cuánto afectan.',
+      isHeaviest: true,
+    },
+    {
+      id: 'E', title: 'Reflexión (RPPF)', puntos: 4, color: '#7C3AED',
+      descripcion: 'Decisiones durante el proceso, cambios de rumbo, aprendizaje y próximos pasos. Se evalúa mediante el RPPF.',
+      preguntas: [
+        '¿Documentas las decisiones clave y por qué las tomaste?',
+        '¿Registras los cambios de rumbo y qué aprendiste de ellos?',
+        '¿Reflexionas sobre lo que descubriste que no esperabas?',
+        '¿Conectas el proceso con tu crecimiento como investigador?',
+      ],
+      tip: 'Habla en primera persona. Cuenta tu historia de investigación.',
+    },
+  ],
+
+  marcosInfo: {
+    queEs: 'Un encuadre amplio para situar tu tema y ayudarte a empezar. Piensa en él como un lente a través del cual miras tu pregunta.',
+    queNoEs: 'No es un criterio de calificación. La conexión con el marco no se evalúa directamente en ningún criterio.',
+    importante: 'Los marcos pueden solaparse. Elige el que mejor se ajuste al énfasis real de tu pregunta de investigación.',
+    soloInterdisciplinario: 'Solo aplica si eliges el itinerario interdisciplinario. En el itinerario centrado en una asignatura no se usan marcos.',
+    pruebaIntegracion: 'Si al quitar una disciplina tu pregunta se responde prácticamente igual, la integración no es fuerte. Necesitas que ambas disciplinas sean indispensables.',
+    secuencia: [
+      'Elegir itinerario: centrado en una asignatura (1 disciplina) o interdisciplinario (2 disciplinas).',
+      'Si es interdisciplinario: seleccionar 1 marco para ubicar el contexto.',
+      'Formular una RQ que exija las dos disciplinas.',
+      'Diseñar un método integrado: variables de una disciplina + herramientas de la otra.',
+      'En Discusión (criterio D): doble lente — validez matemática + validez en la otra disciplina.',
+    ],
+  },
+
+  marcos: [
+    {
+      id: 'poder', titulo: 'Poder, igualdad y justicia', emoji: '⚖️',
+      descripcion: 'Modelos y medidas para analizar inequidad, acceso, sesgos, distribución y consecuencias.',
+      ejemplosRQ: [
+        '¿Qué tan preciso es el índice de Gini para comparar la desigualdad de ingresos entre dos países?',
+        '¿Puede un modelo probabilístico detectar sesgo en un algoritmo de selección de personal?',
+      ],
+    },
+    {
+      id: 'sostenibilidad', titulo: 'Sostenibilidad, desarrollo y cambio', emoji: '🌱',
+      descripcion: 'Modelación y predicción de crecimiento, recursos y riesgo, con interpretación en sistemas reales.',
+      ejemplosRQ: [
+        '¿Hasta qué punto un modelo logístico predice el crecimiento poblacional de una especie en un ecosistema cerrado?',
+        '¿Qué modelo matemático optimiza el uso de agua en un sistema de riego agrícola?',
+      ],
+    },
+    {
+      id: 'cultura', titulo: 'Cultura, identidad y expresión', emoji: '🎭',
+      descripcion: 'Estructuras, patrones, codificación y percepción: matemática aplicada a expresiones humanas.',
+      ejemplosRQ: [
+        '¿Hasta qué punto la proporción áurea aparece en la composición de obras del Renacimiento?',
+        '¿Puede un análisis de redes sociales modelar la difusión de tendencias musicales en una comunidad?',
+      ],
+    },
+    {
+      id: 'medicion', titulo: 'Pruebas, medición e innovación', emoji: '🔧',
+      descripcion: 'Error, incertidumbre, validación, métodos numéricos/estadísticos y diseño de mediciones.',
+      ejemplosRQ: [
+        '¿Cuál es el error relativo de diferentes métodos numéricos para aproximar el valor de pi?',
+        '¿Qué método estadístico es más robusto para detectar valores atípicos en datos experimentales?',
+      ],
+    },
+    {
+      id: 'movimiento', titulo: 'Movimiento, tiempo y espacio', emoji: '🌍',
+      descripcion: 'Geometría, dinámica, optimización y representación: trayectorias, redes, transporte y forma.',
+      ejemplosRQ: [
+        '¿Qué modelo trigonométrico describe la posición de un pasajero en una rueda panorámica y cómo varía con la resistencia del viento?',
+        '¿Puede la teoría de grafos encontrar la ruta óptima de recolección de residuos en un barrio?',
+      ],
+    },
+  ],
+
+  simulaciones: [
+    {
+      id: 'mcu-ruedas',
+      titulo: 'Movimiento Circular Uniforme',
+      subtitulo: 'La Luna de Barranquilla vs Rueda de Chicago 1893',
+      descripcion: 'Compara dos ruedas panorámicas reales usando funciones trigonométricas, vectores, resistencia del viento y recolección de datos.',
+      temas: ['Funciones trigonométricas', 'MCU', 'Resistencia del aire', 'Modelación'],
+      ruta: '/simulations/mcu-ruedas.html',
+      color: '#F59E0B',
+      emoji: '🎡',
+    },
+  ],
+
+  proceso: [
+    { paso: 1, titulo: 'Elige tu camino', descripcion: 'Centrado en una asignatura o interdisciplinario. Si es interdisciplinario, selecciona un marco.' },
+    { paso: 2, titulo: 'Formula tu pregunta', descripcion: 'Específica, medible, con variables claras. Que permita análisis cuantitativo.' },
+    { paso: 3, titulo: 'Explora con simulaciones', descripcion: 'Usa las herramientas para recolectar datos, visualizar modelos y descubrir patrones.' },
+    { paso: 4, titulo: 'Modela y analiza', descripcion: 'Construye tu modelo matemático, aplícalo a datos reales, compara con la teoría.' },
+    { paso: 5, titulo: 'Evalúa y reflexiona', descripcion: 'Discute limitaciones, sensibilidad, alternativas. Cuenta tu proceso.' },
+    { paso: 6, titulo: 'Escribe y revisa', descripcion: '~4000 palabras. Estructura clara, conclusión que responde tu pregunta.' },
+  ],
+}
