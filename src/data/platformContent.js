@@ -1641,7 +1641,6 @@ export const monografiaContent = {
       emoji: '🌐',
       subtitle: 'Matemáticas + otra asignatura del DP',
       description: 'Integras matemáticas con otra asignatura que estés cursando en el Diploma. La integración debe ser visible en el diseño, análisis y evaluación — no dos mitades pegadas.',
-      nota: 'La otra asignatura debe ser una que curses en el DP (Física, Economía, Biología, Historia, etc.). No vale inventar disciplinas.',
       ejemplos: [
         '¿Cómo se puede usar la geometría de sombras solares para optimizar la ubicación de paneles fotovoltaicos? (Mat + Física)',
         '¿Qué modelo matemático describe mejor la relación entre el índice de Gini y el acceso a educación en América Latina? (Mat + Economía)',
