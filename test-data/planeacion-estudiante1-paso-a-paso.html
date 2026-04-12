@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Planeación inicial: modelo para un movimiento observado</title>
+<style>
+  @page { margin: 2cm; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #121723; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 1rem; }
+  .header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .header-title { font-size: 1.1rem; font-weight: 700; }
+  h1 { font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
+  h2 { font-size: 0.9rem; color: #555; margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+  p { margin: 0.3rem 0; font-size: 0.9rem; }
+  .subtitle { color: #666; font-size: 0.85rem; }
+  .student-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: #f5f5f5; border-radius: 8px; }
+  .student-info div { font-size: 0.8rem; }
+  .student-info .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .card { background: #f8f8f8; border-radius: 8px; padding: 0.75rem; }
+  .card-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.25rem; }
+  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.7rem; color: #999; display: flex; align-items: center; gap: 0.5rem; }
+  ol, ul { padding-left: 1.2rem; }
+  li { margin-bottom: 0.3rem; font-size: 0.85rem; }
+  .referentes { background: #f0f7ff; border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; }
+  .referentes li { font-size: 0.8rem; color: #444; }
+  @media print { body { font-size: 10pt; } .header { margin-bottom: 0.3rem; } }
+</style>
+</head>
+<body>
+<div class="header"><svg viewBox="0 0 48 48" width="36" height="36" style="vertical-align:middle;margin-right:8px"><rect width="48" height="48" rx="12" fill="#121723"/><path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36" fill="none" stroke="#22c5a0" stroke-width="3" stroke-linecap="round"/><line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/><circle cx="17.5" cy="9" r="3" fill="#ff6b35"/></svg><span class="header-title">MathModels Lab</span></div>
+
+<h1>Planeación inicial: modelo para un movimiento observado</h1>
+<p class="subtitle">Funciones y modelos — Modelación funcional — Paso a paso</p>
+
+<div class="student-info">
+  <div><p class="label">Estudiante</p><p>Juan Carlos Pérez</p></div>
+  <div><p class="label">Curso</p><p>11° NM</p></div>
+  <div><p class="label">Institución</p><p>Colegio Internacional del Norte</p></div>
+</div>
+
+<h2>Pregunta inicial</h2>
+<p>¿Qué modelo explica mejor la componente horizontal y qué modelo explica mejor la altura de una pelota lanzada en ángulo?</p>
+
+<h2>Fenómeno o foco</h2>
+<p>Se sigue el centro de una pelota lanzada en ángulo para estudiar qué función describe mejor x(t) y cuál describe mejor y(t).</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Variables y unidades</p><p>tiempo (s), posición horizontal x(t) (m), altura y(t) (m)</p></div>
+<div class="card"><p class="card-label">Modelos preliminares</p><p>lineal para x(t), cuadrático para y(t)</p></div>
+</div>
+
+<h2>Evidencia inicial</h2>
+<p>Puntos rastreados cuadro a cuadro, tabla exportada, comparación entre ajuste lineal y cuadrático, y lectura de residuos.</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Conjetura</p><p>Una familia funcional parece explicar mejor el fenómeno porque conserva la forma principal de los datos y permite interpretar parámetros con sentido.</p></div>
+<div class="card"><p class="card-label">Limitaciones</p><p>El ajuste inicial no prueba que el modelo sea definitivo; todavía hay que discutir error, intervalo útil y otras familias posibles.</p></div>
+</div>
+
+<h2>Enfoque metodológico</h2>
+<ol>
+<li>Parte del fenómeno y no de la fórmula: describe primero cómo se comportan los datos o la escena.</li>
+<li>Decide qué variable depende de cuál y fija con claridad unidades e intervalo de trabajo.</li>
+<li>Contrasta al menos dos familias funcionales antes de decidir cuál representa mejor el fenómeno.</li>
+<li>Justifica la elección del modelo con forma global, parámetros, error y sentido contextual.</li>
+<li>Usa la pregunta propuesta como punto de partida — no necesitas inventarla, pero sí entenderla.</li>
+<li>Concéntrate en justificar cada decisión con evidencia matemática, no solo con intuición.</li>
+<li>No cambies demasiadas variables al mismo tiempo; primero consolida una lectura base.</li>
+</ol>
+
+<h2>Ayudas</h2>
+<ol>
+<li>Superpón datos y modelo en una misma gráfica — el ajuste visual es el primer filtro, pero no el único.</li>
+<li>Un buen modelo no es solo el que se parece a los datos: es el que permite interpretar sus parámetros con sentido en el contexto.</li>
+<li>Compara al menos dos familias y argumenta con R², residuos y lectura de parámetros por qué una es mejor que otra.</li>
+</ol>
+
+<h2>Referentes para explorar</h2>
+<div class="referentes">
+<ul>
+<li>Familias de funciones: lineal, cuadrática, exponencial, logarítmica, potencia.</li>
+<li>Criterios para elegir un modelo: R², residuos, interpretación de parámetros.</li>
+<li>Transformaciones de funciones y su efecto en los parámetros.</li>
+</ul>
+</div>
+
+<h2>Siguiente paso</h2>
+<p>Justificar por qué las dos componentes del mismo fenómeno no comparten la misma familia funcional.</p>
+
+<div class="footer">
+  <svg viewBox="0 0 48 48" width="24" height="24"><rect width="48" height="48" rx="12" fill="#121723"/><path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36" fill="none" stroke="#22c5a0" stroke-width="3" stroke-linecap="round"/><line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/><circle cx="17.5" cy="9" r="3" fill="#ff6b35"/></svg>
+  <div>
+    <p><strong>MathModels Lab</strong> — mathmodels.astridto.com</p>
+    <p>Este documento es una <strong>planeación inicial</strong>. No constituye un borrador ni un documento final — es el punto de partida para desarrollar la exploración fuera de la plataforma.</p>
+  </div>
+</div>
+</body>
+</html>

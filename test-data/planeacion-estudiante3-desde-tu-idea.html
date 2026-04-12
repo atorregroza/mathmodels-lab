@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Planeación inicial: Fibonacci y la razón áurea</title>
+<style>
+  @page { margin: 2cm; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #121723; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 1rem; }
+  .header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .header-title { font-size: 1.1rem; font-weight: 700; }
+  h1 { font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
+  h2 { font-size: 0.9rem; color: #555; margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+  p { margin: 0.3rem 0; font-size: 0.9rem; }
+  .subtitle { color: #666; font-size: 0.85rem; }
+  .student-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: #f5f5f5; border-radius: 8px; }
+  .student-info div { font-size: 0.8rem; }
+  .student-info .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .card { background: #f8f8f8; border-radius: 8px; padding: 0.75rem; }
+  .card-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.25rem; }
+  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.7rem; color: #999; display: flex; align-items: center; gap: 0.5rem; }
+  ol, ul { padding-left: 1.2rem; }
+  li { margin-bottom: 0.3rem; font-size: 0.85rem; }
+  .referentes { background: #f0f7ff; border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; }
+  .referentes li { font-size: 0.8rem; color: #444; }
+  .nota { background: #fff8e6; border: 1px solid #f0d060; border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; }
+  .nota p { font-size: 0.8rem; color: #665500; }
+  @media print { body { font-size: 10pt; } }
+</style>
+</head>
+<body>
+<div class="header"><svg viewBox="0 0 48 48" width="36" height="36" style="vertical-align:middle;margin-right:8px"><rect width="48" height="48" rx="12" fill="#121723"/><path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36" fill="none" stroke="#22c5a0" stroke-width="3" stroke-linecap="round"/><line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/><circle cx="17.5" cy="9" r="3" fill="#ff6b35"/></svg><span class="header-title">MathModels Lab</span></div>
+
+<h1>Patrones en la sucesión de Fibonacci y su relación con la razón áurea</h1>
+<p class="subtitle">Funciones y modelos — Patrones y álgebra — Desde tu propia idea</p>
+
+<div class="student-info">
+  <div><p class="label">Estudiante</p><p>María González</p></div>
+  <div><p class="label">Curso</p><p>11° NM</p></div>
+  <div><p class="label">Institución</p><p>Colegio San José</p></div>
+</div>
+
+<h2>Pregunta inicial</h2>
+<p>¿Qué relación existe entre los cocientes consecutivos de la sucesión de Fibonacci y la razón áurea, y cómo se puede demostrar que convergen?</p>
+
+<h2>Fenómeno o foco</h2>
+<p>Explorar la convergencia de F(n+1)/F(n) hacia φ usando la fórmula de Binet y comparando con datos numéricos.</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Variables y unidades</p><p>n (término), F(n), cociente F(n+1)/F(n), φ = (1+√5)/2 ≈ 1.618</p></div>
+<div class="card"><p class="card-label">Modelos preliminares</p><p>Fórmula de Binet, convergencia de sucesiones, crecimiento exponencial vs polinomial</p></div>
+</div>
+
+<h2>Evidencia inicial</h2>
+<p>Tabla de los primeros 20 términos de Fibonacci, cálculo de cocientes consecutivos, gráfica de convergencia y comparación con φ.</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Conjetura</p><p>Es probable que la regularidad pueda describirse con una expresión general que conserve el patrón observado y permita anticipar nuevos casos.</p></div>
+<div class="card"><p class="card-label">Limitaciones</p><p>La expresión inicial todavía debe contrastarse con más casos y con posibles cambios en la condición inicial.</p></div>
+</div>
+
+<h2>Enfoque metodológico</h2>
+<ol>
+<li>Reconoce primero qué cambia y qué permanece estable entre un caso y el siguiente.</li>
+<li>Organiza una tabla con varios casos y revisa diferencias, razones o regularidades visibles.</li>
+<li>Propón una expresión preliminar y comprueba si realmente funciona en más de un caso.</li>
+<li>Compara al menos dos formas de generalizar: regla explícita, recurrencia o forma factorizada.</li>
+<li>Elige un fenómeno que realmente te interese — la motivación personal es lo que sostiene una buena exploración.</li>
+<li>Delimita el fenómeno y define variables antes de recoger datos; sin este paso, el trabajo se dispersa.</li>
+<li>Formula una pregunta que conecte el fenómeno con una herramienta matemática concreta.</li>
+<li>Define desde el principio qué evidencia te permitirá decidir si tu modelo o argumento funciona o no.</li>
+<li>Busca al menos un laboratorio de la plataforma que te ayude a explorar tu idea antes de formalizarla.</li>
+</ol>
+
+<h2>Ayudas</h2>
+<ol>
+<li>Busca al menos cinco casos bien organizados antes de generalizar — una fórmula que solo funciona para tres casos no es confiable.</li>
+<li>Las diferencias sucesivas son tu mejor herramienta: si la primera diferencia es constante, el patrón es lineal; si la segunda es constante, es cuadrático.</li>
+<li>Siempre verifica tu expresión general sustituyendo valores que no usaste para construirla.</li>
+</ol>
+
+<div class="nota">
+<p><strong>Nota:</strong> Esta exploración nace de tu propia idea. No existe un laboratorio específico en la plataforma para este tema, pero puedes usar el laboratorio de <strong>Fibonacci y la razón áurea</strong> como punto de partida para construir la tabla de cocientes y observar la convergencia visualmente.</p>
+</div>
+
+<h2>Referentes para explorar</h2>
+<div class="referentes">
+<ul>
+<li>Tabla de diferencias finitas y su relación con el grado del polinomio.</li>
+<li>Sucesiones aritméticas y geométricas: fórmulas explícitas vs recursivas.</li>
+<li>Números figurados: triangulares, cuadrados, pentagonales.</li>
+</ul>
+</div>
+
+<h2>Siguiente paso</h2>
+<p>Generalizar el patrón, probar la expresión y analizar qué cambia si se modifica la condición inicial.</p>
+
+<div class="footer">
+  <svg viewBox="0 0 48 48" width="24" height="24"><rect width="48" height="48" rx="12" fill="#121723"/><path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36" fill="none" stroke="#22c5a0" stroke-width="3" stroke-linecap="round"/><line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/><circle cx="17.5" cy="9" r="3" fill="#ff6b35"/></svg>
+  <div>
+    <p><strong>MathModels Lab</strong> — mathmodels.astridto.com</p>
+    <p>Este documento es una <strong>planeación inicial</strong>. No constituye un borrador ni un documento final — es el punto de partida para desarrollar la exploración fuera de la plataforma.</p>
+  </div>
+</div>
+</body>
+</html>

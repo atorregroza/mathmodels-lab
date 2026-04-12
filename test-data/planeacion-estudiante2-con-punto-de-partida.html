@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Planeación inicial: distribución de calificaciones</title>
+<style>
+  @page { margin: 2cm; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: #121723; line-height: 1.6; max-width: 700px; margin: 0 auto; padding: 1rem; }
+  .header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .header-title { font-size: 1.1rem; font-weight: 700; }
+  h1 { font-size: 1.5rem; margin: 0.5rem 0 0.25rem; }
+  h2 { font-size: 0.9rem; color: #555; margin-top: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; border-bottom: 1px solid #ddd; padding-bottom: 0.3rem; }
+  p { margin: 0.3rem 0; font-size: 0.9rem; }
+  .subtitle { color: #666; font-size: 0.85rem; }
+  .student-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin: 1rem 0; padding: 0.75rem; background: #f5f5f5; border-radius: 8px; }
+  .student-info div { font-size: 0.8rem; }
+  .student-info .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .card { background: #f8f8f8; border-radius: 8px; padding: 0.75rem; }
+  .card-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 0.25rem; }
+  .footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.7rem; color: #999; display: flex; align-items: center; gap: 0.5rem; }
+  ol, ul { padding-left: 1.2rem; }
+  li { margin-bottom: 0.3rem; font-size: 0.85rem; }
+  .referentes { background: #f0f7ff; border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; }
+  .referentes li { font-size: 0.8rem; color: #444; }
+  @media print { body { font-size: 10pt; } }
+</style>
+</head>
+<body>
+<div class="header"><svg viewBox="0 0 48 48" width="36" height="36" style="vertical-align:middle;margin-right:8px"><rect width="48" height="48" rx="12" fill="#121723"/><path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36" fill="none" stroke="#22c5a0" stroke-width="3" stroke-linecap="round"/><line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/><circle cx="17.5" cy="9" r="3" fill="#ff6b35"/></svg><span class="header-title">MathModels Lab</span></div>
+
+<h1>¿Qué grupo tuvo mejor rendimiento en el examen de matemáticas?</h1>
+<p class="subtitle">Datos e incertidumbre — Datos y distribuciones — Con punto de partida</p>
+
+<div class="student-info">
+  <div><p class="label">Estudiante</p><p>Valentina Rodríguez</p></div>
+  <div><p class="label">Curso</p><p>10° NS</p></div>
+  <div><p class="label">Institución</p><p>Liceo Bilingüe del Caribe</p></div>
+</div>
+
+<h2>Pregunta inicial</h2>
+<p>¿Qué grupo tuvo mejor rendimiento y qué medidas estadísticas sustentan esa conclusión?</p>
+
+<h2>Fenómeno o foco</h2>
+<p>Se comparan las calificaciones de dos grupos que tomaron el mismo examen para decidir cuál tuvo mejor rendimiento y cómo justificarlo.</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Variables y unidades</p><p>puntaje, media, mediana, desviación estándar, rango intercuartílico</p></div>
+<div class="card"><p class="card-label">Modelos preliminares</p><p>comparación de distribuciones, diagrama de caja doble</p></div>
+</div>
+
+<h2>Evidencia inicial</h2>
+<p>Histogramas superpuestos, diagramas de caja lado a lado, comparación de medianas y dispersión.</p>
+
+<div class="grid">
+<div class="card"><p class="card-label">Conjetura</p><p>Los datos parecen seguir un patrón distribucional que puede describirse con medidas de centro, dispersión y forma.</p></div>
+<div class="card"><p class="card-label">Limitaciones</p><p>La descripción inicial requiere más datos o subgrupos para confirmar si la distribución propuesta es adecuada.</p></div>
+</div>
+
+<h2>Enfoque metodológico</h2>
+<ol>
+<li>Empieza por visualizar los datos con histograma y diagrama de caja antes de calcular estadísticos.</li>
+<li>Compara media y mediana para detectar sesgo; si difieren mucho, la distribución no es simétrica.</li>
+<li>Busca valores atípicos y decide si los incluyes o los separas, justificando tu criterio.</li>
+<li>Describe la forma de la distribución con palabras antes de proponer un modelo teórico.</li>
+<li>Antes de refinar la pregunta, explora los datos o el fenómeno sin hipótesis preconcebida.</li>
+<li>Formula la pregunta de modo que sea explorable: específica, acotada y respondible con matemáticas.</li>
+<li>Explica por qué elegiste ese recorte del problema y no otro — la justificación es parte del trabajo.</li>
+<li>Verifica que tu pregunta no sea tan amplia que no puedas responderla, ni tan estrecha que la respuesta sea trivial.</li>
+</ol>
+
+<h2>Ayudas</h2>
+<ol>
+<li>Con pocos datos el histograma puede ser engañoso — asegúrate de que tu muestra sea suficiente para la pregunta que estás respondiendo.</li>
+<li>El diagrama de caja y el resumen de 5 números complementan al histograma: juntos cuentan una historia más completa.</li>
+<li>Cuando compares dos grupos, usa las mismas escalas y medidas para que la comparación sea justa.</li>
+</ol>
+
+<h2>Referentes para explorar</h2>
+<div class="referentes">
+<ul>
+<li>Medidas de tendencia central: media, mediana, moda — cuándo usar cada una.</li>
+<li>Diagramas de caja y bigotes: lectura de cuartiles y valores atípicos.</li>
+<li>Distribución normal: regla empírica 68-95-99.7%.</li>
+</ul>
+</div>
+
+<h2>Siguiente paso</h2>
+<p>Argumentar con evidencia estadística cuál grupo es más homogéneo y cuál tiene mayor variabilidad.</p>
+
+<div class="footer">
+  <svg viewBox="0 0 48 48" width="24" height="24"><rect width="48" height="48" rx="12" fill="#121723"/><path d="M 8,36 C 10,36 14,9 17.5,9 C 21,9 21,28 24,28 C 27,28 27,9 30.5,9 C 34,9 38,36 40,36" fill="none" stroke="#22c5a0" stroke-width="3" stroke-linecap="round"/><line x1="10.5" y1="9" x2="24.5" y2="9" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round" opacity="0.75"/><circle cx="17.5" cy="9" r="3" fill="#ff6b35"/></svg>
+  <div>
+    <p><strong>MathModels Lab</strong> — mathmodels.astridto.com</p>
+    <p>Este documento es una <strong>planeación inicial</strong>. No constituye un borrador ni un documento final — es el punto de partida para desarrollar la exploración fuera de la plataforma.</p>
+  </div>
+</div>
+</body>
+</html>
