@@ -130,7 +130,7 @@ const helpByLine = {
     'Si la amplitud cambia con el tiempo, el modelo simple ya no alcanza — discute qué se pierde y qué se gana al complicarlo.',
   ],
   'datos-distribuciones': [
-    'Con menos de 20-30 datos, el histograma puede ser engañoso — no saques conclusiones prematuras sobre la forma.',
+    'Con pocos datos el histograma puede ser engañoso — asegúrate de que tu muestra sea suficiente para la pregunta que estás respondiendo.',
     'El diagrama de caja y el resumen de 5 números complementan al histograma: juntos cuentan una historia más completa.',
     'Cuando compares dos grupos, usa las mismas escalas y medidas para que la comparación sea justa.',
   ],
