@@ -406,7 +406,18 @@ export const ExplorationBlockPage = () => {
     w.document.write(html)
     w.document.close()
     w.focus()
-    w.print()
+    return w
+  }
+
+  const handleViewPlanning = () => {
+    handlePrintPlanning()
+  }
+
+  const handlePrintPDF = () => {
+    const w = handlePrintPlanning()
+    w.onload = () => w.print()
+    // fallback for browsers that fire load before content renders
+    setTimeout(() => w.print(), 300)
   }
 
   return (
@@ -693,17 +704,17 @@ export const ExplorationBlockPage = () => {
                   ) : null}
                   <button
                     type="button"
-                    onClick={handlePrintPlanning}
+                    onClick={handleViewPlanning}
                     className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
                   >
-                    Imprimir / PDF
+                    Ver documento
                   </button>
                   <button
                     type="button"
-                    onClick={handleCopyPlanning}
+                    onClick={handlePrintPDF}
                     className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
                   >
-                    {copied ? 'Planeación copiada' : 'Copiar planeación'}
+                    Imprimir / PDF
                   </button>
                 </div>
               </div>
@@ -799,9 +810,9 @@ export const ExplorationBlockPage = () => {
                   className="rounded-full border border-ink/12 bg-white px-4 py-2.5 text-xs font-semibold text-ink">
                   Imprimir / PDF
                 </button>
-                <button onClick={handleCopyPlanning}
+                <button onClick={handlePrintPDF}
                   className="rounded-full border border-ink/12 bg-white px-4 py-2.5 text-xs font-semibold text-ink">
-                  {copied ? 'Copiado' : 'Copiar texto'}
+                  Imprimir / PDF
                 </button>
               </div>
             </div>
