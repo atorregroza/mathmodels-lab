@@ -1,6 +1,142 @@
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { monografiaContent } from '../data/platformContent'
 import { Breadcrumb } from '../components/layout/PlatformShell'
+
+function PlanPanel({ planeacion }) {
+  const [tab, setTab] = useState('disciplinar')
+  const [open, setOpen] = useState(false)
+  const disc = planeacion.disciplinar
+  const inter = planeacion.interdisciplinario
+
+  return (
+    <div className="border-b border-gray-200 bg-white">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full px-4 py-2.5 flex items-center justify-between hover:bg-gray-50 transition-colors"
+      >
+        <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <span>&#128203;</span> Planeación inicial de monografía
+        </span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} className="text-gray-400 text-sm">&#9660;</motion.span>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0 }} animate={{ height: 'auto' }} exit={{ height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4 space-y-4 max-h-[70vh] overflow-y-auto">
+              {/* Tabs */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setTab('disciplinar')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    tab === 'disciplinar' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  🔬 Centrado en una asignatura
+                </button>
+                <button
+                  onClick={() => setTab('interdisciplinario')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    tab === 'interdisciplinario' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  🌐 Interdisciplinario
+                </button>
+              </div>
+
+              {/* Disciplinar */}
+              {tab === 'disciplinar' && (
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                    <p className="text-xs text-blue-500 font-semibold uppercase tracking-wide mb-1">Pregunta de investigación</p>
+                    <p className="text-sm text-blue-800 italic leading-relaxed">{disc.rq}</p>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Modelos matemáticos</p>
+                      {disc.modelos.map((m, i) => (
+                        <p key={i} className="text-xs text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">{m}</p>
+                      ))}
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Datos de la simulación</p>
+                      {disc.datosSimulacion.map((d, i) => (
+                        <p key={i} className="text-xs text-gray-600 flex items-start gap-1.5"><span className="text-green-500 shrink-0">&#10004;</span>{d}</p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Cómo alimentar cada criterio</p>
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+                      {Object.entries(disc.criterios).map(([k, v]) => (
+                        <div key={k} className="bg-gray-50 rounded-lg p-2">
+                          <span className="text-xs font-bold text-gray-800">{k}:</span>
+                          <p className="text-[10px] text-gray-600 leading-relaxed mt-0.5">{v}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Interdisciplinario */}
+              {tab === 'interdisciplinario' && (
+                <div className="space-y-4">
+                  <p className="text-xs text-gray-500">
+                    La misma simulación puede abordarse desde distintos marcos con diferentes asignaturas del DP. Cada enfoque produce una monografía completamente diferente.
+                  </p>
+                  {inter.map((opcion, idx) => (
+                    <div key={idx} className="bg-white border border-purple-200 rounded-xl p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{opcion.marcoEmoji}</span>
+                          <div>
+                            <p className="text-xs text-purple-500 font-semibold">{opcion.marco}</p>
+                            <p className="text-sm font-bold text-gray-800">Mat + {opcion.asignatura}</p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full font-medium">Opción {idx + 1}</span>
+                      </div>
+
+                      <div className="bg-purple-50 rounded-lg p-3">
+                        <p className="text-xs text-purple-500 font-semibold mb-1">RQ</p>
+                        <p className="text-sm text-purple-800 italic leading-relaxed">{opcion.rq}</p>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-2">
+                        <div className="bg-blue-50 rounded-lg p-2.5">
+                          <p className="text-[10px] text-blue-500 font-semibold uppercase mb-1">Aporta Matemáticas</p>
+                          <p className="text-xs text-blue-700 leading-relaxed">{opcion.integra.matematicas}</p>
+                        </div>
+                        <div className="bg-amber-50 rounded-lg p-2.5">
+                          <p className="text-[10px] text-amber-600 font-semibold uppercase mb-1">Aporta {opcion.asignatura}</p>
+                          <p className="text-xs text-amber-700 leading-relaxed">{opcion.integra.otraAsignatura}</p>
+                        </div>
+                      </div>
+
+                      <div className="bg-red-50 rounded-lg p-2.5">
+                        <p className="text-[10px] text-red-500 font-semibold uppercase mb-1">Criterio D (doble lente)</p>
+                        <p className="text-xs text-red-700 leading-relaxed">{opcion.criterioD}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
 export function MonografiaSimPage() {
   const { simId } = useParams()
@@ -28,6 +164,9 @@ export function MonografiaSimPage() {
           <span className="hidden sm:inline">{sim.subtitulo}</span>
         </div>
       </div>
+
+      {sim.planeacion && <PlanPanel planeacion={sim.planeacion} />}
+
       <iframe
         src={sim.ruta}
         className="flex-1 w-full border-0"
