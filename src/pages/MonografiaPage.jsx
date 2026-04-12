@@ -104,6 +104,7 @@ function PuntuacionBar() {
 export function MonografiaPage() {
   const [openCriterio, setOpenCriterio] = useState(null)
   const [selectedItinerario, setSelectedItinerario] = useState(null)
+  const [openMarco, setOpenMarco] = useState(null)
   const { hero, itinerarios, criterios, marcos, simulaciones, proceso } = monografiaContent
 
   return (
@@ -276,24 +277,44 @@ export function MonografiaPage() {
 
           <h3 className="mt-8 font-display text-lg font-semibold tracking-[-0.02em]">Los 5 marcos del IB</h3>
           <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {marcos.map(m => (
-              <div key={m.id} className="group rounded-[1.4rem] border border-ink/10 bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(139,92,246,0.08)]">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet/12 text-lg">{m.emoji}</span>
-                  <h4 className="font-display text-sm font-semibold tracking-[-0.01em]">{m.titulo}</h4>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-ink/55">{m.descripcion}</p>
-                <div className="mt-3 border-t border-ink/8 pt-3 space-y-1.5">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink/35">Preguntas ejemplo</p>
-                  {m.ejemplosRQ.map((ej, i) => (
-                    <div key={i} className="text-sm leading-relaxed">
-                      <span className="text-ink/50 italic">{ej.rq}</span>
-                      <span className="ml-1 text-xs font-semibold text-violet">{ej.asignaturas}</span>
+            {marcos.map(m => {
+              const isOpen = openMarco === m.id
+              return (
+                <div key={m.id}
+                  onClick={() => setOpenMarco(isOpen ? null : m.id)}
+                  className={`cursor-pointer rounded-[1.4rem] border p-5 transition-all ${
+                    isOpen ? 'border-violet/30 bg-violet/5 shadow-lg' : 'border-ink/10 bg-white hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(139,92,246,0.08)]'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet/12 text-lg">{m.emoji}</span>
+                      <h4 className="font-display text-sm font-semibold tracking-[-0.01em]">{m.titulo}</h4>
                     </div>
-                  ))}
+                    <div className="flex shrink-0 flex-col items-center gap-0.5">
+                      <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="text-ink/25"><ChevronDown /></motion.div>
+                      {!isOpen && <span className="text-[0.6rem] text-ink/30">Ejemplos</span>}
+                    </div>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-ink/55">{m.descripcion}</p>
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
+                        <div className="mt-3 border-t border-ink/8 pt-3 space-y-2">
+                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink/35">Preguntas ejemplo</p>
+                          {m.ejemplosRQ.map((ej, i) => (
+                            <div key={i} className="text-sm leading-relaxed">
+                              <span className="text-ink/55 italic">{ej.rq}</span>
+                              <span className="ml-1.5 text-xs font-semibold text-violet">{ej.asignaturas}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </motion.div>
 
