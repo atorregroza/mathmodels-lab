@@ -55,39 +55,39 @@ function PlanPanel({ planeacion }) {
               {tab === 'disciplinar' && (
                 <div className="space-y-4">
                   <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                    <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-1">Pregunta de investigación</p>
-                    <p className="text-sm text-gray-700 italic leading-relaxed">{disc.rq}</p>
+                    <p className="text-sm text-gray-400 font-semibold uppercase tracking-wide mb-2">Pregunta de investigación</p>
+                    <p className="text-base text-gray-700 italic leading-relaxed">{disc.rq}</p>
                   </div>
 
                   {disc.tension && (
                     <div className="bg-amber-50 border-l-4 border-amber-400 rounded-r-xl p-4">
-                      <p className="text-xs text-amber-600 font-semibold mb-1">Por qué esta pregunta puede llegar a A</p>
-                      <p className="text-sm text-amber-800 leading-relaxed">{disc.tension}</p>
+                      <p className="text-sm text-amber-600 font-semibold mb-1">Por qué esta pregunta puede llegar a A</p>
+                      <p className="text-base text-amber-800 leading-relaxed">{disc.tension}</p>
                     </div>
                   )}
 
                   <div className="grid md:grid-cols-2 gap-3">
-                    <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Modelos matemáticos</p>
+                    <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Modelos matemáticos</p>
                       {disc.modelos.map((m, i) => (
-                        <p key={i} className="text-xs text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">{m}</p>
+                        <p key={i} className="text-sm text-gray-600 font-mono bg-gray-50 px-3 py-1.5 rounded">{m}</p>
                       ))}
                     </div>
-                    <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Datos de la simulación</p>
+                    <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-2">
+                      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Datos de la simulación</p>
                       {disc.datosSimulacion.map((d, i) => (
-                        <p key={i} className="text-xs text-gray-600 flex items-start gap-1.5"><span className="text-green-500 shrink-0">&#10004;</span>{d}</p>
+                        <p key={i} className="text-sm text-gray-600 flex items-start gap-1.5"><span className="text-green-500 shrink-0">&#10004;</span>{d}</p>
                       ))}
                     </div>
                   </div>
 
-                  <div className="bg-white border border-gray-200 rounded-xl p-3 space-y-2">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Cómo alimentar cada criterio</p>
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
+                  <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
+                    <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Cómo alimentar cada criterio</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {Object.entries(disc.criterios).map(([k, v]) => (
-                        <div key={k} className="bg-gray-50 rounded-lg p-2">
-                          <span className="text-xs font-bold text-gray-800">{k}:</span>
-                          <p className="text-[10px] text-gray-600 leading-relaxed mt-0.5">{v}</p>
+                        <div key={k} className="bg-gray-50 rounded-lg p-3">
+                          <span className="text-sm font-bold text-gray-800">Criterio {k}</span>
+                          <p className="text-sm text-gray-600 leading-relaxed mt-1">{v}</p>
                         </div>
                       ))}
                     </div>
@@ -98,41 +98,41 @@ function PlanPanel({ planeacion }) {
               {/* Interdisciplinario */}
               {tab === 'interdisciplinario' && (
                 <div className="space-y-4">
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm text-gray-500">
                     La misma simulación puede abordarse desde distintos marcos con diferentes asignaturas del DP. Cada enfoque produce una monografía completamente diferente.
                   </p>
                   {inter.map((opcion, idx) => (
                     <div key={idx} className="bg-white border border-gray-200 rounded-xl p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-lg">{opcion.marcoEmoji}</span>
+                          <span className="text-xl">{opcion.marcoEmoji}</span>
                           <div>
-                            <p className="text-xs text-gray-500 font-medium">{opcion.marco}</p>
-                            <p className="text-sm font-bold text-gray-800">Mat + {opcion.asignatura}</p>
+                            <p className="text-sm text-gray-500 font-medium">{opcion.marco}</p>
+                            <p className="text-base font-bold text-gray-800">Mat + {opcion.asignatura}</p>
                           </div>
                         </div>
-                        <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">Opción {idx + 1}</span>
+                        <span className="text-sm bg-gray-100 text-gray-500 px-3 py-1 rounded-full font-medium">Opción {idx + 1}</span>
                       </div>
 
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <p className="text-[10px] text-gray-400 font-semibold uppercase mb-1">Pregunta de investigación</p>
-                        <p className="text-sm text-gray-700 italic leading-relaxed">{opcion.rq}</p>
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-sm text-gray-400 font-semibold uppercase mb-1">Pregunta de investigación</p>
+                        <p className="text-base text-gray-700 italic leading-relaxed">{opcion.rq}</p>
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-2">
-                        <div className="bg-gray-50 rounded-lg p-2.5">
-                          <p className="text-[10px] text-gray-500 font-semibold uppercase mb-1">Aporta Matemáticas</p>
-                          <p className="text-xs text-gray-600 leading-relaxed">{opcion.integra.matematicas}</p>
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-sm text-gray-500 font-semibold uppercase mb-1">Aporta Matemáticas</p>
+                          <p className="text-sm text-gray-600 leading-relaxed">{opcion.integra.matematicas}</p>
                         </div>
-                        <div className="bg-gray-50 rounded-lg p-2.5">
-                          <p className="text-[10px] text-gray-500 font-semibold uppercase mb-1">Aporta {opcion.asignatura}</p>
-                          <p className="text-xs text-gray-600 leading-relaxed">{opcion.integra.otraAsignatura}</p>
+                        <div className="bg-gray-50 rounded-lg p-3">
+                          <p className="text-sm text-gray-500 font-semibold uppercase mb-1">Aporta {opcion.asignatura}</p>
+                          <p className="text-sm text-gray-600 leading-relaxed">{opcion.integra.otraAsignatura}</p>
                         </div>
                       </div>
 
-                      <div className="bg-gray-50 rounded-lg p-2.5 border-l-3 border-gray-300" style={{ borderLeftWidth: '3px' }}>
-                        <p className="text-[10px] text-gray-500 font-semibold uppercase mb-1">Criterio D — doble lente</p>
-                        <p className="text-xs text-gray-600 leading-relaxed">{opcion.criterioD}</p>
+                      <div className="bg-gray-50 rounded-lg p-3" style={{ borderLeftWidth: '3px', borderLeftColor: '#d1d5db', borderLeftStyle: 'solid' }}>
+                        <p className="text-sm text-gray-500 font-semibold uppercase mb-1">Criterio D — doble lente</p>
+                        <p className="text-sm text-gray-600 leading-relaxed">{opcion.criterioD}</p>
                       </div>
                     </div>
                   ))}

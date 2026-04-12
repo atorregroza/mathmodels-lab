@@ -300,9 +300,9 @@ export function MonografiaPage() {
 
       {/* ===== SIMULACIONES ===== */}
       <motion.section {...fadeIn} className="space-y-4">
-        <h2 className="text-xl font-bold text-gray-800 text-center">Simulaciones interactivas</h2>
-        <p className="text-sm text-gray-500 text-center max-w-lg mx-auto">
-          Herramientas para explorar, recolectar datos y visualizar modelos. Cada simulación está diseñada para alimentar tu monografía.
+        <h2 className="text-xl font-bold text-gray-800 text-center">Laboratorio de monografía</h2>
+        <p className="text-sm text-gray-500 text-center max-w-xl mx-auto">
+          Cada tema incluye una simulación interactiva para recolectar datos, una planeación inicial con preguntas de investigación desde los dos itinerarios, ejemplos de cómo abordar cada criterio, y propuestas interdisciplinarias con asignaturas del DP.
         </p>
         <div className="grid md:grid-cols-2 gap-4">
           {simulaciones.map(sim => (
