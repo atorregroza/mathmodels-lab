@@ -331,8 +331,8 @@ export const ExplorationBlockPage = () => {
         </motion.div>
 
         {/* ── Ramas de investigación — expandibles ── */}
-        <motion.div {...fadeIn} className="mt-10 grid gap-4 md:grid-cols-2">
-          {researchBranches.map((branch) => {
+        <motion.div {...fadeIn} className="mt-10 grid gap-4 md:grid-cols-1 max-w-3xl">
+          {researchBranches.filter(b => b.id === 'exploracion').map((branch) => {
             const [open, setOpen] = [expandedBranch === branch.id, (v) => setExpandedBranch(v ? branch.id : null)]
             return (
               <div key={branch.id} className="rounded-[1.8rem] border border-ink/10 bg-white/82 shadow-[0_12px_40px_rgba(18,23,35,0.06)] overflow-hidden">
