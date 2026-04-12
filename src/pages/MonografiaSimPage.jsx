@@ -6,20 +6,21 @@ import { Breadcrumb } from '../components/layout/PlatformShell'
 
 function PlanPanel({ planeacion }) {
   const [tab, setTab] = useState('disciplinar')
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const disc = planeacion.disciplinar
   const inter = planeacion.interdisciplinario
 
   return (
-    <div className="border-b border-gray-200 bg-white">
+    <div className={`border-b-2 ${open ? 'border-amber-300 bg-amber-50/30' : 'border-gray-200 bg-white'}`}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full px-4 py-2.5 flex items-center justify-between hover:bg-gray-50 transition-colors"
+        className={`w-full px-4 py-3 flex items-center justify-between transition-colors ${open ? 'hover:bg-amber-50' : 'hover:bg-gray-50 bg-gradient-to-r from-amber-50 to-white'}`}
       >
-        <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-          <span>&#128203;</span> Planeación inicial de monografía
+        <span className={`font-bold flex items-center gap-2 ${open ? 'text-amber-700 text-sm' : 'text-amber-600'}`}>
+          <span className="text-lg">&#128203;</span>
+          {open ? 'Planeación inicial de monografía' : 'Planeación inicial de monografía — clic para ver cómo usar esta simulación en tu monografía'}
         </span>
-        <motion.span animate={{ rotate: open ? 180 : 0 }} className="text-gray-400 text-sm">&#9660;</motion.span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} className="text-amber-500 text-sm">&#9660;</motion.span>
       </button>
 
       <AnimatePresence>
