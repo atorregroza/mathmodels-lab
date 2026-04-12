@@ -37,34 +37,36 @@ function CriterioCard({ criterio, isOpen, onToggle }) {
         isOpen ? `${c.border} ${c.bg} shadow-lg` : `border-ink/10 hover:border-ink/20 ${c.shadow}`
       }`}
     >
-      <div className="flex items-center justify-between p-5">
-        <div className="flex items-center gap-4">
-          <span className={`flex items-center justify-center w-11 h-11 rounded-xl ${c.badge} font-display text-lg font-bold text-white`}>
-            {criterio.id}
-          </span>
-          <div>
-            <h3 className="font-display text-lg font-semibold tracking-[-0.02em]">{criterio.title}</h3>
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-sm text-ink/50">{criterio.puntos} puntos</span>
-              {criterio.isHeaviest && (
-                <span className="text-[0.7rem] font-semibold uppercase tracking-[0.1em] bg-rose/15 text-rose px-2 py-0.5 rounded-full">
-                  Criterio clave
-                </span>
-              )}
+      <div className="p-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className={`flex items-center justify-center w-11 h-11 rounded-xl ${c.badge} font-display text-lg font-bold text-white`}>
+              {criterio.id}
+            </span>
+            <div>
+              <h3 className="font-display text-lg font-semibold tracking-[-0.02em]">{criterio.title}</h3>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-sm text-ink/50">{criterio.puntos} puntos</span>
+                {criterio.isHeaviest && (
+                  <span className="text-[0.7rem] font-semibold uppercase tracking-[0.1em] bg-rose/15 text-rose px-2 py-0.5 rounded-full">
+                    Criterio clave
+                  </span>
+                )}
+              </div>
             </div>
           </div>
+          <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="text-ink/30">
+            <ChevronDown />
+          </motion.div>
         </div>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }} className="text-ink/30">
-          <ChevronDown />
-        </motion.div>
+        <p className="mt-3 text-sm leading-relaxed text-ink/55">{criterio.descripcion}</p>
       </div>
       <AnimatePresence>
         {isOpen && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
-            <div className="px-5 pb-5 space-y-4">
-              <p className="text-sm leading-relaxed text-ink/65">{criterio.descripcion}</p>
+            <div className="px-5 pb-5 space-y-4 border-t border-ink/8 pt-4">
               <div className="space-y-2">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink/40">Preguntas clave</p>
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink/40">Preguntas clave para Matemáticas</p>
                 {criterio.preguntas.map((q, i) => (
                   <div key={i} className="flex items-start gap-2.5 text-sm text-ink/60">
                     <span className={`mt-1.5 h-1.5 w-1.5 rounded-full ${c.badge} shrink-0`} />
