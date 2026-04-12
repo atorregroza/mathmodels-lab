@@ -593,19 +593,49 @@ ${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
                           </div>
                         </div>
 
+                        {/* Estructura del documento */}
+                        {branch.documentStructure && (
+                          <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
+                            <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Estructura del documento</summary>
+                            <div className="border-t border-ink/8 px-4 py-3 space-y-2">
+                              {branch.documentStructure.map((s, i) => (
+                                <div key={s.section} className="flex gap-3">
+                                  <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-ink/8 text-xs font-bold text-ink/50">{i + 1}</span>
+                                  <div>
+                                    <p className="text-sm font-semibold text-ink">{s.section}</p>
+                                    <p className="text-xs leading-5 text-ink/55">{s.detail}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+
+                        {/* Lineamientos */}
+                        {branch.guidelines && (
+                          <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
+                            <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Lineamientos de presentación</summary>
+                            <div className="border-t border-ink/8 px-4 py-3 space-y-1">
+                              {branch.guidelines.map((g, i) => (
+                                <p key={i} className="text-xs leading-5 text-ink/60">• {g}</p>
+                              ))}
+                            </div>
+                          </details>
+                        )}
+
                         {/* Cómo lograr la mejor calificación */}
                         {branch.excellenceTips && (
-                          <div>
-                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-2">Cómo lograr la mejor calificación</p>
-                            <div className="space-y-2">
+                          <details className="rounded-xl border border-signal/15 bg-signal/5 overflow-hidden">
+                            <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-signal/8">Cómo lograr la mejor calificación</summary>
+                            <div className="border-t border-signal/10 px-4 py-3 space-y-2">
                               {branch.excellenceTips.map((t) => (
-                                <div key={t.area} className="rounded-xl border border-signal/15 bg-signal/5 px-4 py-3">
+                                <div key={t.area} className="rounded-xl border border-signal/12 bg-white px-4 py-3">
                                   <p className="text-sm font-semibold text-ink">{t.area}</p>
                                   <p className="mt-1 text-xs leading-5 text-ink/60">{t.tip}</p>
                                 </div>
                               ))}
                             </div>
-                          </div>
+                          </details>
                         )}
                       </div>
                     </motion.div>
