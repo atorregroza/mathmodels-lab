@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import { explorationBlocks, labs } from '../data/platformContent'
+import { explorationBlocks, labs, researchBranches } from '../data/platformContent'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { Breadcrumb } from '../components/layout/PlatformShell'
 
@@ -176,6 +176,7 @@ export const ExplorationBlockPage = () => {
   const [selectedContextId, setSelectedContextId] = useState(firstContext?.id ?? '')
   const [drafts, setDrafts] = useState(() => buildDraftState(firstExploration, firstContext))
   const [copied, setCopied] = useState(false)
+  const [expandedBranch, setExpandedBranch] = useState(null)
 
   usePageMeta({
     title: block ? `${block.title} | Exploraciones | MathModels Lab` : 'Exploraciones | MathModels Lab',
@@ -327,6 +328,74 @@ export const ExplorationBlockPage = () => {
               Ver laboratorios base
             </Link>
           </div>
+        </motion.div>
+
+        {/* ── Ramas de investigación — expandibles ── */}
+        <motion.div {...fadeIn} className="mt-10 grid gap-4 md:grid-cols-2">
+          {researchBranches.map((branch) => {
+            const [open, setOpen] = [expandedBranch === branch.id, (v) => setExpandedBranch(v ? branch.id : null)]
+            return (
+              <div key={branch.id} className="rounded-[1.8rem] border border-ink/10 bg-white/82 shadow-[0_12px_40px_rgba(18,23,35,0.06)] overflow-hidden">
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="flex w-full items-center gap-3 px-6 py-5 text-left transition-colors hover:bg-ink/3"
+                >
+                  <span className="text-2xl">{branch.icon}</span>
+                  <span className="flex-1 font-display text-lg font-semibold text-ink">{branch.title}</span>
+                  <svg
+                    width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+                    className={`shrink-0 text-ink/40 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </button>
+                <AnimatePresence>
+                  {open && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border-t border-ink/8 px-6 py-5 space-y-4">
+                        <p className="text-base leading-7 text-ink/75">{branch.objective}</p>
+
+                        <div className="space-y-2">
+                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Lo que desarrolla</p>
+                          <div className="grid gap-2 sm:grid-cols-2">
+                            {branch.develops.map((d) => (
+                              <div key={d.label} className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
+                                <p className="text-sm font-semibold text-ink">{d.label}</p>
+                                <p className="mt-1 text-xs leading-5 text-ink/55">{d.detail}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl bg-ink/4 px-4 py-3">
+                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Alcance</p>
+                          <p className="text-sm leading-6 text-ink/65">{branch.scope}</p>
+                        </div>
+
+                        <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-3">
+                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Entregable</p>
+                          <p className="text-sm leading-6 text-ink/70 font-medium">{branch.deliverable}</p>
+                        </div>
+
+                        {branch.difference && (
+                          <div className="rounded-xl border border-signal/20 bg-signal/5 px-4 py-3">
+                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Diferencia clave</p>
+                            <p className="text-sm leading-6 text-ink/65">{branch.difference}</p>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )
+          })}
         </motion.div>
 
         <motion.article

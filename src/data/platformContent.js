@@ -846,6 +846,38 @@ export const complementaryRoutes = [
   },
 ]
 
+export const researchBranches = [
+  {
+    id: 'exploracion',
+    title: '¿Qué es una exploración matemática?',
+    icon: '🔍',
+    objective: 'Vivir la experiencia de investigar en matemáticas: formular una pregunta propia, desarrollar razonamiento matemático original y comunicar hallazgos con rigor.',
+    develops: [
+      { label: 'Formular preguntas', detail: 'Convertir curiosidad en una pregunta matemática investigable sobre un tema de interés personal.' },
+      { label: 'Aplicar con propósito', detail: 'Usar conceptos del curso de forma creativa — no solo repetir procedimientos, sino elegir herramientas con criterio.' },
+      { label: 'Comunicar con precisión', detail: 'Expresar ideas con notación correcta, gráficas claras, diagramas y argumentos bien estructurados.' },
+      { label: 'Reflexionar críticamente', detail: '¿Por qué funciona este enfoque? ¿Cuáles son sus limitaciones? ¿Qué haría distinto?' },
+    ],
+    scope: 'Trabajo individual. El estudiante elige el tema — puede ser modelación, geometría, probabilidad, teoría de números, optimización o cualquier rama de las matemáticas. La plataforma guía la estructura, no el tema.',
+    deliverable: 'Documento de planeación inicial que sirve como base para desarrollar el trabajo completo fuera de la plataforma.',
+  },
+  {
+    id: 'investigacion-extendida',
+    title: '¿Qué es una investigación extendida?',
+    icon: '📐',
+    objective: 'Desarrollar una investigación matemática formal y autónoma — con pregunta definida, desarrollo teórico profundo y argumentación sostenida a lo largo de un documento extenso.',
+    develops: [
+      { label: 'Investigación independiente', detail: 'Buscar fuentes académicas, construir un marco teórico y sostener un argumento matemático con evidencia.' },
+      { label: 'Pensamiento crítico', detail: 'Evaluar métodos, cuestionar supuestos, comparar enfoques y discutir el alcance de los resultados.' },
+      { label: 'Comunicación formal', detail: 'Estructura de ensayo académico: introducción, desarrollo, conclusión, citación y lenguaje matemático riguroso.' },
+      { label: 'Gestión de proyecto', detail: 'Planificar, ejecutar y completar un proyecto intelectual de largo plazo con autonomía.' },
+    ],
+    scope: 'Más profunda y amplia que la exploración. Puede abarcar temas fuera del programa — historia de las matemáticas, aplicaciones interdisciplinarias, demostraciones, o la belleza matemática en sí misma.',
+    deliverable: 'Ensayo formal de investigación con pregunta clara, marco teórico, análisis y conclusiones argumentadas.',
+    difference: 'La exploración nace de la curiosidad del estudiante y conecta el curso con un interés personal. La investigación extendida va más allá — el estudiante elige una rama de las matemáticas y construye un argumento original con profundidad académica.',
+  },
+]
+
 export const explorationBlocks = [
   {
     id: 'bloque-1',
