@@ -806,9 +806,9 @@ export const ExplorationBlockPage = () => {
                     Abrir laboratorio sugerido
                   </Link>
                 )}
-                <button onClick={handlePrintPlanning}
+                <button onClick={handleViewPlanning}
                   className="rounded-full border border-ink/12 bg-white px-4 py-2.5 text-xs font-semibold text-ink">
-                  Imprimir / PDF
+                  Ver documento
                 </button>
                 <button onClick={handlePrintPDF}
                   className="rounded-full border border-ink/12 bg-white px-4 py-2.5 text-xs font-semibold text-ink">
