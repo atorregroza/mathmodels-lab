@@ -463,7 +463,7 @@ ${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
   ${logoSvg}
   <div>
     <p><strong>MathModels Lab</strong> — mathmodels.astridto.com</p>
-    <p>Este documento es un borrador inicial. Debe desarrollarse fuera de la plataforma.</p>
+    <p>Este documento es una <strong>planeación inicial</strong>. No constituye un borrador ni un documento final — es el punto de partida para desarrollar la exploración fuera de la plataforma.</p>
   </div>
 </div>
 </body>
