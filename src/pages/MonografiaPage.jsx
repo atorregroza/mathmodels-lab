@@ -345,7 +345,7 @@ export function MonografiaPage() {
         <motion.div {...fadeIn} className="mt-16">
           <p className="section-kicker">Laboratorio de monografía</p>
           <h2 className="mt-3 font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-[0.98] tracking-[-0.03em]">
-            Investiga con herramientas reales.
+            Explora, modela y compara.
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-ink/55">
             Cada tema incluye simulación interactiva, planeación inicial desde los dos itinerarios, ejemplos de cómo abordar cada criterio, y propuestas interdisciplinarias con asignaturas del DP.
@@ -356,8 +356,8 @@ export function MonografiaPage() {
                 className="group rounded-[1.6rem] border border-signal/20 bg-signal/4 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(255,107,53,0.1)]"
               >
                 <div className="flex items-center gap-4">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-signal/15 text-signal">
-                    <RouteIcon size={24} />
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-signal/15 text-2xl">
+                    🎡
                   </span>
                   <div>
                     <h3 className="font-display text-xl font-semibold tracking-[-0.02em] group-hover:text-signal transition-colors">{sim.titulo}</h3>
