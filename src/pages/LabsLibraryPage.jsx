@@ -161,7 +161,7 @@ export const LabsLibraryPage = () => {
 
   usePageMeta({
     title: 'Laboratorios | MathModels Lab',
-    description: 'Biblioteca de simuladores interactivos de modelación matemática con experiencias manipulables y descarga de datos.',
+    description: 'Simuladores interactivos de modelación matemática con experiencias manipulables y descarga de datos.',
     keywords: 'laboratorios, simuladores, modelación matemática, funciones, cálculo, estadística',
     image: '/og-image.png',
   })
@@ -174,7 +174,7 @@ export const LabsLibraryPage = () => {
       ]} />
       <div className="mx-auto max-w-7xl mt-6">
         <motion.div {...fadeIn} className="max-w-4xl">
-          <p className="section-kicker">Biblioteca de laboratorios</p>
+          <p className="section-kicker">Laboratorios interactivos</p>
           <h1 className="mt-4 font-display text-[clamp(2.8rem,7vw,5.8rem)] font-bold leading-[0.94] tracking-[-0.05em]">
             {availableLabs.length} laboratorios organizados por unidad.
           </h1>

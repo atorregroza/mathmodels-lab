@@ -28,6 +28,18 @@ const linePrompts = {
     conjecture: 'La repetición del patrón sugiere una estructura periódica que puede modelarse con parámetros como amplitud, período, fase o línea media.',
     limits: 'La periodicidad observada puede no ser ideal; todavía hay que justificar si el ciclo se mantiene, se amortigua o cambia con el tiempo.',
   },
+  'datos-distribuciones': {
+    conjecture: 'Los datos parecen seguir un patrón distribucional que puede describirse con medidas de centro, dispersión y forma.',
+    limits: 'La descripción inicial requiere más datos o subgrupos para confirmar si la distribución propuesta es adecuada.',
+  },
+  'probabilidad-simulacion': {
+    conjecture: 'El experimento aleatorio parece converger a un comportamiento predecible cuando se repite suficientes veces.',
+    limits: 'Pocas repeticiones pueden dar resultados engañosos; hay que justificar cuántas son suficientes para sacar conclusiones.',
+  },
+  'inferencia-prediccion': {
+    conjecture: 'Existe una relación entre las variables que permite predecir o estimar con un modelo estadístico.',
+    limits: 'El modelo predictivo tiene un rango útil; fuera de él la extrapolación puede ser poco confiable.',
+  },
 }
 
 const methodologyByLine = {
@@ -54,6 +66,24 @@ const methodologyByLine = {
     'Mide amplitud, período, fase o línea media antes de escribir un modelo trigonométrico.',
     'Compara un ciclo con el siguiente para detectar si la periodicidad es ideal o si cambia con el tiempo.',
     'Relaciona siempre los parámetros del modelo con el significado geométrico o físico del contexto.',
+  ],
+  'datos-distribuciones': [
+    'Empieza por visualizar los datos con histograma y diagrama de caja antes de calcular estadísticos.',
+    'Compara media y mediana para detectar sesgo; si difieren mucho, la distribución no es simétrica.',
+    'Busca valores atípicos y decide si los incluyes o los separas, justificando tu criterio.',
+    'Describe la forma de la distribución con palabras antes de proponer un modelo teórico.',
+  ],
+  'probabilidad-simulacion': [
+    'Distingue entre lo que esperas teóricamente y lo que observas en pocas repeticiones.',
+    'Repite el experimento en varias escalas (10, 100, 1000) para observar la convergencia.',
+    'Registra la frecuencia relativa a lo largo del proceso, no solo al final.',
+    'Relaciona siempre el resultado con la pregunta: ¿cuántas repeticiones son suficientes y por qué?',
+  ],
+  'inferencia-prediccion': [
+    'Grafica los datos antes de calcular regresión o correlación; la forma importa.',
+    'Revisa los residuos para detectar si el modelo lineal realmente captura la relación.',
+    'Distingue correlación de causalidad y menciona posibles variables ocultas.',
+    'Evalúa el modelo dentro del rango de datos y discute por qué extrapolar es arriesgado.',
   ],
 }
 
@@ -88,6 +118,18 @@ const helpByLine = {
   'periodicidad-geometria': [
     'Si el patrón se repite, compara varios ciclos antes de afirmar que el modelo es trigonométrico.',
     'En movimientos periódicos, la línea media y el período suelen ser más estables que los valores extremos aislados.',
+  ],
+  'datos-distribuciones': [
+    'Antes de concluir sobre la forma, verifica con al menos 20-30 datos; con pocos, el histograma es engañoso.',
+    'El diagrama de caja y el resumen de 5 números cuentan una historia que el histograma solo no muestra.',
+  ],
+  'probabilidad-simulacion': [
+    'La intuición sobre probabilidad suele fallar; deja que los datos hablen antes de concluir.',
+    'Documenta cada ronda de simulación para poder comparar cómo cambia la evidencia con más repeticiones.',
+  ],
+  'inferencia-prediccion': [
+    'Un r² alto no garantiza que el modelo sea correcto — revisa siempre la gráfica de residuos.',
+    'Predecir dentro del rango es interpolar; predecir fuera es extrapolar — y la confianza cambia radicalmente.',
   ],
 }
 
@@ -315,18 +357,19 @@ export const ExplorationBlockPage = () => {
           <p className="mt-4 text-xl text-ink/76">{block.subtitle}</p>
           <p className="mt-6 max-w-4xl text-lg leading-8 text-ink/72">{block.overview}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-paper"
-            >
-              Volver a inicio
-            </Link>
-            <Link
-              to="/laboratorios"
-              className="inline-flex items-center gap-2 rounded-full border border-ink/12 bg-white px-5 py-3 text-sm font-semibold text-ink"
-            >
-              Ver laboratorios base
-            </Link>
+            {explorationBlocks.map((b) => (
+              <Link
+                key={b.id}
+                to={`/exploraciones/${b.id}`}
+                className={`inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors ${
+                  b.id === block.id
+                    ? 'bg-ink text-paper shadow-md'
+                    : 'border border-ink/12 bg-white text-ink hover:border-ink/30'
+                }`}
+              >
+                {b.title}
+              </Link>
+            ))}
           </div>
         </motion.div>
 
