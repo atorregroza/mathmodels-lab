@@ -10,23 +10,31 @@ const UnitPage = lazy(() => import('./pages/UnitPage').then(m => ({ default: m.U
 const LabsLibraryPage = lazy(() => import('./pages/LabsLibraryPage').then(m => ({ default: m.LabsLibraryPage })))
 const LabPage = lazy(() => import('./pages/LabPage').then(m => ({ default: m.LabPage })))
 const ModelacionPage = lazy(() => import('./pages/ModelacionPage').then(m => ({ default: m.ModelacionPage })))
+const CalculadoraPage = lazy(() => import('./pages/CalculadoraPage').then(m => ({ default: m.CalculadoraPage })))
 
 function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
         <Suspense fallback={<div className="py-16 text-center text-gray-600">Cargando...</div>}>
-          <PlatformShell>
-            <Routes>
-              <Route path="/" element={<DerivaHomePage />} />
-              <Route path="/secuencia" element={<StudyRoutePage />} />
-              <Route path="/exploraciones/:blockId" element={<ExplorationBlockPage />} />
-              <Route path="/unidades/:unitId" element={<UnitPage />} />
-              <Route path="/laboratorios" element={<LabsLibraryPage />} />
-              <Route path="/laboratorios/:labId" element={<LabPage />} />
-              <Route path="/modelacion" element={<ModelacionPage />} />
-            </Routes>
-          </PlatformShell>
+          <Routes>
+            {/* Standalone calculator — no shell, opens in popup */}
+            <Route path="/calculadora" element={<CalculadoraPage />} />
+            {/* Main app with shell */}
+            <Route path="*" element={
+              <PlatformShell>
+                <Routes>
+                  <Route path="/" element={<DerivaHomePage />} />
+                  <Route path="/secuencia" element={<StudyRoutePage />} />
+                  <Route path="/exploraciones/:blockId" element={<ExplorationBlockPage />} />
+                  <Route path="/unidades/:unitId" element={<UnitPage />} />
+                  <Route path="/laboratorios" element={<LabsLibraryPage />} />
+                  <Route path="/laboratorios/:labId" element={<LabPage />} />
+                  <Route path="/modelacion" element={<ModelacionPage />} />
+                </Routes>
+              </PlatformShell>
+            } />
+          </Routes>
         </Suspense>
       </BrowserRouter>
     </HelmetProvider>

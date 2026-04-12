@@ -357,7 +357,7 @@ function MiniGraph({ functions, xRange }) {
 
 /* ── main component ─────────────────────────────────────────── */
 
-export function ScientificCalculator({ open, onToggle }) {
+export function ScientificCalculator({ open, onToggle, standalone = false }) {
   const [mode, setMode] = useState('calc') // 'calc' | 'graph' | 'stats' | 'dist'
   const [expr, setExpr] = useState('')
   const [history, setHistory] = useState('')
@@ -449,7 +449,7 @@ export function ScientificCalculator({ open, onToggle }) {
   const validGraphFns = graphFns.filter(fn => fn.expr.trim())
 
   const btnClass = (btn) => {
-    const base = 'flex h-11 items-center justify-center rounded-xl text-sm font-semibold transition-all active:scale-95 select-none'
+    const base = `flex ${standalone ? 'h-12 text-sm' : 'h-11 text-sm'} items-center justify-center rounded-xl font-semibold transition-all active:scale-95 select-none`
     if (btn.accent) return `${base} bg-aqua text-white shadow-[0_4px_12px_rgba(120,180,255,0.3)]`
     if (btn.action === 'clear') return `${base} bg-signal/20 text-signal`
     if (btn.action === 'backspace') return `${base} bg-white/8 text-paper/70`
@@ -469,53 +469,44 @@ export function ScientificCalculator({ open, onToggle }) {
 
   return (
     <>
-      {/* floating toggle button */}
-      <button
-        onClick={onToggle}
-        className={`fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full shadow-[0_8px_32px_rgba(255,107,53,0.4)] transition-all hover:scale-110 active:scale-95 md:bottom-8 md:right-8 ${open ? 'bg-ink text-paper' : 'bg-signal text-white animate-pulse'}`}
-        aria-label={open ? 'Cerrar calculadora' : 'Abrir calculadora'}
-        title="Calculadora y graficadora"
+      {/* floating button — opens calculator in popup window */}
+      {!standalone && <button
+        onClick={() => window.open('/calculadora', 'mathmodels-calc', 'width=480,height=750,resizable=yes,scrollbars=yes')}
+        className="fixed bottom-6 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-signal text-white shadow-[0_8px_32px_rgba(255,107,53,0.35)] transition-all hover:scale-110 active:scale-95 md:bottom-8 md:left-8"
+        aria-label="Abrir calculadora"
+        title="Calculadora científica"
       >
-        {open ? (
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="4" y="2" width="16" height="20" rx="2" />
-            <line x1="8" y1="6" x2="16" y2="6" />
-            <line x1="8" y1="10" x2="8" y2="10.01" />
-            <line x1="12" y1="10" x2="12" y2="10.01" />
-            <line x1="16" y1="10" x2="16" y2="10.01" />
-            <line x1="8" y1="14" x2="8" y2="14.01" />
-            <line x1="12" y1="14" x2="12" y2="14.01" />
-            <line x1="16" y1="14" x2="16" y2="14.01" />
-            <line x1="8" y1="18" x2="8" y2="18.01" />
-            <line x1="12" y1="18" x2="12" y2="18.01" />
-            <line x1="16" y1="18" x2="16" y2="18.01" />
-          </svg>
-        )}
-      </button>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="4" y="2" width="16" height="20" rx="2" />
+          <line x1="8" y1="6" x2="16" y2="6" />
+          <line x1="8" y1="10" x2="8" y2="10.01" />
+          <line x1="12" y1="10" x2="12" y2="10.01" />
+          <line x1="16" y1="10" x2="16" y2="10.01" />
+          <line x1="8" y1="14" x2="8" y2="14.01" />
+          <line x1="12" y1="14" x2="12" y2="14.01" />
+          <line x1="16" y1="14" x2="16" y2="14.01" />
+          <line x1="8" y1="18" x2="8" y2="18.01" />
+          <line x1="12" y1="18" x2="12" y2="18.01" />
+          <line x1="16" y1="18" x2="16" y2="18.01" />
+        </svg>
+      </button>}
 
+      {/* inline panel — used when rendered standalone at /calculadora */}
       <AnimatePresence>
         {open && (
           <motion.div
             ref={panelRef}
-            drag
-            dragControls={dragControls}
-            dragMomentum={false}
-            dragElastic={0}
-            initial={{ opacity: 0, y: -10, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.97 }}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="fixed right-4 top-20 z-50 w-[min(22rem,calc(100vw-2rem))] max-h-[calc(100vh-6rem)] overflow-y-auto overflow-x-hidden rounded-[1.6rem] border border-white/10 bg-ink text-paper shadow-[0_28px_80px_rgba(0,0,0,0.45)] md:right-8"
+            className={standalone
+              ? 'mx-auto w-full max-w-5xl min-h-screen bg-ink text-paper px-6 py-3'
+              : 'mx-auto w-full max-w-md rounded-[1.6rem] border border-white/10 bg-ink text-paper shadow-[0_28px_80px_rgba(0,0,0,0.45)]'
+            }
           >
-            {/* header — drag handle + mode toggle */}
-            <div
-              onPointerDown={(e) => dragControls.start(e)}
-              className="flex cursor-grab items-center justify-between gap-3 border-b border-white/8 px-4 py-2.5 active:cursor-grabbing"
-            >
+            {/* header — mode toggle */}
+            <div className="flex items-center justify-between gap-3 border-b border-white/8 px-4 py-2.5">
               <div className="flex gap-2 rounded-full bg-white/6 p-1">
                 {modeBtn('calc', 'Calc')}
                 {modeBtn('graph', 'Graf')}
@@ -539,7 +530,7 @@ export function ScientificCalculator({ open, onToggle }) {
                   {history && (
                     <p className="mb-1 truncate text-right text-xs text-paper/35">{history}</p>
                   )}
-                  <p className="min-h-[2rem] truncate text-right font-display text-2xl font-bold tracking-tight text-paper">
+                  <p className={`truncate text-right font-display font-bold tracking-tight text-paper ${standalone ? 'min-h-[2.5rem] text-3xl' : 'min-h-[2rem] text-2xl'}`}>
                     {expr || '0'}
                   </p>
                   {preview && preview !== expr && (
