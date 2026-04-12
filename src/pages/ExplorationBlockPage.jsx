@@ -530,123 +530,99 @@ ${(studentName || studentCourse || studentSchool) ? `<div class="student-info">
           </div>
         </motion.div>
 
-        {/* ── ¿Qué es? — expandible con workflow integrado ── */}
-        <motion.div {...fadeIn} className="mt-8">
-          {researchBranches.filter(b => b.id === 'exploracion').map((branch) => {
-            const isOpen = expandedBranch === branch.id
-            return (
-              <div key={branch.id} className="rounded-[1.8rem] border border-ink/10 bg-white/82 shadow-[0_12px_40px_rgba(18,23,35,0.06)] overflow-hidden">
-                <button
-                  onClick={() => setExpandedBranch(isOpen ? null : branch.id)}
-                  className="flex w-full items-center gap-3 px-6 py-5 text-left transition-colors hover:bg-ink/3"
-                >
-                  <span className="text-2xl">{branch.icon}</span>
-                  <span className="flex-1 font-display text-lg font-semibold text-ink">{branch.title}</span>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
-                    className={`shrink-0 text-ink/40 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </button>
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeOut' }}
-                      className="overflow-hidden"
-                    >
-                      <div className="border-t border-ink/8 px-6 py-5 space-y-5">
-                        <p className="text-base leading-7 text-ink/75">{branch.objective}</p>
-
-                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                          {branch.develops.map((d) => (
-                            <div key={d.label} className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-                              <p className="text-sm font-semibold text-ink">{d.label}</p>
-                              <p className="mt-1 text-xs leading-5 text-ink/55">{d.detail}</p>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Workflow integrado */}
-                        <div>
-                          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-2">Cómo funciona este taller</p>
-                          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                            {block.workflow.map((item, index) => (
-                              <div key={item.step} className="rounded-xl border border-ink/8 bg-ink/3 px-3 py-2.5">
-                                <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Paso {index + 1}</p>
-                                <p className="mt-1 text-sm font-semibold text-ink">{item.step}</p>
-                                <p className="mt-0.5 text-xs leading-5 text-ink/55">{item.detail}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div className="rounded-xl bg-ink/4 px-4 py-3">
-                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Alcance</p>
-                            <p className="text-sm leading-6 text-ink/65">{branch.scope}</p>
-                          </div>
-                          <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-3">
-                            <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Entregable</p>
-                            <p className="text-sm leading-6 text-ink/70 font-medium">{branch.deliverable}</p>
-                          </div>
-                        </div>
-
-                        {/* Estructura del documento */}
-                        {branch.documentStructure && (
-                          <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
-                            <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Estructura del documento</summary>
-                            <div className="border-t border-ink/8 px-4 py-3 space-y-2">
-                              {branch.documentStructure.map((s, i) => (
-                                <div key={s.section} className="flex gap-3">
-                                  <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-ink/8 text-xs font-bold text-ink/50">{i + 1}</span>
-                                  <div>
-                                    <p className="text-sm font-semibold text-ink">{s.section}</p>
-                                    <p className="text-xs leading-5 text-ink/55">{s.detail}</p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </details>
-                        )}
-
-                        {/* Lineamientos */}
-                        {branch.guidelines && (
-                          <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
-                            <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Lineamientos de presentación</summary>
-                            <div className="border-t border-ink/8 px-4 py-3 space-y-1">
-                              {branch.guidelines.map((g, i) => (
-                                <p key={i} className="text-xs leading-5 text-ink/60">• {g}</p>
-                              ))}
-                            </div>
-                          </details>
-                        )}
-
-                        {/* Cómo lograr la mejor calificación */}
-                        {branch.excellenceTips && (
-                          <details className="rounded-xl border border-signal/15 bg-signal/5 overflow-hidden">
-                            <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-signal/8">Cómo lograr la mejor calificación</summary>
-                            <div className="border-t border-signal/10 px-4 py-3 space-y-2">
-                              {branch.excellenceTips.map((t) => (
-                                <div key={t.area} className="rounded-xl border border-signal/12 bg-white px-4 py-3">
-                                  <p className="text-sm font-semibold text-ink">{t.area}</p>
-                                  <p className="mt-1 text-xs leading-5 text-ink/60">{t.tip}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </details>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+        {/* ── SECCIÓN 1: Sobre la exploración ── */}
+        {researchBranches.filter(b => b.id === 'exploracion').map((branch) => (
+          <motion.div key={branch.id} {...fadeIn} className="mt-8 space-y-4">
+            <div className="rounded-[1.8rem] border border-ink/10 bg-white/82 p-6 shadow-[0_12px_40px_rgba(18,23,35,0.06)]">
+              <p className="text-base leading-7 text-ink/75">{branch.objective}</p>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {branch.develops.map((d) => (
+                  <div key={d.label} className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
+                    <p className="text-sm font-semibold text-ink">{d.label}</p>
+                    <p className="mt-1 text-xs leading-5 text-ink/55">{d.detail}</p>
+                  </div>
+                ))}
               </div>
-            )
-          })}
-        </motion.div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl bg-ink/4 px-4 py-3">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Alcance</p>
+                  <p className="text-sm leading-6 text-ink/65">{branch.scope}</p>
+                </div>
+                <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-3">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45 mb-1">Entregable</p>
+                  <p className="text-sm leading-6 text-ink/70 font-medium">{branch.deliverable}</p>
+                </div>
+              </div>
+            </div>
 
-        {/* ── Ejercicio: pasos 1-5 (izq) + planeación en vivo (der) ── */}
+            {/* Expandibles de referencia */}
+            <div className="grid gap-3 md:grid-cols-3">
+              {branch.documentStructure && (
+                <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
+                  <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Estructura del documento</summary>
+                  <div className="border-t border-ink/8 px-4 py-3 space-y-2">
+                    {branch.documentStructure.map((s, i) => (
+                      <div key={s.section} className="flex gap-2">
+                        <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-ink/8 text-[0.6rem] font-bold text-ink/50">{i + 1}</span>
+                        <div>
+                          <p className="text-xs font-semibold text-ink">{s.section}</p>
+                          <p className="text-[0.7rem] leading-4 text-ink/50">{s.detail}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
+              {branch.guidelines && (
+                <details className="rounded-xl border border-ink/8 bg-white overflow-hidden">
+                  <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-ink/3">Lineamientos</summary>
+                  <div className="border-t border-ink/8 px-4 py-3 space-y-1">
+                    {branch.guidelines.map((g, i) => (
+                      <p key={i} className="text-xs leading-5 text-ink/60">• {g}</p>
+                    ))}
+                  </div>
+                </details>
+              )}
+              {branch.excellenceTips && (
+                <details className="rounded-xl border border-signal/15 bg-signal/5 overflow-hidden">
+                  <summary className="px-4 py-3 text-sm font-semibold text-ink/70 cursor-pointer hover:bg-signal/8">Mejor calificación</summary>
+                  <div className="border-t border-signal/10 px-4 py-3 space-y-2">
+                    {branch.excellenceTips.map((t) => (
+                      <div key={t.area}>
+                        <p className="text-xs font-semibold text-ink">{t.area}</p>
+                        <p className="text-[0.7rem] leading-4 text-ink/55">{t.tip}</p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+          </motion.div>
+        ))}
+
+        {/* ── Separador visual ── */}
+        <div className="mt-12 mb-2 flex items-center gap-4">
+          <div className="h-px flex-1 bg-ink/10" />
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-ink/35">Taller de planeación</p>
+          <div className="h-px flex-1 bg-ink/10" />
+        </div>
+        <p className="text-sm text-ink/50 mb-6">Elige una línea, un formato y una idea de arranque para construir tu planeación inicial paso a paso.</p>
+
+        {/* ── Cómo funciona el taller ── */}
+        <details className="mb-6 rounded-xl border border-ink/8 bg-white overflow-hidden">
+          <summary className="px-5 py-3 text-sm font-semibold text-ink/65 cursor-pointer hover:bg-ink/3">¿Cómo funciona este taller?</summary>
+          <div className="border-t border-ink/8 px-5 py-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {block.workflow.map((item, index) => (
+              <div key={item.step} className="rounded-xl border border-ink/8 bg-ink/3 px-3 py-2.5">
+                <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Paso {index + 1}</p>
+                <p className="mt-1 text-sm font-semibold text-ink">{item.step}</p>
+                <p className="mt-0.5 text-xs leading-5 text-ink/55">{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </details>
+
+        {/* ── SECCIÓN 2: El taller — pasos 1-5 (izq) + planeación en vivo (der) ── */}
         <motion.div {...fadeIn} className="mt-10 grid gap-6 xl:grid-cols-[0.98fr_1.02fr]">
           <div className="space-y-5">
             <article className="rounded-[2rem] border border-ink/10 bg-white/82 p-6 shadow-[0_24px_64px_rgba(18,23,35,0.07)]">
