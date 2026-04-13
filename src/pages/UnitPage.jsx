@@ -176,7 +176,7 @@ export const UnitPage = () => {
                 </article>
               ))}
 
-              {plannedLabs.map((lab) => (
+              {plannedLabs.length > 0 && plannedLabs.map((lab) => (
                 <article key={lab.id} className="rounded-[1.5rem] border border-ink/10 bg-white px-5 py-5">
                   <h3 className="font-display text-lg font-semibold tracking-[-0.02em] text-ink/55">{lab.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-ink/68">{lab.contextSummary}</p>
