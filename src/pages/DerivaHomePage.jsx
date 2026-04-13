@@ -210,6 +210,16 @@ export const DerivaHomePage = () => {
           </div>
         </motion.div>
 
+        {/* ── IMAGE BAND ── */}
+        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] shadow-[0_20px_60px_rgba(18,23,35,0.1)]">
+          <img
+            src="/images/students-collab.png"
+            alt="Estudiantes trabajando con tablets y gráficas en el aula"
+            className="h-52 w-full object-cover object-[center_70%] md:h-72"
+            loading="lazy"
+          />
+        </motion.div>
+
         {/* ── 3. MODELING SPACE ── */}
         <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-ink/12 bg-ink text-paper shadow-[0_28px_80px_rgba(18,23,35,0.25)]">
           <div className="grid xl:grid-cols-[1.1fr_0.9fr]">
@@ -328,6 +338,52 @@ export const DerivaHomePage = () => {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </span>
             </Link>
+          </div>
+        </motion.div>
+
+        {/* ── FOR TEACHERS — compact ── */}
+        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-graph/15 bg-graph/5">
+          <div className="grid xl:grid-cols-[1fr_0.42fr]">
+            <div className="p-6 md:p-8">
+              <p className="section-kicker text-graph">Para docentes</p>
+              <h2 className="mt-3 font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
+                Cada laboratorio incluye guía de uso en clase.
+              </h2>
+              <div className="mt-5 flex flex-wrap gap-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-graph/15 text-graph">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                  </span>
+                  <span className="text-sm font-semibold text-ink/70">Currículos internacionales</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-graph/15 text-graph">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </span>
+                  <span className="text-sm font-semibold text-ink/70">Secuencias por unidad</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-graph/15 text-graph">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  </span>
+                  <span className="text-sm font-semibold text-ink/70">Datos descargables</span>
+                </div>
+              </div>
+              <Link
+                to="/secuencia"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-graph px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(34,197,160,0.2)]"
+              >
+                Ver secuencia completa
+              </Link>
+            </div>
+            <div className="hidden xl:block">
+              <img
+                src="/images/teacher-student.jpg"
+                alt="Docente y estudiantes analizando un simulador matemático"
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </div>
           </div>
         </motion.div>
 
