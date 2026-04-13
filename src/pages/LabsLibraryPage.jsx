@@ -204,22 +204,24 @@ export const LabsLibraryPage = () => {
           {availableLabs.map((lab) => <LabCard key={lab.id} lab={lab} />)}
         </div>
 
-        <motion.div {...fadeIn} className="mt-12">
-          <p className="section-kicker">Laboratorios en preparación</p>
-          <div className="mt-6 grid gap-5 xl:grid-cols-2">
-            {plannedLabs.map((lab) => (
-              <article key={lab.id} className="rounded-[1.7rem] border border-ink/10 bg-white/75 p-5">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full bg-ink/8 px-3 py-1 text-xs uppercase tracking-[0.18em] text-ink/55">
-                    En preparación
-                  </span>
-                </div>
-                <h3 className="mt-4 font-display text-[2rem] tracking-[-0.03em]">{lab.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-ink/66">{lab.contextSummary}</p>
-              </article>
-            ))}
-          </div>
-        </motion.div>
+        {plannedLabs.length > 0 && (
+          <motion.div {...fadeIn} className="mt-12">
+            <p className="section-kicker">Laboratorios en preparación</p>
+            <div className="mt-6 grid gap-5 xl:grid-cols-2">
+              {plannedLabs.map((lab) => (
+                <article key={lab.id} className="rounded-[1.7rem] border border-ink/10 bg-white/75 p-5">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="rounded-full bg-ink/8 px-3 py-1 text-xs uppercase tracking-[0.18em] text-ink/55">
+                      En preparación
+                    </span>
+                  </div>
+                  <h3 className="mt-4 font-display text-[2rem] tracking-[-0.03em]">{lab.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-ink/66">{lab.contextSummary}</p>
+                </article>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   )

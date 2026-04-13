@@ -111,7 +111,7 @@ export const DerivaHomePage = () => {
           >
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-graph/15 text-graph">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 14l2 2 4-4"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8h4"/><path d="M7 11h6"/></svg>
               </span>
               <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Soy docente</h2>
             </div>
@@ -315,25 +315,29 @@ export const DerivaHomePage = () => {
               </span>
             </Link>
 
-            <div className="rounded-[1.8rem] border border-ink/10 bg-white/70 p-6">
+            <Link
+              to="/monografias"
+              className="group rounded-[1.8rem] border border-violet/20 bg-violet/6 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(139,92,246,0.12)]"
+            >
               <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-ink/8 text-ink/50">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet/15 text-violet">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+                    <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
                   </svg>
                 </span>
                 <div>
-                  <h3 className="font-display text-2xl font-semibold tracking-[-0.02em]">Monografía matemática</h3>
-                  <span className="rounded-full bg-ink/8 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-ink/50">En preparación</span>
+                  <h3 className="font-display text-2xl font-semibold tracking-[-0.02em]">Monografía IB</h3>
+                  <span className="rounded-full bg-violet/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-violet">Disponible</span>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-7 text-ink/68">
-                Problemas de modelación e investigación más amplios, pensados para sostener un estudio de mayor profundidad con comparación de enfoques y justificación rigurosa.
+                Simulaciones con datos reales, planeación guiada desde los dos itinerarios, criterios A–E y propuestas interdisciplinarias con asignaturas del DP.
               </p>
-              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-ink/40">
-                Próximamente
+              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-violet transition-transform group-hover:translate-x-1">
+                Explorar monografía
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </span>
-            </div>
+            </Link>
           </div>
         </motion.div>
 
