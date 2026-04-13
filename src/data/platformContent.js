@@ -1619,12 +1619,13 @@ export const platformSupports = [
 
 export const navigationItems = [
   { label: 'Inicio', to: '/', end: true },
-  { label: 'Unidades', to: '/secuencia', end: true },
   { label: 'Laboratorios', to: '/laboratorios', end: false },
-  { label: 'Modelar', to: '/modelacion', end: true },
-  { label: 'Investigar', submenu: [
-    { label: 'Exploración', to: '/exploraciones/funciones-modelos', description: 'Investigación guiada con datos y modelos' },
+  { label: 'Explorar', to: '/modelacion', end: true },
+  { label: 'Herramientas', submenu: [
+    { label: 'Secuencia por unidades', to: '/secuencia', description: 'Recorrido organizado por unidad curricular' },
+    { label: 'Exploración guiada', to: '/exploraciones/funciones-modelos', description: 'Investigación guiada con datos y modelos' },
     { label: 'Monografía IB', to: '/monografias', description: 'Investigación extendida — Primera evaluación 2027' },
+    { label: 'Calculadora', to: '/calculadora', description: 'Científica, gráfica, estadística y distribuciones' },
   ]},
 ]
 
