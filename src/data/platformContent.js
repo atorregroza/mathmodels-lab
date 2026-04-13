@@ -1621,11 +1621,9 @@ export const navigationItems = [
   { label: 'Inicio', to: '/', end: true },
   { label: 'Laboratorios', to: '/laboratorios', end: false },
   { label: 'Modelar', to: '/modelacion', end: true },
-  { label: 'Herramientas', submenu: [
-    { label: 'Secuencia por unidades', to: '/secuencia', description: 'Recorrido organizado por unidad curricular' },
+  { label: 'Investigar', submenu: [
     { label: 'Exploración', to: '/exploraciones/funciones-modelos', description: 'Investigación con datos y modelos' },
     { label: 'Monografía', to: '/monografias', description: 'Investigación extendida' },
-    { label: 'Calculadora', to: '/calculadora', description: 'Científica, gráfica, estadística y distribuciones' },
   ]},
 ]
 
