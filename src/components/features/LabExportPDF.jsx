@@ -1,52 +1,116 @@
 import { useState } from 'react'
 
-/**
- * Captures the first SVG inside a container, converts it to an image,
- * and generates a PDF with lab context.
- */
-const svgToDataURL = (svgEl) => {
+/* ── SVG → PNG conversion ─────────────────────────────────────────────── */
+
+const svgToDataURL = (svgEl, bgColor = '#121723') => {
   return new Promise((resolve) => {
     const clone = svgEl.cloneNode(true)
-    // Ensure viewBox is set for proper scaling
-    if (!clone.getAttribute('viewBox')) {
-      const bb = svgEl.getBBox()
-      clone.setAttribute('viewBox', `0 0 ${bb.width} ${bb.height}`)
-    }
+    const vb = svgEl.getAttribute('viewBox')
+    if (!vb) { resolve(null); return }
     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-    // Inline computed styles for dark backgrounds
-    const rects = clone.querySelectorAll('rect, path, line, circle, text')
-    rects.forEach((el) => {
-      const computed = window.getComputedStyle(svgEl.querySelector(`[class="${el.getAttribute('class')}"]`) || el)
-      if (computed.fill) el.style.fill = el.style.fill || computed.fill
-      if (computed.stroke) el.style.stroke = el.style.stroke || computed.stroke
-    })
+    clone.setAttribute('width', '1200')
+    clone.setAttribute('height', String(1200 * (parseFloat(vb.split(/[\s,]+/)[3]) / parseFloat(vb.split(/[\s,]+/)[2]))))
+
     const data = new XMLSerializer().serializeToString(clone)
     const blob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const img = new Image()
     img.onload = () => {
       const canvas = document.createElement('canvas')
-      const scale = 2 // retina quality
-      canvas.width = img.width * scale
-      canvas.height = img.height * scale
+      canvas.width = img.width
+      canvas.height = img.height
       const ctx = canvas.getContext('2d')
-      ctx.scale(scale, scale)
-      // Dark background for graph
-      ctx.fillStyle = '#121723'
-      ctx.fillRect(0, 0, img.width, img.height)
-      ctx.drawImage(img, 0, 0, img.width, img.height)
+      ctx.fillStyle = bgColor
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.drawImage(img, 0, 0)
       URL.revokeObjectURL(url)
       resolve(canvas.toDataURL('image/png'))
     }
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      resolve(null)
-    }
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(null) }
     img.src = url
   })
 }
 
-export const LabExportPDF = ({ labTitle, labPurpose, unitTitle, contextSummary }) => {
+const loadImageAsDataURL = (src) => {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      canvas.getContext('2d').drawImage(img, 0, 0)
+      resolve(canvas.toDataURL('image/png'))
+    }
+    img.onerror = () => resolve(null)
+    img.src = src
+  })
+}
+
+/* ── Color constants ──────────────────────────────────────────────────── */
+
+const C = {
+  ink: [18, 23, 35],
+  accent: [255, 107, 53],     // signal orange
+  muted: [120, 125, 140],
+  light: [200, 200, 210],
+  bg: [245, 246, 250],
+  white: [255, 255, 255],
+}
+
+/* ── PDF helpers ──────────────────────────────────────────────────────── */
+
+const drawAccentBar = (doc, x, y, w) => {
+  doc.setFillColor(...C.accent)
+  doc.rect(x, y, w, 1.2, 'F')
+}
+
+const sectionLabel = (doc, text, x, y) => {
+  doc.setFontSize(7.5)
+  doc.setTextColor(...C.accent)
+  doc.setFont('helvetica', 'bold')
+  doc.text(text.toUpperCase(), x, y)
+  doc.setFont('helvetica', 'normal')
+  return y + 5
+}
+
+const ensureSpace = (doc, y, needed) => {
+  if (y + needed > 275) { doc.addPage(); return 22 }
+  return y
+}
+
+/* ── Find CartesianFrame SVGs (those with axes, not figural visualizations) ── */
+
+const findGraphSVGs = (container) => {
+  const svgs = container.querySelectorAll('svg[viewBox]')
+  const results = []
+  svgs.forEach((svg) => {
+    // CartesianFrame SVGs contain <line> elements for axes and <text> for tick labels
+    const lines = svg.querySelectorAll('line')
+    const texts = svg.querySelectorAll('text')
+    // Must have both axis lines and tick labels to be a real graph
+    if (lines.length >= 4 && texts.length >= 3) {
+      results.push(svg)
+    }
+  })
+  // If no CartesianFrame found, fall back to largest SVG
+  if (results.length === 0) {
+    let best = null, maxArea = 0
+    svgs.forEach((svg) => {
+      const vb = svg.getAttribute('viewBox')?.split(/[\s,]+/).map(Number)
+      if (vb && vb.length >= 4) {
+        const area = vb[2] * vb[3]
+        if (area > maxArea) { maxArea = area; best = svg }
+      }
+    })
+    if (best) results.push(best)
+  }
+  return results
+}
+
+/* ── Main component ───────────────────────────────────────────────────── */
+
+export const LabExportPDF = ({ labTitle, labPurpose, unitTitle, contextSummary, howToUse }) => {
   const [exporting, setExporting] = useState(false)
 
   const handleExport = async () => {
@@ -55,159 +119,342 @@ export const LabExportPDF = ({ labTitle, labPurpose, unitTitle, contextSummary }
       const { jsPDF } = await import('jspdf')
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
       const pageW = doc.internal.pageSize.getWidth()
-      const margin = 18
-      const contentW = pageW - margin * 2
-      let y = 20
+      const M = 20 // margin
+      const W = pageW - M * 2
+      let y = 16
 
-      // ── Header ──
+      // ── Load logo ──
+      const logoURL = await loadImageAsDataURL('/images/mathmodels-lab-logo.png')
+
+      // ══════════════════════════════════════════════════════════════
+      // PAGE 1: Cover / Header
+      // ══════════════════════════════════════════════════════════════
+
+      // Logo
+      if (logoURL) {
+        doc.addImage(logoURL, 'PNG', M, y, 40, 10)
+        y += 14
+      } else {
+        doc.setFontSize(12)
+        doc.setTextColor(...C.ink)
+        doc.setFont('helvetica', 'bold')
+        doc.text('MathModels Lab', M, y + 4)
+        doc.setFont('helvetica', 'normal')
+        y += 10
+      }
+
+      // Date right-aligned
       doc.setFontSize(8)
-      doc.setTextColor(120, 120, 120)
-      doc.text('MathModels Lab — Reporte de exploración', margin, y)
-      doc.text(new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }), pageW - margin, y, { align: 'right' })
+      doc.setTextColor(...C.muted)
+      doc.text(
+        new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' }),
+        pageW - M, y - 4, { align: 'right' },
+      )
+
+      // Accent bar
+      drawAccentBar(doc, M, y, W)
       y += 8
 
-      // ── Line ──
-      doc.setDrawColor(200, 200, 200)
-      doc.line(margin, y, pageW - margin, y)
-      y += 10
+      // Title
+      doc.setFontSize(24)
+      doc.setTextColor(...C.ink)
+      doc.setFont('helvetica', 'bold')
+      const titleLines = doc.splitTextToSize(labTitle, W)
+      doc.text(titleLines, M, y)
+      y += titleLines.length * 10 + 3
 
-      // ── Title ──
-      doc.setFontSize(22)
-      doc.setTextColor(18, 23, 35)
-      const titleLines = doc.splitTextToSize(labTitle, contentW)
-      doc.text(titleLines, margin, y)
-      y += titleLines.length * 9 + 4
-
-      // ── Unit badge ──
+      // Unit badge
       if (unitTitle) {
         doc.setFontSize(9)
-        doc.setTextColor(100, 100, 100)
-        doc.text(`Unidad: ${unitTitle}`, margin, y)
-        y += 8
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(...C.accent)
+        doc.text(`■ ${unitTitle}`, M, y)
+        y += 7
       }
 
-      // ── Purpose ──
-      doc.setFontSize(11)
-      doc.setTextColor(40, 40, 40)
-      const purposeLines = doc.splitTextToSize(labPurpose, contentW)
-      doc.text(purposeLines, margin, y)
-      y += purposeLines.length * 5.5 + 8
+      // Purpose
+      doc.setFontSize(10.5)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(...C.ink)
+      const purposeLines = doc.splitTextToSize(labPurpose, W)
+      doc.text(purposeLines, M, y)
+      y += purposeLines.length * 5 + 8
 
-      // ── Context ──
+      // ── Context section with background ──
       if (contextSummary) {
-        doc.setFontSize(9)
-        doc.setTextColor(80, 80, 80)
-        doc.text('CONTEXTO DEL PROBLEMA', margin, y)
-        y += 5
-        doc.setFontSize(10)
-        doc.setTextColor(50, 50, 50)
-        const ctxLines = doc.splitTextToSize(contextSummary, contentW)
-        doc.text(ctxLines, margin, y)
-        y += ctxLines.length * 5 + 8
+        y = ensureSpace(doc, y, 30)
+        y = sectionLabel(doc, 'Contexto del problema', M, y)
+
+        doc.setFillColor(...C.bg)
+        const ctxLines = doc.splitTextToSize(contextSummary, W - 8)
+        const ctxH = ctxLines.length * 4.8 + 8
+        doc.roundedRect(M, y - 3, W, ctxH, 2, 2, 'F')
+
+        doc.setFontSize(9.5)
+        doc.setTextColor(60, 62, 72)
+        doc.text(ctxLines, M + 4, y + 2)
+        y += ctxH + 6
       }
 
-      // ── Graph capture ──
+      // ── Graph captures ──
       const labContainer = document.querySelector('[data-lab-content]')
       if (labContainer) {
-        const svgs = labContainer.querySelectorAll('svg')
-        // Find the main graph SVG (largest one with viewBox)
-        let mainSvg = null
-        let maxArea = 0
-        svgs.forEach((svg) => {
-          const vb = svg.getAttribute('viewBox')
-          if (vb) {
-            const parts = vb.split(/[\s,]+/).map(Number)
-            const area = (parts[2] || 0) * (parts[3] || 0)
-            if (area > maxArea) {
-              maxArea = area
-              mainSvg = svg
+        const graphSVGs = findGraphSVGs(labContainer)
+
+        for (let gi = 0; gi < Math.min(graphSVGs.length, 2); gi++) {
+          const svg = graphSVGs[gi]
+          const dataURL = await svgToDataURL(svg)
+          if (!dataURL) continue
+
+          y = ensureSpace(doc, y, 80)
+          y = sectionLabel(doc, gi === 0 ? 'Visualización' : 'Visualización adicional', M, y)
+
+          const vb = svg.getAttribute('viewBox').split(/[\s,]+/).map(Number)
+          const ratio = vb[3] / vb[2]
+          const imgW = W
+          const imgH = Math.min(imgW * ratio, 90)
+
+          // Rounded container with border
+          doc.setDrawColor(...C.light)
+          doc.setLineWidth(0.3)
+          doc.roundedRect(M, y - 1, imgW, imgH + 2, 2, 2, 'S')
+          doc.addImage(dataURL, 'PNG', M + 0.5, y, imgW - 1, imgH)
+          y += imgH + 8
+        }
+
+        // ── Metrics table ──
+        const metricCards = labContainer.querySelectorAll('[class*="tabular-nums"]')
+        const metrics = []
+        const seen = new Set()
+        metricCards.forEach((card) => {
+          const parent = card.closest('[class*="rounded"]')
+          if (!parent) return
+          const label = parent.querySelector('[class*="uppercase"]')
+          const value = card.textContent?.trim()
+          if (!value || !label) return
+          const lbl = label.textContent?.trim() || ''
+          const key = `${lbl}:${value}`
+          if (seen.has(key) || !lbl) return
+          seen.add(key)
+          metrics.push({ label: lbl, value })
+        })
+
+        if (metrics.length > 0) {
+          y = ensureSpace(doc, y, 10 + metrics.length * 7)
+          y = sectionLabel(doc, 'Valores observados', M, y)
+
+          // Table header
+          doc.setFillColor(...C.ink)
+          doc.rect(M, y - 1, W, 7, 'F')
+          doc.setFontSize(7.5)
+          doc.setTextColor(...C.white)
+          doc.setFont('helvetica', 'bold')
+          doc.text('Magnitud', M + 4, y + 3.5)
+          doc.text('Valor', M + W - 4, y + 3.5, { align: 'right' })
+          y += 8
+
+          // Table rows
+          doc.setFont('helvetica', 'normal')
+          metrics.forEach((m, i) => {
+            y = ensureSpace(doc, y, 7)
+            if (i % 2 === 0) {
+              doc.setFillColor(...C.bg)
+              doc.rect(M, y - 3.5, W, 7, 'F')
+            }
+            doc.setFontSize(8.5)
+            doc.setTextColor(...C.muted)
+            doc.text(m.label, M + 4, y)
+            doc.setFontSize(10)
+            doc.setTextColor(...C.ink)
+            doc.setFont('helvetica', 'bold')
+            doc.text(m.value, M + W - 4, y, { align: 'right' })
+            doc.setFont('helvetica', 'normal')
+            y += 7
+          })
+          y += 6
+        }
+      }
+
+      // ── Model expressions (from ModelCard components) ──
+      if (labContainer) {
+        const modelCards = labContainer.querySelectorAll('[class*="overflow-x-auto"][class*="rounded"]')
+        const expressions = []
+        modelCards.forEach((card) => {
+          const titleEl = card.querySelector('[class*="uppercase"]')
+          const exprEl = card.querySelector('[class*="font-semibold"]:not([class*="uppercase"])')
+          if (titleEl && exprEl) {
+            const title = titleEl.textContent?.trim()
+            const expr = exprEl.textContent?.trim()
+            if (title && expr && expr.length > 2) {
+              expressions.push({ title, expr })
             }
           }
         })
 
-        if (mainSvg) {
-          const dataURL = await svgToDataURL(mainSvg)
-          if (dataURL) {
-            const vb = mainSvg.getAttribute('viewBox').split(/[\s,]+/).map(Number)
-            const ratio = vb[3] / vb[2]
-            const imgW = contentW
-            const imgH = imgW * ratio
+        if (expressions.length > 0) {
+          y = ensureSpace(doc, y, 12 + expressions.length * 18)
+          y = sectionLabel(doc, 'Modelo matemático', M, y)
 
-            // Check if we need a new page
-            if (y + imgH > 270) {
-              doc.addPage()
-              y = 20
-            }
+          expressions.forEach((m) => {
+            y = ensureSpace(doc, y, 18)
+            doc.setFillColor(248, 245, 240)
+            doc.roundedRect(M, y - 3, W, 15, 2, 2, 'F')
+            doc.setDrawColor(230, 220, 200)
+            doc.setLineWidth(0.3)
+            doc.roundedRect(M, y - 3, W, 15, 2, 2, 'S')
 
-            doc.setFontSize(9)
-            doc.setTextColor(80, 80, 80)
-            doc.text('GRÁFICO', margin, y)
-            y += 5
+            doc.setFontSize(7)
+            doc.setTextColor(...C.muted)
+            doc.setFont('helvetica', 'bold')
+            doc.text(m.title.toUpperCase(), M + 4, y + 1)
 
-            doc.addImage(dataURL, 'PNG', margin, y, imgW, imgH)
-            y += imgH + 8
-          }
-        }
-
-        // ── Capture visible metrics ──
-        const metricCards = labContainer.querySelectorAll('[class*="tabular-nums"]')
-        if (metricCards.length > 0) {
-          if (y > 240) { doc.addPage(); y = 20 }
-          doc.setFontSize(9)
-          doc.setTextColor(80, 80, 80)
-          doc.text('VALORES OBSERVADOS', margin, y)
-          y += 6
-
-          const seen = new Set()
-          metricCards.forEach((card) => {
-            const parent = card.closest('[class*="rounded"]')
-            if (!parent) return
-            const label = parent.querySelector('[class*="uppercase"]')
-            const value = card.textContent?.trim()
-            if (!value || !label) return
-            const key = `${label.textContent}:${value}`
-            if (seen.has(key)) return
-            seen.add(key)
-
-            if (y > 270) { doc.addPage(); y = 20 }
-            doc.setFontSize(9)
-            doc.setTextColor(100, 100, 100)
-            doc.text(label.textContent?.trim() || '', margin, y)
             doc.setFontSize(11)
-            doc.setTextColor(18, 23, 35)
-            doc.text(value, margin + 60, y)
-            y += 6
+            doc.setTextColor(...C.ink)
+            doc.setFont('helvetica', 'bold')
+            doc.text(doc.splitTextToSize(m.expr, W - 10)[0] || m.expr, M + 4, y + 8)
+            doc.setFont('helvetica', 'normal')
+            y += 18
           })
           y += 4
         }
       }
 
-      // ── Reflection space ──
-      if (y > 220) { doc.addPage(); y = 20 }
-      doc.setFontSize(9)
-      doc.setTextColor(80, 80, 80)
-      doc.text('ESPACIO PARA REFLEXIÓN', margin, y)
-      y += 6
-      doc.setDrawColor(220, 220, 220)
-      for (let i = 0; i < 8; i++) {
-        doc.line(margin, y + i * 8, pageW - margin, y + i * 8)
+      // ── Data tables ──
+      if (labContainer) {
+        const tables = labContainer.querySelectorAll('table')
+        if (tables.length > 0) {
+          const table = tables[0] // capture first table
+          const headers = []
+          const rows = []
+
+          table.querySelectorAll('thead th').forEach((th) => {
+            headers.push(th.textContent?.trim() || '')
+          })
+
+          table.querySelectorAll('tbody tr').forEach((tr) => {
+            const cells = []
+            tr.querySelectorAll('td').forEach((td) => {
+              cells.push(td.textContent?.trim() || '')
+            })
+            if (cells.length > 0) rows.push(cells)
+          })
+
+          if (headers.length > 0 && rows.length > 0) {
+            // Limit to first 15 rows to avoid pages of data
+            const displayRows = rows.slice(0, 15)
+            const tableH = 10 + displayRows.length * 6
+            y = ensureSpace(doc, y, tableH)
+            y = sectionLabel(doc, 'Tabla de datos', M, y)
+
+            const colW = W / headers.length
+
+            // Header row
+            doc.setFillColor(...C.ink)
+            doc.rect(M, y - 2, W, 6, 'F')
+            doc.setFontSize(7)
+            doc.setTextColor(...C.white)
+            doc.setFont('helvetica', 'bold')
+            headers.forEach((h, i) => {
+              const align = i === 0 ? 'left' : 'right'
+              const x = i === 0 ? M + 2 : M + colW * (i + 1) - 2
+              doc.text(h, x, y + 2, { align })
+            })
+            y += 6
+
+            // Data rows
+            doc.setFont('helvetica', 'normal')
+            displayRows.forEach((row, ri) => {
+              y = ensureSpace(doc, y, 6)
+              if (ri % 2 === 0) {
+                doc.setFillColor(...C.bg)
+                doc.rect(M, y - 3, W, 6, 'F')
+              }
+              row.forEach((cell, ci) => {
+                const align = ci === 0 ? 'left' : 'right'
+                const x = ci === 0 ? M + 2 : M + colW * (ci + 1) - 2
+                doc.setFontSize(8)
+                doc.setTextColor(ci === 0 ? C.muted : C.ink)
+                doc.text(cell, x, y, { align })
+              })
+              y += 6
+            })
+
+            if (rows.length > 15) {
+              doc.setFontSize(7)
+              doc.setTextColor(...C.muted)
+              doc.text(`... ${rows.length - 15} filas adicionales (descarga CSV para datos completos)`, M + 2, y + 2)
+              y += 6
+            }
+            y += 6
+          }
+        }
       }
 
-      // ── Footer ──
+      // ── Reflection section ──
+      y = ensureSpace(doc, y, 60)
+      y = sectionLabel(doc, 'Reflexión del estudiante', M, y)
+
+      // Guiding questions
+      const questions = [
+        '¿Qué patrón o comportamiento observaste al cambiar los parámetros?',
+        '¿Qué relación encontraste entre las variables del modelo?',
+        '¿En qué contexto real podrías aplicar lo que exploraste?',
+      ]
+      doc.setFontSize(8.5)
+      doc.setTextColor(80, 82, 95)
+      questions.forEach((q, i) => {
+        y = ensureSpace(doc, y, 22)
+        doc.setFont('helvetica', 'italic')
+        doc.text(`${i + 1}. ${q}`, M, y)
+        y += 5
+
+        // Answer lines
+        doc.setDrawColor(...C.light)
+        doc.setLineWidth(0.2)
+        for (let j = 0; j < 3; j++) {
+          doc.line(M, y + j * 7, M + W, y + j * 7)
+        }
+        y += 24
+      })
+
+      // ── Student info box ──
+      y = ensureSpace(doc, y, 28)
+      doc.setFillColor(...C.bg)
+      doc.roundedRect(M, y, W, 22, 2, 2, 'F')
+      doc.setFontSize(7.5)
+      doc.setTextColor(...C.muted)
+      doc.setFont('helvetica', 'normal')
+      doc.text('Nombre:', M + 4, y + 6)
+      doc.line(M + 22, y + 7, M + W / 2 - 4, y + 7)
+      doc.text('Curso:', M + W / 2, y + 6)
+      doc.line(M + W / 2 + 15, y + 7, M + W - 4, y + 7)
+      doc.text('Colegio:', M + 4, y + 16)
+      doc.line(M + 22, y + 17, M + W / 2 - 4, y + 17)
+      doc.text('Fecha:', M + W / 2, y + 16)
+      doc.line(M + W / 2 + 15, y + 17, M + W - 4, y + 17)
+
+      // ══════════════════════════════════════════════════════════════
+      // FOOTER on every page
+      // ══════════════════════════════════════════════════════════════
       const pageCount = doc.internal.getNumberOfPages()
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i)
+        // Bottom accent bar
+        doc.setFillColor(...C.accent)
+        doc.rect(M, 286, W, 0.5, 'F')
+        // Footer text
         doc.setFontSize(7)
-        doc.setTextColor(160, 160, 160)
-        doc.text('Generado en MathModels Lab — mathmodels.astridto.com', margin, 290)
-        doc.text(`Página ${i} de ${pageCount}`, pageW - margin, 290, { align: 'right' })
+        doc.setTextColor(...C.muted)
+        doc.setFont('helvetica', 'normal')
+        doc.text('MathModels Lab — mathmodels.astridto.com', M, 290)
+        doc.text(`${i} / ${pageCount}`, pageW - M, 290, { align: 'right' })
       }
 
       // ── Save ──
       const safeName = labTitle.toLowerCase().replace(/[^a-záéíóúñ0-9]+/g, '-').replace(/-+/g, '-').slice(0, 40)
       doc.save(`mathmodels-${safeName}.pdf`)
     } catch (err) {
-      console.error('PDF export failed:', err)
+      console.error('PDF export error:', err)
     } finally {
       setExporting(false)
     }
