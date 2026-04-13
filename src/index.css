@@ -37,6 +37,24 @@ body {
   color: color-mix(in srgb, var(--color-ink) 58%, transparent);
 }
 
+/* ── Skip link (accessibility, hidden until focused) ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--color-ink);
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
 .section-kicker::before {
   content: '';
   display: inline-block;

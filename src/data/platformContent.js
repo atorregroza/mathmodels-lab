@@ -839,7 +839,7 @@ export const complementaryRoutes = [
   {
     id: 'monografia-matematica',
     title: 'Monografía matemática',
-    status: 'planned',
+    status: 'available',
     audience: 'Estudiantes y docentes de matemáticas',
     purpose: 'Propone problemas de modelación e investigación más amplios, pensados para sostener una monografía con mayor profundidad matemática.',
     description: 'Aquí la modelación no sería solo una actividad de clase, sino el punto de partida para un estudio más largo, con comparación de enfoques, marco teórico y justificación rigurosa.',
