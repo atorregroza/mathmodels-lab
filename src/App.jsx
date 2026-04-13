@@ -1,7 +1,13 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { HelmetProvider } from 'react-helmet-async'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { PlatformShell } from './components/layout/PlatformShell'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
 
 const DerivaHomePage = lazy(() => import('./pages/DerivaHomePage').then(m => ({ default: m.DerivaHomePage })))
 const StudyRoutePage = lazy(() => import('./pages/StudyRoutePage').then(m => ({ default: m.StudyRoutePage })))
@@ -18,6 +24,7 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <Suspense fallback={<div className="py-16 text-center text-gray-600">Cargando...</div>}>
           <Routes>
             {/* Standalone calculator — no shell, opens in popup */}
