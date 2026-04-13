@@ -250,7 +250,7 @@ export function MonografiaPage() {
             El primer paso es decidir si tu monografía se centra en una asignatura o es interdisciplinaria.
           </p>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
-            {itinerarios.map((it, idx) => {
+            {itinerarios.map((it) => {
               const isDisc = it.id === 'disciplinar'
               const colorClass = isDisc ? 'aqua' : 'violet'
               const isActive = selectedItinerario === it.id

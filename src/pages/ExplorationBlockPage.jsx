@@ -146,71 +146,6 @@ const helpByLine = {
   ],
 }
 
-const buildPlanningText = ({
-  title,
-  focus,
-  question,
-  line,
-  format,
-  variables,
-  models,
-  evidence,
-  conjecture,
-  limits,
-  nextSteps,
-  contextTitle,
-  methodology,
-  helps,
-  references,
-}) => `
-Planeacion inicial de exploracion
-
-Titulo provisional:
-${title}
-
-Contexto elegido:
-${contextTitle}
-
-Fenomeno o foco:
-${focus}
-
-Pregunta inicial:
-${question}
-
-Linea del bloque:
-${line}
-
-Formato:
-${format}
-
-Variables y unidades:
-${variables}
-
-Modelo preliminar:
-${models}
-
-Evidencia inicial sugerida:
-${evidence}
-
-Conjetura inicial:
-${conjecture}
-
-Limites observados:
-${limits}
-
-Enfoque metodologico sugerido:
-${methodology.map((step, index) => `${index + 1}. ${step}`).join('\n')}
-
-Ayudas para orientar el trabajo:
-${helps.map((item, index) => `${index + 1}. ${item}`).join('\n')}
-
-Referentes dentro de la plataforma:
-${references.map((item, index) => `${index + 1}. ${item}`).join('\n')}
-
-Siguientes pasos:
-${nextSteps.map((step, index) => `${index + 1}. ${step}`).join('\n')}
-`.trim()
-
 const buildDraftState = (exploration, context) => ({
   title: context?.planningTitle ?? exploration?.planningTitle ?? exploration?.title ?? '',
   question: context?.questionVariant ?? exploration?.questionSeed ?? exploration?.title ?? '',
@@ -230,8 +165,6 @@ export const ExplorationBlockPage = () => {
   const [selectedExplorationId, setSelectedExplorationId] = useState(firstExploration?.id ?? '')
   const [selectedContextId, setSelectedContextId] = useState(firstContext?.id ?? '')
   const [drafts, setDrafts] = useState(() => buildDraftState(firstExploration, firstContext))
-  const [copied, setCopied] = useState(false)
-  const [expandedBranch, setExpandedBranch] = useState(null)
   const [studentName, setStudentName] = useState('')
   const [studentCourse, setStudentCourse] = useState('')
   const [studentSchool, setStudentSchool] = useState('')
@@ -278,12 +211,6 @@ export const ExplorationBlockPage = () => {
   }
 
   const currentPrompts = linePrompts[selectedLine?.id] ?? linePrompts['modelacion-funcional']
-  const nextSteps = [
-    'Delimitar mejor la pregunta para que sea explorable y no demasiado amplia.',
-    'Recoger una primera muestra de datos o registros desde el laboratorio base.',
-    'Comparar al menos un segundo modelo o una segunda forma de representar el fenómeno.',
-    selectedExploration?.nextStep ?? 'Profundizar el análisis con evidencia y justificación matemática.',
-  ]
   const methodologicalSteps = [
     ...(methodologyByLine[selectedLine?.id] ?? methodologyByLine['modelacion-funcional']),
     ...(methodologyByFormat[selectedFormat?.id] ?? methodologyByFormat.guiada),
@@ -300,24 +227,6 @@ export const ExplorationBlockPage = () => {
     recommendedLab?.purpose ? `Propósito del laboratorio: ${recommendedLab.purpose}` : null,
     recommendedLab?.teacherUse ? `Pista didáctica: ${recommendedLab.teacherUse}` : null,
   ].filter(Boolean)
-  const planningText = buildPlanningText({
-    title: drafts.title,
-    contextTitle: selectedContext?.title ?? 'Sin contexto específico',
-    focus: drafts.focus,
-    question: drafts.question,
-    line: selectedLine?.title ?? '',
-    format: selectedFormat?.title ?? '',
-    variables: drafts.variables,
-    models: drafts.models,
-    evidence: drafts.evidence,
-    conjecture: currentPrompts.conjecture,
-    limits: currentPrompts.limits,
-    methodology: methodologicalSteps,
-    helps: helpItems,
-    references: referenceItems,
-    nextSteps,
-  })
-
   const updateDraft = (field, value) => {
     setDrafts((current) => ({
       ...current,
@@ -346,16 +255,6 @@ export const ExplorationBlockPage = () => {
   const handleSelectContext = (context) => {
     setSelectedContextId(context.id)
     setDrafts(buildDraftState(selectedExploration, context))
-  }
-
-  const handleCopyPlanning = async () => {
-    try {
-      await navigator.clipboard.writeText(planningText)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 1800)
-    } catch {
-      setCopied(false)
-    }
   }
 
   const handlePrintPlanning = () => {

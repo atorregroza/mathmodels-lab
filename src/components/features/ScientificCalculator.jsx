@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useId, useMemo } from 'react'
-import { motion, AnimatePresence, useDragControls } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { StatsMode } from './StatsMode'
 import { DistMode } from './DistMode'
 
@@ -364,7 +364,6 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
   const [showSci, setShowSci] = useState(true)
   const [graphFns, setGraphFns] = useState([{ expr: 'sin(x)', color: GRAPH_COLORS[0] }])
   const [xRange, setXRange] = useState([-10, 10])
-  const dragControls = useDragControls()
   const panelRef = useRef(null)
   const graphInputRefs = useRef([])
 

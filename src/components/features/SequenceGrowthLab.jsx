@@ -44,13 +44,6 @@ export const SequenceGrowthLab = () => {
   const yMax = posMax * 1.15 || 2
   const yMin = -Math.max(yMax * (15 / 85), negMax * 1.15)
 
-  const xTicks = Array.from({ length: Math.min(n, 12) }, (_, i) =>
-    Math.round(1 + (i * (n - 1)) / (Math.min(n, 12) - 1)),
-  )
-  const yTicks = Array.from({ length: 5 }, (_, i) =>
-    yMin + ((yMax - yMin) * i) / 4,
-  )
-
   const axis = useAxisRange({
     xMin: 0.5,
     xMax: n + 0.5,

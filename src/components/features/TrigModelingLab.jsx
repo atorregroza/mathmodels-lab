@@ -216,7 +216,8 @@ export const TrigModelingLab = () => {
                 yLabel={`${ctx.yLabel} (${ctx.yUnit})`}
                 className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
               >
-                {({ scaleX, scaleY, padding, width, height }) => (
+                {/* eslint-disable-next-line no-unused-vars */}
+                {({ scaleX, scaleY, padding, width, _height }) => (
                   <>
                     {/* Guide lines: max, midline, min */}
                     {showGuides && (

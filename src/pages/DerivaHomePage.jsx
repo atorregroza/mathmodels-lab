@@ -9,15 +9,6 @@ const fadeIn = {
   transition: { duration: 0.55, ease: 'easeOut' },
 }
 
-const stagger = {
-  animate: { transition: { staggerChildren: 0.08 } },
-}
-
-const slideUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] },
-}
 
 const UNIT_COLORS = {
   'aritmetica-algebra': { bg: 'bg-signal/18', border: 'border-signal/30', text: 'text-signal', dot: 'bg-signal' },
