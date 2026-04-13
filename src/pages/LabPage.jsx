@@ -35,6 +35,7 @@ import { ExamScoresLab } from '../components/features/ExamScoresLab'
 import { LinearMotionLab } from '../components/features/LinearMotionLab'
 import { RelatedRatesLab } from '../components/features/RelatedRatesLab'
 import { NewtonCoolingLab } from '../components/features/NewtonCoolingLab'
+import { LabExportPDF } from '../components/features/LabExportPDF'
 import { labs, units } from '../data/platformContent'
 import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -154,9 +155,53 @@ export const LabPage = () => {
             </div>
           </motion.div>
 
-          <motion.div {...fadeIn} className="rounded-[1.8rem] border border-ink/10 bg-white/72 p-3 shadow-[0_22px_55px_rgba(18,23,35,0.07)]">
+          <motion.div {...fadeIn} className="rounded-[1.8rem] border border-ink/10 bg-white/72 p-3 shadow-[0_22px_55px_rgba(18,23,35,0.07)]" data-lab-content>
             {Component ? <Component /> : null}
           </motion.div>
+
+          <motion.div {...fadeIn} className="flex justify-end">
+            <LabExportPDF
+              labTitle={lab.title}
+              labPurpose={lab.purpose}
+              unitTitle={unit?.title}
+              contextSummary={lab.contextSummary}
+            />
+          </motion.div>
+
+          {/* ── Labs relacionados ──────────────────────────────────────────── */}
+          {(() => {
+            const siblingLabs = labs.filter((l) => l.unitId === lab.unitId && l.id !== lab.id)
+            const suggested = siblingLabs.slice(0, 3)
+            if (suggested.length === 0) return null
+            return (
+              <motion.div {...fadeIn} className="rounded-[1.8rem] border border-ink/10 bg-white/78 p-6 shadow-[0_22px_55px_rgba(18,23,35,0.07)]">
+                <p className="section-kicker">Sigue explorando</p>
+                <h2 className="mt-3 font-display text-3xl font-semibold tracking-[-0.03em]">
+                  Labs relacionados
+                </h2>
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  {suggested.map((s) => {
+                    const sColors = getUnitColors(s.unitId)
+                    return (
+                      <Link
+                        key={s.id}
+                        to={`/laboratorios/${s.id}`}
+                        className="group rounded-[1.4rem] border border-ink/8 bg-paper p-5 transition-all hover:border-ink/20 hover:shadow-[0_12px_35px_rgba(18,23,35,0.08)]"
+                      >
+                        <p className={`text-[0.65rem] font-semibold uppercase tracking-[0.2em] ${sColors.text}`}>
+                          {unit?.shortTitle}
+                        </p>
+                        <h3 className="mt-2 font-display text-lg font-semibold leading-snug tracking-tight group-hover:text-ink">
+                          {s.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-ink/55 line-clamp-2">{s.purpose}</p>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )
+          })()}
 
           <motion.div {...fadeIn} className="rounded-[1.8rem] border border-ink/10 bg-white/78 p-6 shadow-[0_22px_55px_rgba(18,23,35,0.07)]">
             <div className="flex flex-wrap items-center justify-between gap-4">

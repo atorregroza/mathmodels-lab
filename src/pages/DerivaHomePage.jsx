@@ -332,100 +332,60 @@ export const DerivaHomePage = () => {
           </div>
         </motion.div>
 
-        {/* ── CALCULATOR FEATURE ── */}
-        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-aqua/15 bg-aqua/5">
-          <div className="grid xl:grid-cols-[1fr_0.48fr]">
-            <div className="p-6 md:p-8">
-              <p className="section-kicker text-aqua">Calculadora integrada</p>
-              <h2 className="mt-3 max-w-3xl font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                Una calculadora científica dentro de cada laboratorio.
+        {/* ── MODELING SPACE HIGHLIGHT ── */}
+        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-ink/12 bg-ink text-paper shadow-[0_28px_80px_rgba(18,23,35,0.25)]">
+          <div className="grid xl:grid-cols-[1.1fr_0.9fr]">
+            <div className="p-6 md:p-8 lg:p-10">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-signal">Espacio de modelación</p>
+              <h2 className="mt-4 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-bold leading-[0.96] tracking-[-0.04em]">
+                Construye tu propia exploración matemática.
               </h2>
-              <p className="mt-4 text-base leading-8 text-ink/70">
-                Sin salir de la plataforma, puedes calcular valores, verificar resultados y explorar funciones. Siempre disponible desde la barra de navegación.
+              <p className="mt-5 text-base leading-8 text-paper/70">
+                Toma datos reales, elige una familia de funciones, ajusta parámetros y construye el modelo que mejor explica el fenómeno. Es el corazón de la modelación matemática.
               </p>
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
-                    {/* Científica: función f(x) con raíz y exponente */}
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M5 21c1-4 2-8 4-12s3-6 5-6"/><path d="M3 14h8"/><path d="M17 3v4h4"/><circle cx="18" cy="17" r="3"/>
+              <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                {[
+                  { label: 'Datos reales', icon: 'M3 3v18h18' },
+                  { label: 'Múltiples modelos', icon: 'M4 20C8 12 12 4 20 4' },
+                  { label: 'Residuales', icon: 'M2 12h20M7 7v10M12 5v14M17 8v8' },
+                  { label: 'Exportar PDF', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z' },
+                ].map((feat) => (
+                  <div key={feat.label} className="rounded-xl border border-white/10 bg-white/6 px-3 py-3 text-center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="mx-auto text-signal">
+                      <path d={feat.icon} />
                     </svg>
+                    <p className="mt-2 text-[0.68rem] font-semibold text-paper/60">{feat.label}</p>
                   </div>
-                  <h3 className="mt-3 font-display text-lg font-semibold">Científica</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">Trigonometría, logaritmos, potencias, raíces, factorial y constantes.</p>
-                </div>
-                <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
-                    {/* Gráfica: ejes con curva suave tipo sen(x) */}
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 21V3"/><path d="M3 21h18"/><path d="M5 16c2-6 4-10 7-10s5 12 7 6"/>
-                    </svg>
-                  </div>
-                  <h3 className="mt-3 font-display text-lg font-semibold">Gráfica</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">Hasta 5 funciones simultáneas con rango ajustable.</p>
-                </div>
-                <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
-                    {/* Estadística: histograma con barras */}
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="14" width="4" height="7" rx="0.5"/><rect x="10" y="8" width="4" height="13" rx="0.5"/><rect x="17" y="4" width="4" height="17" rx="0.5"/>
-                    </svg>
-                  </div>
-                  <h3 className="mt-3 font-display text-lg font-semibold">Estadística</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">Media, desviación estándar, histograma, scatter y regresión lineal.</p>
-                </div>
-                <div className="rounded-[1.4rem] border border-aqua/12 bg-white p-5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-aqua/12 text-aqua">
-                    {/* Distribuciones: curva de campana (normal) */}
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M2 20c1 0 3-1 5-3s3-6 5-12c2 6 3 10 5 12s4 3 5 3"/><line x1="2" y1="20" x2="22" y2="20"/>
-                    </svg>
-                  </div>
-                  <h3 className="mt-3 font-display text-lg font-semibold">Distribuciones</h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">Normal y binomial: densidad, acumulada e inversa.</p>
-                </div>
+                ))}
               </div>
+              <Link
+                to="/modelacion"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(255,107,53,0.3)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(255,107,53,0.4)]"
+              >
+                Abrir espacio de modelación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
             </div>
-            <div className="hidden items-center justify-center rounded-r-[2rem] bg-gradient-to-b from-aqua/10 to-aqua/5 p-8 xl:flex">
-              {/* Stylized calculator mockup */}
-              <div className="w-72 overflow-hidden rounded-2xl border border-white/10 bg-ink text-paper shadow-[0_20px_60px_rgba(18,23,35,0.35)]">
-                {/* Mode tabs */}
-                <div className="flex gap-1.5 border-b border-white/8 px-3 py-3">
-                  <span className="rounded-full bg-aqua/20 px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-aqua">Calc</span>
-                  <span className="rounded-full px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-white/30">Graf</span>
-                  <span className="rounded-full px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-white/30">Stats</span>
-                  <span className="rounded-full px-3 py-1.5 text-[0.6rem] font-bold uppercase tracking-wider text-white/30">Dist</span>
+            <div className="hidden items-center justify-center bg-gradient-to-br from-signal/8 to-ink p-8 xl:flex">
+              <div className="w-full max-w-sm space-y-3">
+                <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-paper/40">Problema</p>
+                  <p className="mt-1 text-sm text-paper/70">¿Cómo se enfría un café en Barranquilla?</p>
                 </div>
-                {/* Display */}
-                <div className="border-b border-white/6 px-5 py-4">
-                  <p className="text-right font-mono text-xs text-white/40">sen(π/6) + ln(e²)</p>
-                  <p className="mt-1.5 text-right font-mono text-3xl font-light text-white">2.5</p>
+                <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-paper/40">Modelo</p>
+                  <p className="mt-1 font-mono text-sm text-signal">T(t) = 35 + 55·e^(-0.08t)</p>
                 </div>
-                {/* Button grid */}
-                <div className="grid grid-cols-5 gap-2 p-3">
-                  {['sen','cos','tan','ln','π',
-                    '7','8','9','÷','(',
-                    '4','5','6','×',')',
-                    '1','2','3','−','xⁿ',
-                    '0','.','±','+','='].map((btn) => (
-                    <span key={btn} className={`flex h-10 items-center justify-center rounded-lg text-[0.7rem] font-semibold ${
-                      btn === '=' ? 'bg-aqua text-white' :
-                      ['sen','cos','tan','ln','π','xⁿ'].includes(btn) ? 'bg-white/8 text-aqua' :
-                      ['÷','×','−','+','(',')'].includes(btn) ? 'bg-white/8 text-signal' :
-                      'bg-white/10 text-white/80'
-                    }`}>{btn}</span>
-                  ))}
-                </div>
-                {/* Footer hint */}
-                <div className="border-t border-white/6 px-4 py-2.5 text-center text-[0.58rem] text-white/30">
-                  Disponible en toda la plataforma
+                <div className="rounded-xl border border-signal/20 bg-signal/8 p-4">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-signal/70">Resultado</p>
+                  <p className="mt-1 text-sm text-paper/80">R² = 0.994 — ajuste excelente</p>
                 </div>
               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* ── ABOUT SECTION — visually separated ── */}
+        {/* ── ABOUT SECTION — compact ── */}
         <div className="mt-20 border-t border-ink/8 pt-14">
 
         <motion.div {...fadeIn} className="overflow-hidden rounded-[2rem] border border-ink/12 bg-paper shadow-[0_12px_35px_rgba(18,23,35,0.08)]">
@@ -457,66 +417,8 @@ export const DerivaHomePage = () => {
               <div className="space-y-2 text-right">
                 <p className="text-sm font-semibold text-ink/70">Modelación matemática escolar</p>
                 <p className="text-sm font-semibold text-ink/70">IA aplicada a la educación</p>
-                <p className="text-[0.78rem] leading-6 text-ink/45">GPT · Codex · Claude Code · Grok</p>
               </div>
             </div>
-          </div>
-        </motion.div>
-
-        {/* ── ECOSYSTEM ── */}
-        <motion.div {...fadeIn} className="mt-14">
-          <p className="section-kicker">Conoce más</p>
-          <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-            Otros espacios donde trabajo.
-          </h2>
-
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            <a href="https://laolibero.com" target="_blank" rel="noopener noreferrer"
-              className="group rounded-[1.6rem] border border-signal/15 bg-signal/5 p-5 transition-all hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(255,107,53,0.1)]">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-signal/15 text-signal">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-              </div>
-              <h3 className="mt-3 font-display text-lg font-semibold">La Olimpiada</h3>
-              <p className="mt-1 text-sm leading-6 text-ink/62">Olimpiadas iberoamericanas de cálculo mental para estudiantes.</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-signal transition-transform group-hover:translate-x-1">
-                laolibero.com
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-              </span>
-            </a>
-
-            <div className="rounded-[1.6rem] border border-aqua/15 bg-aqua/5 p-5">
-              <img src="/images/logo-maryam-math.png" alt="Maryam Math" className="h-10 object-contain object-left" />
-              <h3 className="mt-3 font-display text-lg font-semibold">Maryam Math Academy</h3>
-              <p className="mt-1 text-sm leading-6 text-ink/62">Plataforma educativa con recursos, blog y formación docente en matemáticas.</p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <a href="https://maryam.academy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-aqua transition-transform hover:translate-x-1">
-                  maryam.academy
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-                </a>
-                <span className="text-ink/20">·</span>
-                <a href="https://www.instagram.com/maryammath_academy" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-rose transition-transform hover:translate-x-1">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/></svg>
-                  Instagram
-                </a>
-              </div>
-            </div>
-
-            <a href="https://maryam.academy/index.php?pag=blog&accion=inicio" target="_blank" rel="noopener noreferrer"
-              className="group rounded-[1.6rem] border border-graph/15 bg-graph/5 p-5 transition-all hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(34,197,160,0.1)]">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-graph/15 text-graph">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                </svg>
-              </div>
-              <h3 className="mt-3 font-display text-lg font-semibold">Blog Maryam Math</h3>
-              <p className="mt-1 text-sm leading-6 text-ink/62">Artículos, reflexiones pedagógicas y recursos para docentes y estudiantes de matemáticas.</p>
-              <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-graph transition-transform group-hover:translate-x-1">
-                maryam.academy/blog
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-              </span>
-            </a>
           </div>
         </motion.div>
 
