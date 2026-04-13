@@ -367,19 +367,25 @@ export const DerivaHomePage = () => {
               </Link>
             </div>
             <div className="hidden items-center justify-center bg-gradient-to-br from-signal/8 to-ink p-8 xl:flex">
-              <div className="w-full max-w-sm space-y-3">
-                <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-paper/40">Problema</p>
-                  <p className="mt-1 text-sm text-paper/70">¿Cómo se enfría un café en Barranquilla?</p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-paper/40">Modelo</p>
-                  <p className="mt-1 font-mono text-sm text-signal">T(t) = 35 + 55·e^(-0.08t)</p>
-                </div>
-                <div className="rounded-xl border border-signal/20 bg-signal/8 p-4">
-                  <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-signal/70">Resultado</p>
-                  <p className="mt-1 text-sm text-paper/80">R² = 0.994 — ajuste excelente</p>
-                </div>
+              <div className="w-full max-w-sm space-y-1.5">
+                <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/35">Flujo de trabajo</p>
+                {[
+                  { step: '1', label: 'Elige un conjunto de datos', sub: 'Contextos reales listos para explorar' },
+                  { step: '2', label: 'Compara familias de funciones', sub: 'Lineal, cuadrática, exponencial, trigonométrica' },
+                  { step: '3', label: 'Ajusta parámetros', sub: 'Deslizadores interactivos con feedback visual' },
+                  { step: '4', label: 'Evalúa el ajuste', sub: 'Residuales, error cuadrático, R²' },
+                  { step: '5', label: 'Exporta tu análisis', sub: 'PDF con gráficos, datos y reflexión' },
+                ].map((item) => (
+                  <div key={item.step} className="flex items-start gap-3 rounded-xl border border-white/8 bg-white/4 px-4 py-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-signal/20 text-[0.65rem] font-bold text-signal">
+                      {item.step}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-paper/85">{item.label}</p>
+                      <p className="text-[0.7rem] leading-4 text-paper/40">{item.sub}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
