@@ -473,7 +473,7 @@ export const LabExportPDF = ({ labTitle, labPurpose, unitTitle, contextSummary, 
         <line x1="16" y1="13" x2="8" y2="13" />
         <line x1="16" y1="17" x2="8" y2="17" />
       </svg>
-      {exporting ? 'Generando PDF...' : 'Exportar exploración a PDF'}
+      {exporting ? 'Generando PDF...' : 'Exportar reporte a PDF'}
     </button>
   )
 }
