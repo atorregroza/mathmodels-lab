@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useRef } from 'react'
-import { AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { CartesianFrame, MetricCard, SliderField } from './DerivaLabPrimitives'
 import { format, sampleRange } from './derivaLabUtils'
 import { parseBivariateInput } from './statisticsUtils'
