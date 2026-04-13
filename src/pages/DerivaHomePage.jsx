@@ -116,125 +116,7 @@ export const DerivaHomePage = () => {
           </Link>
         </motion.div>
 
-        {/* ── FEATURED LABS GRID ── */}
-        <motion.div {...fadeIn} className="mt-14">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="section-kicker">Laboratorios listos</p>
-              <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                Elige uno y empieza a explorar.
-              </h2>
-            </div>
-            <Link
-              to="/laboratorios"
-              className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink/30"
-            >
-              Ver los {availableLabs.length} laboratorios
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </Link>
-          </div>
-
-          <div className="relative mt-8">
-            <div className="-mx-5 flex gap-5 overflow-x-auto px-5 pb-4 snap-x snap-mandatory scroll-smooth md:-mx-8 md:px-8" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(18,23,35,0.15) transparent' }}>
-              {featuredLabs.map((lab) => {
-                const unit = units.find((u) => u.id === lab.unitId)
-                const colors = UNIT_COLORS[lab.unitId] || UNIT_COLORS['analisis']
-                return (
-                  <article
-                    key={lab.id}
-                    className="group w-[85vw] flex-none snap-start overflow-hidden rounded-[1.6rem] border border-ink/10 bg-white shadow-[0_8px_30px_rgba(18,23,35,0.06)] transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(18,23,35,0.1)] sm:w-[340px]"
-                  >
-                    <div className={`relative flex h-24 items-center justify-center ${colors.bg.replace('/18', '/28')}`}>
-                      <div className="flex items-center gap-3 opacity-75">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={colors.text}>
-                          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                        </svg>
-                        <span className={`font-display text-lg font-bold ${colors.text}`}>{unit?.shortTitle || unit?.title}</span>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <div className="flex items-center gap-2">
-                        <span className={`h-2.5 w-2.5 rounded-full ${colors.dot}`} />
-                        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-ink/58">{unit?.title}</span>
-                      </div>
-                      <h3 className="mt-2 font-display text-xl font-semibold tracking-[-0.02em]">{lab.title}</h3>
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink/60">{lab.purpose}</p>
-                      <Link
-                        to={`/laboratorios/${lab.id}`}
-                        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-signal transition-transform group-hover:translate-x-1"
-                      >
-                        Explorar
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                      </Link>
-                    </div>
-                  </article>
-                )
-              })}
-            </div>
-            <p className="mt-2 text-center text-xs text-ink/35">Desliza para ver más laboratorios</p>
-          </div>
-        </motion.div>
-
-        {/* ── STUDENTS IMAGE BAND ── */}
-        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] shadow-[0_20px_60px_rgba(18,23,35,0.1)]">
-          <img
-            src="/images/students-collab.png"
-            alt="Estudiantes trabajando con tablets y gráficas en el aula"
-            className="h-64 w-full object-cover object-[center_70%] md:h-80"
-            loading="lazy"
-          />
-        </motion.div>
-
-        {/* ── FOR TEACHERS ── */}
-        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-graph/15 bg-graph/5">
-          <div className="grid xl:grid-cols-[1fr_0.5fr]">
-          <div className="p-6 md:p-8">
-          <p className="section-kicker text-graph">Para docentes</p>
-          <h2 className="mt-3 max-w-3xl font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-            Cada laboratorio incluye una guía de uso en clase.
-          </h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-              </div>
-              <h3 className="mt-3 font-display text-lg font-semibold">Alineado con currículos internacionales</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/62">Cada lab se conecta con una unidad alineada con programas internacionales de matemáticas de nivel medio y avanzado.</p>
-            </div>
-            <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              </div>
-              <h3 className="mt-3 font-display text-lg font-semibold">Secuencias por unidad</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/62">Las unidades tienen secuencias de aprendizaje que guían el orden natural de los laboratorios.</p>
-            </div>
-            <div className="rounded-[1.4rem] border border-graph/12 bg-white p-5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-graph/12 text-graph">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              </div>
-              <h3 className="mt-3 font-display text-lg font-semibold">Datos descargables</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/62">Los estudiantes pueden exportar tablas en CSV para seguir trabajando fuera de la plataforma.</p>
-            </div>
-          </div>
-          <Link
-            to="/secuencia"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-graph px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(34,197,160,0.2)]"
-          >
-            Ver secuencia completa
-          </Link>
-          </div>
-          <div className="hidden xl:block">
-            <img
-              src="/images/teacher-student.jpg"
-              alt="Docente y estudiantes analizando un simulador matemático"
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
-          </div>
-          </div>
-        </motion.div>
-
-        {/* ── UNITS OVERVIEW ── */}
+        {/* ── 1. UNITS OVERVIEW ── */}
         <motion.div {...fadeIn} className="mt-14">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -270,7 +152,124 @@ export const DerivaHomePage = () => {
           </div>
         </motion.div>
 
-        {/* ── EXPLORATIONS & MONOGRAPH ── */}
+        {/* ── 2. FEATURED LABS GRID ── */}
+        <motion.div {...fadeIn} className="mt-14">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="section-kicker">Laboratorios listos</p>
+              <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
+                Elige uno y empieza a explorar.
+              </h2>
+            </div>
+            <Link
+              to="/laboratorios"
+              className="inline-flex items-center gap-1.5 rounded-full border border-ink/12 bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-ink/30"
+            >
+              Ver los {availableLabs.length} laboratorios
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
+          </div>
+          <div className="relative mt-8">
+            <div className="-mx-5 flex gap-5 overflow-x-auto px-5 pb-4 snap-x snap-mandatory scroll-smooth md:-mx-8 md:px-8" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(18,23,35,0.15) transparent' }}>
+              {featuredLabs.map((lab) => {
+                const unit = units.find((u) => u.id === lab.unitId)
+                const colors = UNIT_COLORS[lab.unitId] || UNIT_COLORS['analisis']
+                return (
+                  <article
+                    key={lab.id}
+                    className="group w-[85vw] flex-none snap-start overflow-hidden rounded-[1.6rem] border border-ink/10 bg-white shadow-[0_8px_30px_rgba(18,23,35,0.06)] transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(18,23,35,0.1)] sm:w-[340px]"
+                  >
+                    <div className={`relative flex h-24 items-center justify-center ${colors.bg.replace('/18', '/28')}`}>
+                      <div className="flex items-center gap-3 opacity-75">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={colors.text}>
+                          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                        <span className={`font-display text-lg font-bold ${colors.text}`}>{unit?.shortTitle || unit?.title}</span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <div className="flex items-center gap-2">
+                        <span className={`h-2.5 w-2.5 rounded-full ${colors.dot}`} />
+                        <span className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-ink/58">{unit?.title}</span>
+                      </div>
+                      <h3 className="mt-2 font-display text-xl font-semibold tracking-[-0.02em]">{lab.title}</h3>
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-ink/60">{lab.purpose}</p>
+                      <Link
+                        to={`/laboratorios/${lab.id}`}
+                        className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-signal transition-transform group-hover:translate-x-1"
+                      >
+                        Abrir lab
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </Link>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+            <p className="mt-2 text-center text-xs text-ink/35">Desliza para ver más laboratorios</p>
+          </div>
+        </motion.div>
+
+        {/* ── 3. MODELING SPACE ── */}
+        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-ink/12 bg-ink text-paper shadow-[0_28px_80px_rgba(18,23,35,0.25)]">
+          <div className="grid xl:grid-cols-[1.1fr_0.9fr]">
+            <div className="p-6 md:p-8 lg:p-10">
+              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-signal">Espacio de modelación</p>
+              <h2 className="mt-4 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-bold leading-[0.96] tracking-[-0.04em]">
+                Del dato al modelo: ajusta, compara y justifica.
+              </h2>
+              <p className="mt-5 text-base leading-8 text-paper/70">
+                Carga datos reales, compara familias de funciones, ajusta parámetros y decide cuál modelo describe mejor el fenómeno. No basta con encontrar la curva — hay que justificar por qué.
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                {[
+                  { label: 'Datos reales', icon: 'M3 3v18h18' },
+                  { label: 'Múltiples modelos', icon: 'M4 20C8 12 12 4 20 4' },
+                  { label: 'Residuales', icon: 'M2 12h20M7 7v10M12 5v14M17 8v8' },
+                  { label: 'Exportar PDF', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z' },
+                ].map((feat) => (
+                  <div key={feat.label} className="rounded-xl border border-white/10 bg-white/6 px-3 py-3 text-center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="mx-auto text-signal">
+                      <path d={feat.icon} />
+                    </svg>
+                    <p className="mt-2 text-[0.68rem] font-semibold text-paper/60">{feat.label}</p>
+                  </div>
+                ))}
+              </div>
+              <Link
+                to="/modelacion"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(255,107,53,0.3)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(255,107,53,0.4)]"
+              >
+                Abrir espacio de modelación
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
+            </div>
+            <div className="hidden items-center justify-center bg-gradient-to-br from-signal/8 to-ink p-8 xl:flex">
+              <div className="w-full max-w-sm space-y-1.5">
+                <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/35">Flujo de trabajo</p>
+                {[
+                  { step: '1', label: 'Elige un conjunto de datos', sub: 'Contextos reales listos para modelar' },
+                  { step: '2', label: 'Compara familias de funciones', sub: 'Lineal, cuadrática, exponencial, trigonométrica' },
+                  { step: '3', label: 'Ajusta parámetros', sub: 'Deslizadores interactivos con feedback visual' },
+                  { step: '4', label: 'Evalúa el ajuste', sub: 'Residuales, error cuadrático, R²' },
+                  { step: '5', label: 'Exporta tu análisis', sub: 'PDF con gráficos, datos y reflexión' },
+                ].map((item) => (
+                  <div key={item.step} className="flex items-start gap-3 rounded-xl border border-white/8 bg-white/4 px-4 py-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-signal/20 text-[0.65rem] font-bold text-signal">
+                      {item.step}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-paper/85">{item.label}</p>
+                      <p className="text-[0.7rem] leading-4 text-paper/40">{item.sub}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── 4. EXPLORATIONS & MONOGRAPH ── */}
         <motion.div {...fadeIn} className="mt-14">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -329,65 +328,6 @@ export const DerivaHomePage = () => {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </span>
             </Link>
-          </div>
-        </motion.div>
-
-        {/* ── MODELING SPACE HIGHLIGHT ── */}
-        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-ink/12 bg-ink text-paper shadow-[0_28px_80px_rgba(18,23,35,0.25)]">
-          <div className="grid xl:grid-cols-[1.1fr_0.9fr]">
-            <div className="p-6 md:p-8 lg:p-10">
-              <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-signal">Espacio de modelación</p>
-              <h2 className="mt-4 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-bold leading-[0.96] tracking-[-0.04em]">
-                Del dato al modelo: ajusta, compara y justifica.
-              </h2>
-              <p className="mt-5 text-base leading-8 text-paper/70">
-                Carga datos reales, compara familias de funciones, ajusta parámetros y decide cuál modelo describe mejor el fenómeno. No basta con encontrar la curva — hay que justificar por qué.
-              </p>
-              <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-                {[
-                  { label: 'Datos reales', icon: 'M3 3v18h18' },
-                  { label: 'Múltiples modelos', icon: 'M4 20C8 12 12 4 20 4' },
-                  { label: 'Residuales', icon: 'M2 12h20M7 7v10M12 5v14M17 8v8' },
-                  { label: 'Exportar PDF', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z' },
-                ].map((feat) => (
-                  <div key={feat.label} className="rounded-xl border border-white/10 bg-white/6 px-3 py-3 text-center">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="mx-auto text-signal">
-                      <path d={feat.icon} />
-                    </svg>
-                    <p className="mt-2 text-[0.68rem] font-semibold text-paper/60">{feat.label}</p>
-                  </div>
-                ))}
-              </div>
-              <Link
-                to="/modelacion"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-signal px-6 py-3.5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(255,107,53,0.3)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(255,107,53,0.4)]"
-              >
-                Abrir espacio de modelación
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
-            </div>
-            <div className="hidden items-center justify-center bg-gradient-to-br from-signal/8 to-ink p-8 xl:flex">
-              <div className="w-full max-w-sm space-y-1.5">
-                <p className="mb-3 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/35">Flujo de trabajo</p>
-                {[
-                  { step: '1', label: 'Elige un conjunto de datos', sub: 'Contextos reales listos para explorar' },
-                  { step: '2', label: 'Compara familias de funciones', sub: 'Lineal, cuadrática, exponencial, trigonométrica' },
-                  { step: '3', label: 'Ajusta parámetros', sub: 'Deslizadores interactivos con feedback visual' },
-                  { step: '4', label: 'Evalúa el ajuste', sub: 'Residuales, error cuadrático, R²' },
-                  { step: '5', label: 'Exporta tu análisis', sub: 'PDF con gráficos, datos y reflexión' },
-                ].map((item) => (
-                  <div key={item.step} className="flex items-start gap-3 rounded-xl border border-white/8 bg-white/4 px-4 py-3">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-signal/20 text-[0.65rem] font-bold text-signal">
-                      {item.step}
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold text-paper/85">{item.label}</p>
-                      <p className="text-[0.7rem] leading-4 text-paper/40">{item.sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </motion.div>
 
