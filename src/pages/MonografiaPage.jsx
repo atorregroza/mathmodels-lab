@@ -151,7 +151,7 @@ function TallerGate({ onUnlock }) {
             Accede a través del taller
           </h2>
           <p className="text-sm text-ink/55 leading-relaxed max-w-lg mx-auto">
-            Este módulo es parte del taller de Monografía IB en Matemáticas. Solicita información y te contamos todo sobre fechas, contenido y cómo participar.
+            Este módulo es parte de los talleres de modelación, exploración y monografía IB en Matemáticas. Solicita información y te contamos todo sobre fechas, contenido y cómo participar.
           </p>
           <a
             href={`https://wa.me/${WA_NUMBER}?text=${WA_MESSAGE}`}
