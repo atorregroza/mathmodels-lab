@@ -15,7 +15,7 @@ const containers = [
     params: [
       { key: 'R', label: 'Radio del cilindro (R)', min: 1, max: 12, step: 0.1, default: 5, unit: 'cm' },
     ],
-    maxH: ({ R }) => 25,
+    maxH: () => 25,
     heightOfVolume: ({ R }, V) => V / (Math.PI * R * R),
     volumeOfHeight: ({ R }, h) => Math.PI * R * R * h,
     model: 'V(h) = πR²h  →  h(V) = frac(V,πR²)',
@@ -80,7 +80,6 @@ const containers = [
     model: 'V(h) = frac(π,3) · h²(3R − h)',
     family: 'Cúbica (con cambio de concavidad)',
     metrics: ({ R }, h, V) => {
-      const section = h >= 0 && h <= 2 * R ? Math.PI * (2 * R * h - h * h) : 0
       const pct = ((V / ((4 / 3) * Math.PI * R * R * R)) * 100)
       return [
         { label: 'Radio R', value: `${format(R)} cm` },

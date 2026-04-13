@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { format, linePath, sampleRange, downloadCsv, generateTicks } from './derivaLabUtils'
+import { format, downloadCsv } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── scenarios ──────────────────────────────────────────────── */
@@ -426,8 +426,8 @@ export const ConicsModelingLab = () => {
   const [cR, setCR] = useState(5)
 
   // Parabola params
-  const [pH, setPH] = useState(0)
-  const [pK, setPK] = useState(0)
+  const [pH, _setPH] = useState(0)
+  const [pK, _setPK] = useState(0)
   const [pP, setPP] = useState(2)
   const [pAp, setPAp] = useState(6)
 
@@ -458,7 +458,7 @@ export const ConicsModelingLab = () => {
   }, [cH, cK, cR])
 
   // Parabola metrics
-  const parabolaMetrics = useMemo(() => {
+  const _parabolaMetrics = useMemo(() => {
     const depth = (pAp * pAp) / (4 * pP)
     return {
       focus: `(${format(pH)}, ${format(pK + pP)})`,

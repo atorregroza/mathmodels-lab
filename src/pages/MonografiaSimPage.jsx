@@ -1,5 +1,4 @@
 import { useState, lazy, Suspense } from 'react'
-import { motion } from 'framer-motion'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { monografiaContent } from '../data/platformContent'
 import { Breadcrumb } from '../components/layout/PlatformShell'

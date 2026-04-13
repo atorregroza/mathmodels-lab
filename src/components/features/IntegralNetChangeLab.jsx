@@ -88,12 +88,6 @@ const buildAreaPath = (points, scaleX, scaleY) => {
   return `M ${scaleX(start.x)} ${axisY} ${curve} L ${scaleX(end.x)} ${axisY} Z`
 }
 
-const buildTicks = (min, max, step = 2) => {
-  const start = Math.floor(min / step) * step
-  const end = Math.ceil(max / step) * step
-
-  return Array.from({ length: Math.round((end - start) / step) + 1 }, (_, index) => start + (index * step))
-}
 
 export const IntegralNetChangeLab = () => {
   const [scenarioId, setScenarioId] = useState('harbor')
@@ -108,7 +102,6 @@ export const IntegralNetChangeLab = () => {
   const yValues = points.map((point) => point.y)
   const yMin = Math.min(-4, Math.floor(Math.min(...yValues) - 0.8))
   const yMax = Math.max(4, Math.ceil(Math.max(...yValues) + 0.8))
-  const yTicks = buildTicks(yMin, yMax)
   const axis = useAxisRange({
     xMin: 0, xMax: 9,
     yMin, yMax,

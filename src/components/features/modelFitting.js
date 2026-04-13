@@ -608,7 +608,7 @@ export function explainFit(model) {
 
 // Each dataset generates fresh random data based on a model + noise
 const noise = (amplitude) => (Math.random() - 0.5) * 2 * amplitude
-const jitter = (val, pct = 0.08) => Math.round((val + noise(val * pct)) * 10) / 10
+const _jitter = (val, pct = 0.08) => Math.round((val + noise(val * pct)) * 10) / 10
 
 const SAMPLE_GENERATORS = [
   {

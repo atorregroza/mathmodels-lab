@@ -160,7 +160,6 @@ function PrismViz({ a, b, h }) {
   // Vertices — depth goes upper-right
   const flt = [ox, oy]                    // front-left-top
   const frt = [ox + pw, oy]               // front-right-top
-  const flb = [ox, oy + ph]               // front-left-bottom
   const frb = [ox + pw, oy + ph]          // front-right-bottom
   const brt = [ox + pw + pd, oy - pd]     // back-right-top
   const blt = [ox + pd, oy - pd]          // back-left-top

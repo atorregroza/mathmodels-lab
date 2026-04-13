@@ -295,7 +295,6 @@ function CableViz({ x, riverWidth, landDist }) {
   const px = pad + landDist * scX
   const py = riverBot
   const crossX = pad + x * scX
-  const crossTopY = fy
   const crossBotY = py
 
   return (

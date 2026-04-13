@@ -1,11 +1,11 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useMemo, useCallback, useRef } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import { CartesianFrame, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { format, downloadCsv, sampleRange, linePath } from './derivaLabUtils'
+import { format, sampleRange } from './derivaLabUtils'
 import { parseBivariateInput } from './statisticsUtils'
 import {
-  rankModels, computeR2, computeMAE,
-  MODEL_FAMILIES, interpretR2, explainFit, interpretModel,
+  rankModels, computeR2,
+  MODEL_FAMILIES, interpretR2, interpretModel,
   getPatternHints, SAMPLE_DATASETS,
 } from './modelFitting'
 
@@ -580,7 +580,7 @@ function ParameterInterpretation({ model, xName, yName }) {
 
 /* ── Diagnostic panel ────────────────────────────────── */
 
-function DiagnosticPanel({ model, xs, ys, xName, yName }) {
+function DiagnosticPanel({ model, xs, xName, yName }) {
   if (!model?.diagnostics) return null
   const d = model.diagnostics
   const n = xs.length
@@ -1032,42 +1032,6 @@ export function ModelingSpace() {
       prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
     )
   }, [])
-
-  const handleExport = useCallback(() => {
-    if (!activeModel || !hasData) return
-    const patternLabel = PATTERN_OPTIONS.find(p => p.id === pattern)?.label || '—'
-    const shapeLabel = shape === 'accelerating' ? 'acelerando' : shape === 'decelerating' ? 'desacelerando' : shape === 'constant' ? 'ritmo constante' : ''
-    const rows = [
-      ['═══ REPORTE DE MODELACIÓN ═══'],
-      [],
-      ['Variable independiente (x)', xName || 'x'],
-      ['Variable dependiente (y)', yName || 'y'],
-      ['Número de datos', xs.length],
-      [],
-      ['═══ OBSERVACIÓN ═══'],
-      ['Tendencia observada', patternLabel],
-      ['Forma del crecimiento', shapeLabel || '—'],
-      ['Familias probadas', selectedFamilies.join(', ')],
-      [],
-      ['═══ MODELO SELECCIONADO ═══'],
-      ['Familia', activeModel.label],
-      ['Ecuación', activeModel.formula],
-      ['R²', format(activeModel.r2)],
-      ['Interpretación R²', interpretR2(activeModel.r2)],
-      ['MAE', format(activeModel.mae)],
-      [],
-      ['═══ DATOS Y PREDICCIONES ═══'],
-      [xName || 'x', yName || 'y (dato)', 'ŷ (modelo)', 'Residual'],
-      ...xs.map((x, i) => {
-        const yHat = activeModel.fn(x)
-        return [x, ys[i], format(yHat), format(ys[i] - yHat)]
-      }),
-      [],
-      ['═══ JUSTIFICACIÓN ═══'],
-      [conclusion || '(No se escribió justificación)'],
-    ]
-    downloadCsv(rows, `reporte-modelacion-${activeModel.id}.csv`)
-  }, [activeModel, xs, ys, hasData, conclusion, pattern, shape, selectedFamilies, xName, yName, studentName, studentCourse, studentSchool, reflection1, reflection2, reflection3])
 
   const handleReport = useCallback(() => {
     if (!activeModel || !hasData) return

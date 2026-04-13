@@ -4,8 +4,6 @@ import { downloadCsv, format, generateTicks, linePath, sampleRange } from './der
 import { useAxisRange } from '../../hooks/useAxisRange'
 
 const PI = Math.PI
-const xTicks = [-2 * PI, (-3 * PI) / 2, -PI, -PI / 2, 0, PI / 2, PI, (3 * PI) / 2, 2 * PI]
-const yTicks = [-4, -2, 0, 2, 4]
 
 const families = [
   {
