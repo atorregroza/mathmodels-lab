@@ -1623,8 +1623,8 @@ export const navigationItems = [
   { label: 'Explorar', to: '/modelacion', end: true },
   { label: 'Herramientas', submenu: [
     { label: 'Secuencia por unidades', to: '/secuencia', description: 'Recorrido organizado por unidad curricular' },
-    { label: 'Exploración guiada', to: '/exploraciones/funciones-modelos', description: 'Investigación guiada con datos y modelos' },
-    { label: 'Monografía IB', to: '/monografias', description: 'Investigación extendida — Primera evaluación 2027' },
+    { label: 'Exploración', to: '/exploraciones/funciones-modelos', description: 'Investigación con datos y modelos' },
+    { label: 'Monografía', to: '/monografias', description: 'Investigación extendida' },
     { label: 'Calculadora', to: '/calculadora', description: 'Científica, gráfica, estadística y distribuciones' },
   ]},
 ]
