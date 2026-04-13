@@ -226,7 +226,7 @@ export const DerivaHomePage = () => {
             <div className="p-6 md:p-8 lg:p-10">
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-signal">Espacio de modelación</p>
               <h2 className="mt-4 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-bold leading-[0.96] tracking-[-0.04em]">
-                Del dato al modelo: ajusta, compara y justifica.
+                Datos reales, modelos con sentido.
               </h2>
               <p className="mt-5 text-base leading-8 text-paper/70">
                 Carga datos reales, compara familias de funciones, ajusta parámetros y decide cuál modelo describe mejor el fenómeno. No basta con encontrar la curva — hay que justificar por qué.
@@ -285,7 +285,7 @@ export const DerivaHomePage = () => {
             <div>
               <p className="section-kicker">Más allá del laboratorio</p>
               <h2 className="mt-3 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-                Del lab breve a la investigación extensa.
+                Lleva tu análisis más lejos.
               </h2>
             </div>
           </div>
