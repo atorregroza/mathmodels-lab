@@ -1,8 +1,12 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { monografiaContent } from '../data/platformContent'
 import { Breadcrumb } from '../components/layout/PlatformShell'
+
+const simComponentMap = {
+  newtonCooling: lazy(() => import('../components/features/NewtonCoolingLab').then(m => ({ default: m.NewtonCoolingLab }))),
+}
 
 function PlanContent({ planeacion }) {
   const [tab, setTab] = useState('disciplinar')
@@ -148,7 +152,7 @@ export function MonografiaSimPage() {
             className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
               view === 'simulacion' ? 'bg-white text-ink shadow-sm' : 'text-ink/40 hover:text-ink/60'
             }`}>
-            🎡 Simulación
+            {sim.emoji} Simulación
           </button>
           <button onClick={() => setView('planeacion')}
             className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
@@ -160,9 +164,19 @@ export function MonografiaSimPage() {
       </div>
 
       {/* Content */}
-      {view === 'simulacion' && (
+      {view === 'simulacion' && sim.ruta && (
         <iframe src={sim.ruta} className="flex-1 w-full border-0" title={sim.titulo} />
       )}
+      {view === 'simulacion' && sim.componentKey && simComponentMap[sim.componentKey] && (() => {
+        const SimComponent = simComponentMap[sim.componentKey]
+        return (
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <Suspense fallback={<div className="flex-1 flex items-center justify-center text-ink/30 text-sm">Cargando simulación…</div>}>
+              <SimComponent />
+            </Suspense>
+          </div>
+        )
+      })()}
       {view === 'planeacion' && sim.planeacion && (
         <PlanContent planeacion={sim.planeacion} />
       )}
