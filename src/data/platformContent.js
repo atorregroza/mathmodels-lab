@@ -844,6 +844,26 @@ export const complementaryRoutes = [
     purpose: 'Propone problemas de modelación e investigación más amplios, pensados para sostener una monografía con mayor profundidad matemática.',
     description: 'Aquí la modelación no sería solo una actividad de clase, sino el punto de partida para un estudio más largo, con comparación de enfoques, marco teórico y justificación rigurosa.',
   },
+
+  // ── Laboratorios de monografía ──────────────────────────
+  {
+    id: 'enfriamiento-newton',
+    title: 'Ley de enfriamiento de Newton',
+    unitId: 'monografia-matematica',
+    status: 'available',
+    audience: 'Estudiantes y docentes de matemáticas',
+    purpose: 'Compara el enfriamiento de una bebida caliente en 7 ciudades colombianas con distintos pisos térmicos, y evalúa cuándo el modelo exponencial simple de Newton deja de ser suficiente.',
+    contextSummary: 'La ley de enfriamiento de Newton (dT/dt = -k(T-Tₛ)) predice un decaimiento exponencial, pero la realidad es más compleja: la constante k depende del recipiente, el viento y la humedad, y para diferencias de temperatura grandes la radiación se vuelve significativa. En Colombia, la altitud también cambia el punto de ebullición del agua y por lo tanto la temperatura inicial del café.',
+    howToUse: [
+      'Seleccionar dos ciudades colombianas con pisos térmicos distintos y observar cómo cambian las curvas de enfriamiento.',
+      'Comparar los tres modelos (Newton simple, dos exponenciales, polinomio) sobre los mismos datos.',
+      'Analizar los residuales para determinar si el modelo de Newton muestra un patrón sistemático.',
+      'Cambiar el recipiente y el viento para explorar qué factores afectan más la constante k.',
+      'Descargar el CSV y usar los datos para un análisis estadístico propio (R², AIC, prueba de rachas).',
+    ],
+    teacherUse: 'Ideal para trabajar ecuaciones diferenciales, decaimiento exponencial, ajuste de modelos y pensamiento crítico sobre las limitaciones de un modelo. Conecta con termodinámica, geografía colombiana y cultura del café.',
+    componentKey: 'newtonCooling',
+  },
 ]
 
 export const researchBranches = [
@@ -1839,6 +1859,67 @@ export const monografiaContent = {
               otraAsignatura: 'Modelos: Punto de equilibrio (break-even): Q* = CF/(P − CV), donde CF = costos fijos de construcción, P = precio del boleto, CV = costo variable por pasajero (energía + mantenimiento). Elasticidad precio-demanda: Ed = (ΔQ/Q)/(ΔP/P) para evaluar si subir precios compensa menor aforo. Modelo de retorno de inversión ROI = (Ingresos − Costos)/Inversión para comparar las dos ruedas.',
             },
             criterioD: 'Doble lente: (1) La optimización matemática predice un radio óptimo de ~25m — pero La Luna tiene 32.5m. ¿El modelo subestima el valor turístico de la altura? Análisis de sensibilidad: ¿cómo cambia el óptimo si k₁ varía ±20%? (2) El punto de equilibrio de Chicago requería ~500,000 visitantes a $0.50 — la Exposición tuvo 27 millones. ¿Fue rentable? La elasticidad de La Luna depende del turismo en Barranquilla: ¿qué pasa si la demanda es estacional?',
+          },
+        ],
+      },
+    },
+    {
+      id: 'enfriamiento-newton',
+      titulo: 'Ley de Enfriamiento de Newton',
+      subtitulo: 'El café colombiano en 7 pisos térmicos',
+      descripcion: 'Compara el enfriamiento de un café en 7 pisos térmicos colombianos usando tres modelos matemáticos, análisis de residuales y datos exportables.',
+      temas: ['Ecuaciones diferenciales', 'Decaimiento exponencial', 'Ajuste de modelos', 'Análisis de residuales', 'Pisos térmicos'],
+      componentKey: 'newtonCooling',
+      color: '#F97316',
+      emoji: '☕',
+      planeacion: {
+        disciplinar: {
+          rq: '¿En qué medida el modelo exponencial de Newton predice con precisión el enfriamiento de una bebida caliente en los distintos pisos térmicos de Colombia — donde tanto la temperatura ambiente como la temperatura inicial del café varían con la altitud — y qué revela el análisis de residuales sobre las limitaciones del modelo?',
+          tension: 'Newton asume que k es constante y que T₀ es arbitrario, pero la realidad colombiana introduce dos complicaciones: (1) T₀ depende de la altitud porque el agua hierve a menor temperatura en el páramo (~87 °C a 3500 m vs ~100 °C al nivel del mar), y (2) los residuales muestran un patrón sistemático — sobreestima el enfriamiento inicial y subestima el final. Un modelo de dos exponenciales (convección + radiación) captura este efecto, y la discrepancia es mayor en Murillo (ΔT = 68 °C) que en Barranquilla (ΔT = 50 °C).',
+          modelos: [
+            'EDO de Newton: dT/dt = −k(T − Tₛ) → T(t) = Tₛ + (T₀ − Tₛ)·e^(−kt)',
+            'Dos exponenciales: T(t) = Tₛ + A₁·e^(−k₁t) + A₂·e^(−k₂t) (convección + radiación)',
+            'Polinomio cúbico: T(t) = a₀ + a₁t + a₂t² + a₃t³ (empírico, sin base física)',
+            'Modelo de k efectivo: k = k_base · (1 + 0.15·viento) · (1 + 0.0008·humedad)',
+            'Punto de ebullición por altitud: T_eb(h) ≈ 100 − 0.0034·h → T₀ = T_eb − 15',
+          ],
+          datosSimulacion: [
+            'Curvas superpuestas T(t) de tres modelos sobre datos observados para cada ciudad',
+            'Gráfica de residuales (T_obs − T_modelo) con patrones visibles en Newton simple',
+            'Tabla comparativa R², AIC, Durbin-Watson para los tres modelos',
+            'Métricas prácticas: tiempo a 60 °C (bebible), caída en 10 min, tiempo a equilibrio',
+            'CSV exportable con datos observados, predicciones y residuales de los tres modelos',
+          ],
+          criterios: {
+            A: 'RQ comparativa con variables claras (Tₛ, T₀, k, recipiente, altitud). Método: modelación + simulación computacional + ajuste estadístico + análisis de sensibilidad.',
+            B: 'Derivación completa de dT/dt = −k(T − Tₛ) por separación de variables. Significado físico de k = hA/(mc). Linealización ln(T − Tₛ) vs t para ajuste. Notación IB consistente.',
+            C: 'Gráficas superpuestas con análisis cuantitativo (no solo descriptivo). Demostración paso a paso de por qué Newton falla para ΔT grande. Comparación R², AIC, residuales entre ciudades.',
+            D: 'La discrepancia Newton vs dos-exponenciales como hallazgo central. ¿Por qué el polinomio tiene R² alto pero AIC peor? Análisis de sensibilidad: ¿qué variable afecta más a k? Limitaciones: convección forzada vs natural, evaporación ignorada, capacidad calorífica variable.',
+            E: 'Motivación personal (cultura del café colombiano, el mito costeño). Decisión de incluir la altitud como variable. Sorpresa al descubrir que el polinomio sobreajusta pese a mejor R².',
+          },
+        },
+        interdisciplinario: [
+          {
+            marco: 'Sostenibilidad, desarrollo y cambio',
+            marcoEmoji: '🌱',
+            asignatura: 'Física',
+            rq: '¿Qué relación existe entre la eficiencia térmica del recipiente y la energía total disipada al ambiente en distintos climas colombianos, y qué implica para el diseño sostenible de envases para bebidas calientes?',
+            integra: {
+              matematicas: 'Modelos: integral de la tasa de pérdida de calor Q = mc·∫₀ᵗ k(T(τ)−Tₛ)dτ. Comparación de modelos exponenciales. Análisis de sensibilidad de k respecto al material del recipiente.',
+              otraAsignatura: 'Modelos: tres mecanismos de transferencia de calor (conducción a través de la pared, convección natural/forzada, radiación de Stefan-Boltzmann). Balance energético del sistema. Resistencia térmica R = 1/(hA) del recipiente como parámetro de diseño.',
+            },
+            criterioD: 'Doble lente: (1) La integral de energía perdida en icopor es ~3× menor que en vidrio — ¿el modelo lineal de k captura esta relación o se necesita un modelo de resistencias en serie? (2) ¿Cuánta energía se \"desperdicia\" en Barranquilla (ΔT bajo, poca pérdida) vs Murillo (ΔT alto, mucha pérdida)? ¿Justifica el costo ambiental del icopor vs la totuma biodegradable?',
+          },
+          {
+            marco: 'Sostenibilidad, desarrollo y cambio',
+            marcoEmoji: '🌱',
+            asignatura: 'Geografía',
+            rq: '¿En qué medida los pisos térmicos colombianos determinan la eficiencia energética del consumo de bebidas calientes, y qué revela el modelo matemático del enfriamiento sobre la relación entre altitud, temperatura ambiente y energía desperdiciada al entorno?',
+            integra: {
+              matematicas: 'Modelos: integral de energía disipada Q = mc·∫₀ᵗ k(T(τ)−Tₛ)dτ como función de Tₛ. Ventana de temperatura óptima (60 °C–45 °C) y su duración Δt como función de altitud. Análisis de sensibilidad: ¿cómo varía Q total si Tₛ cambia en 5 °C?',
+              otraAsignatura: 'Clasificación de pisos térmicos de Caldas y su relación con Tₛ. Gradiente térmico altitudinal (~6 °C/1000 m). Efecto de la altitud sobre el punto de ebullición (Clausius-Clapeyron simplificado). Microclimas urbanos: isla de calor, exposición solar, brisa marina — fuentes de variación en Tₛ dentro de una misma ciudad.',
+            },
+            criterioD: 'Doble lente: (1) La energía total disipada en Murillo (ΔT = 77 °C) es ~50% mayor que en Barranquilla (ΔT = 52 °C) — pero la ventana de consumo óptimo dura menos. ¿Hay un piso térmico que optimiza la relación energía/tiempo-útil? (2) La clasificación de Caldas asume gradientes lineales, pero los microclimas urbanos alteran Tₛ en ±3-5 °C — ¿cuánto cambia la predicción del modelo? Recopilar datos de Tₛ en distintos puntos de una ciudad colombiana y comparar con el promedio.',
           },
         ],
       },

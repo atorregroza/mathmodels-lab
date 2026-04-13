@@ -439,24 +439,31 @@ export function MonografiaPage() {
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             {simulaciones.map(sim => (
               <Link key={sim.id} to={`/monografias/${sim.id}`}
-                className="group rounded-[1.6rem] border border-signal/30 bg-signal/12 p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(255,107,53,0.1)]"
+                className="group rounded-[1.6rem] border bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
+                style={{ borderColor: `${sim.color}30` }}
               >
                 <div className="flex items-center gap-4">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-signal/15 text-2xl">
-                    🎡
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
+                    style={{ backgroundColor: `${sim.color}18` }}
+                  >
+                    {sim.emoji}
                   </span>
                   <div>
-                    <h3 className="font-display text-xl font-semibold tracking-[-0.02em] group-hover:text-signal transition-colors">{sim.titulo}</h3>
+                    <h3 className="font-display text-xl font-semibold tracking-[-0.02em] transition-colors" style={{ '--hover-color': sim.color }}>{sim.titulo}</h3>
                     <p className="text-sm text-ink/50">{sim.subtitulo}</p>
                   </div>
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-ink/60">{sim.descripcion}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {sim.temas.map((t, i) => (
-                    <span key={i} className="rounded-full bg-signal/20 px-3 py-1 text-xs font-medium text-signal/80">{t}</span>
+                    <span key={i} className="rounded-full px-3 py-1 text-xs font-medium"
+                      style={{ backgroundColor: `${sim.color}15`, color: `${sim.color}CC` }}
+                    >{t}</span>
                   ))}
                 </div>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-signal transition-transform group-hover:translate-x-1">
+                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold transition-transform group-hover:translate-x-1"
+                  style={{ color: sim.color }}
+                >
                   Explorar simulación y planeación
                   <ArrowRight />
                 </span>

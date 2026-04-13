@@ -34,6 +34,7 @@ import { ReactionTimeLab } from '../components/features/ReactionTimeLab'
 import { ExamScoresLab } from '../components/features/ExamScoresLab'
 import { LinearMotionLab } from '../components/features/LinearMotionLab'
 import { RelatedRatesLab } from '../components/features/RelatedRatesLab'
+import { NewtonCoolingLab } from '../components/features/NewtonCoolingLab'
 import { labs, units } from '../data/platformContent'
 import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
@@ -95,6 +96,7 @@ export const LabPage = () => {
     examScores: ExamScoresLab,
     'linear-motion': LinearMotionLab,
     'related-rates': RelatedRatesLab,
+    newtonCooling: NewtonCoolingLab,
   }
   const Component = componentMap[lab.componentKey]
 
