@@ -70,16 +70,7 @@ export const StudyRoutePage = () => {
                     <p className="text-sm leading-6 text-ink/58">{unit.teacherUse}</p>
                   </div>
                 </div>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {unit.recommendedOrder.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full border border-ink/10 bg-white px-3 py-1.5 text-xs uppercase tracking-[0.12em] text-ink/68"
-                    >
-                      {item}
-                    </span>
-                  ))}
-                </div>
+                <p className="mt-4 text-sm font-medium text-ink/40">{unitLabs.length} laboratorios disponibles</p>
               </div>
               <div className="flex flex-col gap-3">
                 <Link
