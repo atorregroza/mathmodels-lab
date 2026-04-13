@@ -298,12 +298,12 @@ export const DerivaHomePage = () => {
               <div className="flex items-center gap-3">
                 <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-signal/15 text-signal">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
                   </svg>
                 </span>
                 <div>
                   <h3 className="font-display text-2xl font-semibold tracking-[-0.02em]">Exploración matemática</h3>
-                  <span className="rounded-full bg-signal/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-signal">Bloque 1 disponible</span>
+                  <span className="rounded-full bg-signal/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-signal">Disponible</span>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-7 text-ink/68">
