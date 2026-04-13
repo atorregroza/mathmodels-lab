@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { units } from '../data/platformContent'
+import { labs, units } from '../data/platformContent'
 import { getUnitColors } from '../data/unitColors'
 import { usePageMeta } from '../hooks/usePageMeta'
 import { Breadcrumb } from '../components/layout/PlatformShell'
@@ -39,6 +39,7 @@ export const StudyRoutePage = () => {
         <div className="mt-12 space-y-5">
           {units.map((unit, index) => {
             const colors = getUnitColors(unit.id)
+            const unitLabs = labs.filter(l => l.unitId === unit.id && l.status === 'available')
             return (
             <motion.article
               key={unit.id}
