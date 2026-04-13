@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const VIEWS = [
   { id: 'sequence', label: 'Sucesión (aₙ)' },
@@ -49,6 +50,13 @@ export const SequenceGrowthLab = () => {
   const yTicks = Array.from({ length: 5 }, (_, i) =>
     yMin + ((yMax - yMin) * i) / 4,
   )
+
+  const axis = useAxisRange({
+    xMin: 0.5,
+    xMax: n + 0.5,
+    yMin,
+    yMax,
+  })
 
   // ── labels ───────────────────────────────────────────────────────────────
   const termFormula =
@@ -117,7 +125,7 @@ export const SequenceGrowthLab = () => {
             <button
               key={t}
               type="button"
-              onClick={() => setType(t)}
+              onClick={() => { setType(t); axis.resetRange() }}
               className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
                 type === t
                   ? 'bg-ink text-paper shadow-[0_8px_20px_rgba(18,23,35,0.18)]'
@@ -134,7 +142,7 @@ export const SequenceGrowthLab = () => {
             <button
               key={v.id}
               type="button"
-              onClick={() => setView(v.id)}
+              onClick={() => { setView(v.id); axis.resetRange() }}
               className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors ${
                 view === v.id
                   ? 'border border-signal/28 bg-signal/12 text-signal'
@@ -149,6 +157,7 @@ export const SequenceGrowthLab = () => {
 
       {/* ── graph + sliders ──────────────────────────────────────────────── */}
       <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="xl:sticky xl:top-4 xl:self-start">
         <LabCard
           dark
           title={
@@ -161,13 +170,13 @@ export const SequenceGrowthLab = () => {
             <CartesianFrame
               width={580}
               height={300}
-              xMin={0.5}
-              xMax={n + 0.5}
-              yMin={yMin}
-              yMax={yMax}
+              xMin={axis.xMin}
+              xMax={axis.xMax}
+              yMin={axis.yMin}
+              yMax={axis.yMax}
               dark
-              xTicks={xTicks}
-              yTicks={yTicks.map((v) => Math.round(v * 10) / 10)}
+              xTicks={generateTicks(axis.xMin, axis.xMax)}
+              yTicks={generateTicks(axis.yMin, axis.yMax)}
               xLabel="n (término)"
               yLabel={view === 'sequence' ? 'aₙ' : 'Sₙ'}
             >
@@ -204,12 +213,14 @@ export const SequenceGrowthLab = () => {
               )}
             </CartesianFrame>
           </div>
+          <AxisRangePanel {...axis} />
           <p className="mt-3 text-[0.72rem] leading-5 text-paper/45">
             {view === 'sequence'
               ? 'Cada punto es un término de la sucesión.'
               : 'Cada punto es la suma acumulada hasta ese n.'}
           </p>
         </LabCard>
+        </div>
 
         <div className="space-y-3">
           <SliderField

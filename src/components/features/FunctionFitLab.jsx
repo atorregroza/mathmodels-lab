@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const datasets = [
   {
@@ -66,6 +67,13 @@ export const FunctionFitLab = () => {
   const mae = residuals.reduce((sum, point) => sum + Math.abs(point.residual), 0) / residuals.length
   const mse = residuals.reduce((sum, point) => sum + (point.residual ** 2), 0) / residuals.length
 
+  const axis = useAxisRange({
+    xMin: 0,
+    xMax: 6.5,
+    yMin: 0,
+    yMax: Math.max(...points.map((point) => point.y), ...curve.map((point) => point.y)) * 1.15,
+  })
+
   return (
     <div className="rounded-[2.2rem] border border-ink/10 bg-white/78 p-5 shadow-[0_28px_70px_rgba(18,23,35,0.08)] md:p-8">
       <div className="grid gap-8 xl:grid-cols-[0.82fr_1.18fr]">
@@ -80,7 +88,7 @@ export const FunctionFitLab = () => {
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setDatasetId(item.id)}
+                  onClick={() => { setDatasetId(item.id); axis.resetRange() }}
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${item.id === dataset.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
                   <p className="font-semibold">{item.label}</p>
@@ -91,19 +99,19 @@ export const FunctionFitLab = () => {
           </LabCard>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
             <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Comparación modelo vs. datos</p>
               <h3 className="mt-3 font-display text-3xl">La curva de ajuste sobre las observaciones</h3>
               <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
                 <CartesianFrame
-                  xMin={0}
-                  xMax={6.5}
-                  yMin={0}
-                  yMax={Math.max(...points.map((point) => point.y), ...curve.map((point) => point.y)) * 1.15}
-                  xTicks={[0, 1, 2, 3, 4, 5, 6]}
-                  yTicks={[0, 2, 4, 6, 8, 10, 12]}
+                  xMin={axis.xMin}
+                  xMax={axis.xMax}
+                  yMin={axis.yMin}
+                  yMax={axis.yMax}
+                  xTicks={generateTicks(axis.xMin, axis.xMax)}
+                  yTicks={generateTicks(axis.yMin, axis.yMax)}
                   xLabel={dataset.xName}
                   yLabel={dataset.yName}
                   className="w-full h-auto aspect-[5/4] overflow-hidden rounded-[1.1rem]"
@@ -118,6 +126,7 @@ export const FunctionFitLab = () => {
                   )}
                 </CartesianFrame>
               </div>
+              <AxisRangePanel {...axis} />
 
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 <MetricCard label="Error cuadrático medio" value={format(mse)} detail="Resume cuán lejos está el modelo de los datos." />
@@ -135,6 +144,7 @@ export const FunctionFitLab = () => {
                     onClick={() => {
                       setModelId(key)
                       setParams(item.params)
+                      axis.resetRange()
                     }}
                     className={`rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${modelId === key ? 'bg-ink text-paper' : 'border border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                   >

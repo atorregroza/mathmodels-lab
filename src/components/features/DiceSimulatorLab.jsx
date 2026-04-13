@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard } from './DerivaLabPrimitives'
-import { downloadCsv, format } from './derivaLabUtils'
+import { CartesianFrame, LabCard, MetricCard, AxisRangePanel } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── dice face SVG ─────────────────────────────────────── */
 
@@ -35,6 +36,19 @@ export const DiceSimulatorLab = () => {
   const freqs = counts.map((c) => (total ? c / total : 0))
   const maxFreq = Math.max(...freqs, 1 / 6)
 
+  // deviation from uniform
+  const deviation = useMemo(() => {
+    if (!total) return 0
+    return Math.sqrt(freqs.reduce((s, f) => s + (f - 1 / 6) ** 2, 0) / 6)
+  }, [freqs, total])
+
+  const defaultXMin = 0.2
+  const defaultXMax = 6.8
+  const defaultYMin = 0
+  const defaultYMax = maxFreq * 1.15 + 0.02
+
+  const axis = useAxisRange({ xMin: defaultXMin, xMax: defaultXMax, yMin: defaultYMin, yMax: defaultYMax })
+
   const roll = useCallback((n) => {
     setCounts((prev) => {
       const next = [...prev]
@@ -52,21 +66,8 @@ export const DiceSimulatorLab = () => {
   const reset = useCallback(() => {
     setCounts([0, 0, 0, 0, 0, 0])
     setLastRoll(null)
-  }, [])
-
-  // deviation from uniform
-  const deviation = useMemo(() => {
-    if (!total) return 0
-    return Math.sqrt(freqs.reduce((s, f) => s + (f - 1 / 6) ** 2, 0) / 6)
-  }, [freqs, total])
-
-  const xTicks = [1, 2, 3, 4, 5, 6]
-  const yTicks = useMemo(() => {
-    const step = maxFreq > 0.3 ? 0.1 : 0.05
-    const ticks = []
-    for (let v = 0; v <= maxFreq * 1.15 + step; v += step) ticks.push(parseFloat(v.toFixed(2)))
-    return ticks
-  }, [maxFreq])
+    axis.resetRange()
+  }, [axis])
 
   const handleExport = () => {
     const rows = [
@@ -136,11 +137,11 @@ export const DiceSimulatorLab = () => {
         </div>
 
         {/* ── right: chart + metrics ── */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark>
             <CartesianFrame
-              xMin={0.2} xMax={6.8} yMin={0} yMax={maxFreq * 1.15 + 0.02}
-              xTicks={xTicks} yTicks={yTicks}
+              xMin={axis.xMin} xMax={axis.xMax} yMin={axis.yMin} yMax={axis.yMax}
+              xTicks={generateTicks(axis.xMin, axis.xMax)} yTicks={generateTicks(axis.yMin, axis.yMax)}
               yTickFormatter={(v) => (v * 100).toFixed(0) + '%'}
               className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
             >
@@ -176,6 +177,7 @@ export const DiceSimulatorLab = () => {
                 )
               }}
             </CartesianFrame>
+            <AxisRangePanel {...axis} />
           </LabCard>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

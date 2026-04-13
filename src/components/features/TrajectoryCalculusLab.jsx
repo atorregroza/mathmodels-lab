@@ -1,10 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
-
-const buildTicks = (maxValue, count = 4) => (
-  Array.from({ length: count + 1 }, (_, index) => Number(((maxValue * index) / count).toFixed(2)))
-)
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 export const TrajectoryCalculusLab = () => {
   const [speed, setSpeed] = useState(18)
@@ -39,12 +36,9 @@ export const TrajectoryCalculusLab = () => {
   const heightPoints = sampleRange(0, flightTime, 80, (t) => height0 + (vy0 * t) - ((gravity * t ** 2) / 2))
   const velocityPoints = sampleRange(0, flightTime, 40, (t) => vy0 - (gravity * t))
   const accelPoints = sampleRange(0, flightTime, 10, () => -gravity)
-  const timeTicks = buildTicks(flightTime)
-  const heightTicks = buildTicks(Math.max(peak.y * 1.1, 4))
   const velocityMin = Math.min(...velocityPoints.map((point) => point.y))
   const velocityMax = Math.max(...velocityPoints.map((point) => point.y))
   const velocitySpan = Math.max(Math.abs(velocityMin), Math.abs(velocityMax), 2)
-  const velocityTicks = buildTicks(velocitySpan * 2, 4).map((tick) => Number((tick - velocitySpan).toFixed(2)))
   const rows = Array.from({ length: 9 }, (_, index) => {
     const t = (flightTime * index) / 8
     const y = Math.max(0, height0 + (vy0 * t) - ((gravity * t ** 2) / 2))
@@ -59,6 +53,11 @@ export const TrajectoryCalculusLab = () => {
       speed: Math.sqrt((vx ** 2) + (vy ** 2)),
     }
   })
+
+  const axisScene = useAxisRange({ xMin: 0, xMax: sceneXMax, yMin: 0, yMax: sceneYMax })
+  const axisHeight = useAxisRange({ xMin: 0, xMax: flightTime, yMin: 0, yMax: Math.max(peak.y * 1.15, 4) })
+  const axisVelocity = useAxisRange({ xMin: 0, xMax: flightTime, yMin: -velocitySpan * 1.15, yMax: velocitySpan * 1.15 })
+  const axisAccel = useAxisRange({ xMin: 0, xMax: flightTime, yMin: -gravity * 1.4, yMax: 1 })
 
   return (
     <div className="rounded-[2.2rem] border border-ink/10 bg-white/78 p-5 shadow-[0_28px_70px_rgba(18,23,35,0.08)] md:p-8">
@@ -80,7 +79,7 @@ export const TrajectoryCalculusLab = () => {
           <SliderField id="traj-time" label="Tiempo leído" value={currentTime} min={0} max={flightTime} step={Math.max(flightTime / 180, 0.01)} suffix=" s" onChange={setTime} />
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
@@ -94,12 +93,12 @@ export const TrajectoryCalculusLab = () => {
 
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
               <CartesianFrame
-                xMin={0}
-                xMax={sceneXMax}
-                yMin={0}
-                yMax={sceneYMax}
-                xTicks={buildTicks(sceneXMax)}
-                yTicks={buildTicks(sceneYMax)}
+                xMin={axisScene.xMin}
+                xMax={axisScene.xMax}
+                yMin={axisScene.yMin}
+                yMax={axisScene.yMax}
+                xTicks={generateTicks(axisScene.xMin, axisScene.xMax)}
+                yTicks={generateTicks(axisScene.yMin, axisScene.yMax)}
                 xLabel="x (m)"
                 yLabel="y (m)"
                 className="w-full h-auto overflow-visible rounded-[1.3rem]"
@@ -113,6 +112,8 @@ export const TrajectoryCalculusLab = () => {
                 )}
               </CartesianFrame>
             </div>
+
+            <AxisRangePanel {...axisScene} />
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <MetricCard label="Altura y(t)" value={`${format(current.y)} m`} detail="Función de posición vertical." />
@@ -138,13 +139,13 @@ export const TrajectoryCalculusLab = () => {
               </div>
               <div className="mt-4 rounded-[1.45rem] border border-ink/8 bg-white px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
                 <CartesianFrame
-                  xMin={0}
-                  xMax={flightTime}
-                  yMin={0}
-                  yMax={Math.max(peak.y * 1.15, 4)}
+                  xMin={axisHeight.xMin}
+                  xMax={axisHeight.xMax}
+                  yMin={axisHeight.yMin}
+                  yMax={axisHeight.yMax}
                   dark={false}
-                  xTicks={timeTicks}
-                  yTicks={heightTicks}
+                  xTicks={generateTicks(axisHeight.xMin, axisHeight.xMax)}
+                  yTicks={generateTicks(axisHeight.yMin, axisHeight.yMax)}
                   xLabel="t (s)"
                   yLabel="h(t) (m)"
                   className="w-full h-auto aspect-[6/5] overflow-visible rounded-[1rem]"
@@ -161,6 +162,7 @@ export const TrajectoryCalculusLab = () => {
                   )}
                 </CartesianFrame>
               </div>
+              <AxisRangePanel {...axisHeight} />
               <p className="mt-3 text-sm leading-6 text-ink/62">El punto naranja marca el instante leído y el punto verde el máximo de la trayectoria.</p>
             </LabCard>
 
@@ -179,13 +181,13 @@ export const TrajectoryCalculusLab = () => {
               </div>
               <div className="mt-4 rounded-[1.45rem] border border-ink/8 bg-white px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
                 <CartesianFrame
-                  xMin={0}
-                  xMax={flightTime}
-                  yMin={-velocitySpan * 1.15}
-                  yMax={velocitySpan * 1.15}
+                  xMin={axisVelocity.xMin}
+                  xMax={axisVelocity.xMax}
+                  yMin={axisVelocity.yMin}
+                  yMax={axisVelocity.yMax}
                   dark={false}
-                  xTicks={timeTicks}
-                  yTicks={velocityTicks}
+                  xTicks={generateTicks(axisVelocity.xMin, axisVelocity.xMax)}
+                  yTicks={generateTicks(axisVelocity.yMin, axisVelocity.yMax)}
                   xLabel="t (s)"
                   yLabel="v(t) (m/s)"
                   className="w-full h-auto aspect-[6/5] overflow-visible rounded-[1rem]"
@@ -201,6 +203,7 @@ export const TrajectoryCalculusLab = () => {
                   )}
                 </CartesianFrame>
               </div>
+              <AxisRangePanel {...axisVelocity} />
               <p className="mt-3 text-sm leading-6 text-ink/62">Cuando v(t) cruza 0, la altura alcanza su extremo máximo.</p>
             </LabCard>
 
@@ -219,13 +222,13 @@ export const TrajectoryCalculusLab = () => {
               </div>
               <div className="mt-4 rounded-[1.45rem] border border-ink/8 bg-white px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
                 <CartesianFrame
-                  xMin={0}
-                  xMax={flightTime}
-                  yMin={-gravity * 1.4}
-                  yMax={1}
+                  xMin={axisAccel.xMin}
+                  xMax={axisAccel.xMax}
+                  yMin={axisAccel.yMin}
+                  yMax={axisAccel.yMax}
                   dark={false}
-                  xTicks={timeTicks}
-                  yTicks={[-gravity * 1.2, -gravity, -gravity * 0.8, 0].map((tick) => Number(tick.toFixed(2)))}
+                  xTicks={generateTicks(axisAccel.xMin, axisAccel.xMax)}
+                  yTicks={generateTicks(axisAccel.yMin, axisAccel.yMax)}
                   xLabel="t (s)"
                   yLabel="a(t) (m/s²)"
                   className="w-full h-auto aspect-[6/5] overflow-visible rounded-[1rem]"
@@ -240,6 +243,7 @@ export const TrajectoryCalculusLab = () => {
                   )}
                 </CartesianFrame>
               </div>
+              <AxisRangePanel {...axisAccel} />
               <p className="mt-3 text-sm leading-6 text-ink/62">La segunda derivada fija la concavidad de h(t) y explica por qué la parábola abre hacia abajo.</p>
             </LabCard>
           </div>

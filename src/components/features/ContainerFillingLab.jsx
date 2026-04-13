@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── containers ─────────────────────────────────────────────── */
 // Each container defines h(V) — height as a function of volume poured,
@@ -489,11 +490,10 @@ export const ContainerFillingLab = () => {
     return { yCeil: container.volumeOfHeight(maxP, mhc) * 1.08 || 1, maxHCeil: mhc }
   }, [containerId])
 
-  const { yMax, xTicks, yTicks } = useMemo(() => {
-    const xT = Array.from({ length: 6 }, (_, i) => parseFloat(((i / 5) * maxHCeil).toPrecision(3)))
-    const yT = Array.from({ length: 5 }, (_, i) => parseFloat(((i / 4) * yCeil).toPrecision(3)))
-    return { yMax: yCeil, xTicks: xT, yTicks: yT }
-  }, [containerId, yCeil, maxHCeil])
+  const axis1 = useAxisRange({
+    xMin: 0, xMax: maxHCeil,
+    yMin: 0, yMax: yCeil,
+  })
 
   // Rate of change: dV/dh approximation at current height
   const dVdh = useMemo(() => {
@@ -517,7 +517,7 @@ export const ContainerFillingLab = () => {
         {containers.map((c) => (
           <button
             key={c.id}
-            onClick={() => { setContainerId(c.id); setVolumeFrac(0.4) }}
+            onClick={() => { setContainerId(c.id); setVolumeFrac(0.4); axis1.resetRange() }}
             className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${c.id === containerId ? 'bg-ink text-paper' : 'border border-ink/10 bg-paper text-ink/70 hover:border-ink/30'}`}
           >
             {c.label}
@@ -573,18 +573,18 @@ export const ContainerFillingLab = () => {
         </div>
 
         {/* RIGHT: V(h) graph */}
-        <div className="space-y-3">
+        <div className="space-y-3 xl:sticky xl:top-4 xl:self-start">
           <div className="rounded-[1.4rem] border border-white/10 bg-ink p-4">
             <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/45">Volumen vs Altura — {container.family}</p>
             <CartesianFrame
               width={540}
               height={280}
-              xMin={0}
-              xMax={maxH}
-              yMin={0}
-              yMax={yMax}
-              xTicks={xTicks}
-              yTicks={yTicks}
+              xMin={axis1.xMin}
+              xMax={axis1.xMax}
+              yMin={axis1.yMin}
+              yMax={axis1.yMax}
+              xTicks={generateTicks(axis1.xMin, axis1.xMax)}
+              yTicks={generateTicks(axis1.yMin, axis1.yMax, 5)}
               xLabel="Altura h (cm)"
               yLabel="Volumen V (cm³)"
               dark
@@ -612,6 +612,7 @@ export const ContainerFillingLab = () => {
                 </>
               )}
             </CartesianFrame>
+            <AxisRangePanel {...axis1} />
           </div>
 
           {/* info badges */}

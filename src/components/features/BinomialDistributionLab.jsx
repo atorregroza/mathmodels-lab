@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField, ModelCard } from './DerivaLabPrimitives'
-import { downloadCsv, format, sampleRange, linePath } from './derivaLabUtils'
+import { CartesianFrame, LabCard, MetricCard, SliderField, ModelCard, AxisRangePanel } from './DerivaLabPrimitives'
+import { downloadCsv, format, sampleRange, linePath, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── math helpers ──────────────────────────────────────── */
 
@@ -67,21 +68,12 @@ export const BinomialDistributionLab = () => {
     return sampleRange(-0.5, n + 0.5, 200, (x) => normalPdf(x, mu, sigma))
   }, [n, mu, sigma])
 
-  const xTicks = useMemo(() => {
-    if (n <= 20) return Array.from({ length: n + 1 }, (_, i) => i)
-    const step = Math.ceil(n / 10)
-    const ticks = []
-    for (let i = 0; i <= n; i += step) ticks.push(i)
-    if (ticks[ticks.length - 1] !== n) ticks.push(n)
-    return ticks
-  }, [n])
+  const defaultXMin = -0.8
+  const defaultXMax = n + 0.8
+  const defaultYMin = 0
+  const defaultYMax = maxP * 1.15 + 0.01
 
-  const yTicks = useMemo(() => {
-    const ticks = []
-    const step = maxP > 0.2 ? 0.05 : maxP > 0.1 ? 0.02 : 0.01
-    for (let v = 0; v <= maxP * 1.15 + step; v += step) ticks.push(parseFloat(v.toFixed(3)))
-    return ticks
-  }, [maxP])
+  const axis = useAxisRange({ xMin: defaultXMin, xMax: defaultXMax, yMin: defaultYMin, yMax: defaultYMax })
 
   const handleExport = () => {
     const rows = [
@@ -121,12 +113,12 @@ export const BinomialDistributionLab = () => {
         </div>
 
         {/* ── right ── */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark>
             <CartesianFrame
-              xMin={-0.8} xMax={n + 0.8}
-              yMin={0} yMax={maxP * 1.15 + 0.01}
-              xTicks={xTicks} yTicks={yTicks}
+              xMin={axis.xMin} xMax={axis.xMax}
+              yMin={axis.yMin} yMax={axis.yMax}
+              xTicks={generateTicks(axis.xMin, axis.xMax)} yTicks={generateTicks(axis.yMin, axis.yMax)}
               yTickFormatter={(v) => v.toFixed(2)}
               className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
             >
@@ -165,6 +157,7 @@ export const BinomialDistributionLab = () => {
                 )
               }}
             </CartesianFrame>
+            <AxisRangePanel {...axis} />
             <div className="mt-2 flex items-center justify-center gap-4 text-xs">
               <span className="flex items-center gap-1.5">
                 <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#5096ff]" /> Binomial

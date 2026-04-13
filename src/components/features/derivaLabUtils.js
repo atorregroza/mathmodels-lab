@@ -30,3 +30,19 @@ export const sampleRange = (min, max, count, fn) => (
 export const linePath = (points, scaleX, scaleY) => (
   points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(point.x)} ${scaleY(point.y)}`).join(' ')
 )
+
+/** Generate "nice" tick values for any axis range (similar to GeoGebra). */
+export const generateTicks = (min, max, desiredCount = 8) => {
+  const range = max - min
+  if (range <= 0) return [min]
+  const rawStep = range / desiredCount
+  const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)))
+  const niceSteps = [1, 2, 2.5, 5, 10]
+  const step = (niceSteps.find((s) => s * magnitude >= rawStep) || 10) * magnitude
+  const start = Math.ceil(min / step) * step
+  const ticks = []
+  for (let v = start; v <= max + step * 0.01; v += step) {
+    ticks.push(parseFloat(v.toFixed(10)))
+  }
+  return ticks
+}

@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { format, linePath, sampleRange, downloadCsv } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { format, linePath, sampleRange, downloadCsv, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── scenarios ──────────────────────────────────────────────── */
 
@@ -437,7 +438,13 @@ export const ConicsModelingLab = () => {
   // Artemis params
   const [artPhase, setArtPhase] = useState(0.15)
 
-  const changeScenario = (id) => setScenarioId(id)
+  // Axis range hook for circle visualization
+  const circleAxis = useAxisRange({ xMin: -10, xMax: 10, yMin: -8, yMax: 8 })
+
+  const changeScenario = (id) => {
+    setScenarioId(id)
+    circleAxis.resetRange()
+  }
 
   // Circle metrics
   const circleMetrics = useMemo(() => {
@@ -520,12 +527,13 @@ export const ConicsModelingLab = () => {
       {/* Main grid */}
       <div className="mt-4 grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
         {/* LEFT: visualization */}
-        <div className="space-y-3">
+        <div className="space-y-3 xl:sticky xl:top-4 xl:self-start">
           <div className="rounded-[1.4rem] border border-white/10 bg-ink p-3">
-            {scenarioId === 'circle' && <CircleViz h={cH} k={cK} r={cR} xMin={-10} xMax={10} yMin={-8} yMax={8} />}
+            {scenarioId === 'circle' && <CircleViz h={cH} k={cK} r={cR} xMin={circleAxis.xMin} xMax={circleAxis.xMax} yMin={circleAxis.yMin} yMax={circleAxis.yMax} />}
             {scenarioId === 'parabola' && <ParabolaViz p={pP} aperture={pAp} />}
             {scenarioId === 'ellipse' && <EllipseViz a={eA} e={eE} />}
             {scenarioId === 'artemis' && <ArtemisViz phase={artPhase} />}
+            {scenarioId === 'circle' && <AxisRangePanel {...circleAxis} />}
           </div>
 
           <div className="flex flex-wrap items-center gap-3">

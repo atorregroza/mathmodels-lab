@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 // Square axis range so y = x appears exactly at 45°
 const AX_MIN = -0.4
@@ -31,28 +32,30 @@ export const LogarithmMirrorLab = () => {
   const lna = Math.log(a)
   const bl = baseLabel(a) // display label for the base
 
+  const axis = useAxisRange({ xMin: AX_MIN, xMax: AX_MAX, yMin: AX_MIN, yMax: AX_MAX })
+
   // ── curves ───────────────────────────────────────────────────────────────
   const expPoints = []
   for (let i = 0; i <= 400; i++) {
-    const x = AX_MIN + ((i / 400) * (AX_MAX - AX_MIN))
+    const x = axis.xMin + ((i / 400) * (axis.xMax - axis.xMin))
     const y = Math.pow(a, x)
-    if (y >= AX_MIN && y <= AX_MAX) expPoints.push({ x, y })
+    if (y >= axis.yMin && y <= axis.yMax) expPoints.push({ x, y })
   }
 
   const logPoints = []
   for (let i = 1; i <= 400; i++) {
-    const x = 0.008 + ((i / 400) * (AX_MAX - 0.008))
+    const x = 0.008 + ((i / 400) * (axis.xMax - 0.008))
     const y = Math.log(x) / lna
-    if (y >= AX_MIN && y <= AX_MAX) logPoints.push({ x, y })
+    if (y >= axis.yMin && y <= axis.yMax) logPoints.push({ x, y })
   }
 
   // ── trace ─────────────────────────────────────────────────────────────────
   const traceY = Math.pow(a, traceX)                       // f(traceX)
-  const traceOnScreen = traceY >= AX_MIN && traceY <= AX_MAX
-  const mirrorOnScreen = traceY >= 0.01 && traceY <= AX_MAX  // mirror point exists?
+  const traceOnScreen = traceY >= axis.yMin && traceY <= axis.yMax
+  const mirrorOnScreen = traceY >= 0.01 && traceY <= axis.xMax  // mirror point exists?
 
-  const xTicks = [0, 1, 2, 3, 4, 5]
-  const yTicks = [0, 1, 2, 3, 4, 5]
+  const xTicks = generateTicks(axis.xMin, axis.xMax)
+  const yTicks = generateTicks(axis.yMin, axis.yMax)
 
   // ── csv ──────────────────────────────────────────────────────────────────
   const handleDownload = () => {
@@ -103,16 +106,16 @@ export const LogarithmMirrorLab = () => {
 
       {/* ── graph + sliders ───────────────────────────────────────────────── */}
       <div className="grid gap-5 xl:grid-cols-[1fr_0.72fr]">
-        <LabCard dark title={`${bl}ˣ y log${bl}(x) — reflexión en y = x`}>
+        <LabCard dark title={`${bl}ˣ y log${bl}(x) — reflexión en y = x`} className="xl:sticky xl:top-4 xl:self-start">
           <div className="mt-4">
             {/* Square SVG (500×500) = equal x/y scale → y=x is truly 45° */}
             <CartesianFrame
               width={500}
               height={500}
-              xMin={AX_MIN}
-              xMax={AX_MAX}
-              yMin={AX_MIN}
-              yMax={AX_MAX}
+              xMin={axis.xMin}
+              xMax={axis.xMax}
+              yMin={axis.yMin}
+              yMax={axis.yMax}
               dark
               xTicks={xTicks}
               yTicks={yTicks}
@@ -124,8 +127,8 @@ export const LogarithmMirrorLab = () => {
                   {/* espejo y = x */}
                   {showMirror && (
                     <line
-                      x1={scaleX(AX_MIN)} y1={scaleY(AX_MIN)}
-                      x2={scaleX(AX_MAX)} y2={scaleY(AX_MAX)}
+                      x1={scaleX(axis.xMin)} y1={scaleY(axis.xMin)}
+                      x2={scaleX(axis.xMax)} y2={scaleY(axis.xMax)}
                       stroke="rgba(255,255,255,0.20)"
                       strokeWidth="1.5"
                       strokeDasharray="7 4"
@@ -213,6 +216,8 @@ export const LogarithmMirrorLab = () => {
               )}
             </CartesianFrame>
           </div>
+
+          <AxisRangePanel {...axis} />
 
           {/* leyenda */}
           <div className="mt-3 flex flex-wrap gap-5">

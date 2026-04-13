@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const VIEWS = [
   { id: 'both', label: 'Ambas curvas' },
@@ -36,14 +37,12 @@ export const CompoundInterestLab = () => {
   const doublingYears = Math.log(2) / Math.log(1 + r)
 
   // ── graph scale — yMin = 0 always so x-axis never moves ──────────────────
-  const yMax = niceMax(Math.max(simpleFinal, compoundFinal))
-  const yMin = 0
-  const yTicks = Array.from({ length: 5 }, (_, i) => Math.round((yMax * i) / 4))
+  const defaultYMax = niceMax(Math.max(simpleFinal, compoundFinal))
 
-  const xTicks = Array.from(
-    { length: Math.min(years + 1, 11) },
-    (_, i) => Math.round((i * years) / Math.min(years, 10)),
-  )
+  const axis = useAxisRange({
+    xMin: -0.5, xMax: years + 0.5,
+    yMin: 0, yMax: defaultYMax,
+  })
 
   // ── csv ───────────────────────────────────────────────────────────────────
   const handleDownload = () => {
@@ -83,108 +82,111 @@ export const CompoundInterestLab = () => {
 
       {/* ── graph + sliders ───────────────────────────────────────────────── */}
       <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <LabCard dark title="Capital Aₙ vs tiempo n (años)">
-          <div className="mt-4">
-            <CartesianFrame
-              width={580}
-              height={300}
-              xMin={-0.5}
-              xMax={years + 0.5}
-              yMin={yMin}
-              yMax={yMax}
-              dark
-              xTicks={xTicks}
-              yTicks={yTicks}
-              xTickFormatter={(v) => `${v}a`}
-              yTickFormatter={(v) =>
-                v >= 10000 ? `${(v / 1000).toFixed(0)}k` :
-                  v >= 1000  ? `${(v / 1000).toFixed(1)}k` :
-                    String(Math.round(v))
-              }
-              xLabel="Años (n)"
-              yLabel="Monto ($)"
-            >
-              {({ scaleX, scaleY }) => (
-                <>
-                  {/* simple — línea azul discontinua */}
-                  {(view === 'both' || view === 'simple') &&
-                    data.map((point, i) => {
-                      if (i === 0) return null
-                      const prev = data[i - 1]
-                      return (
-                        <line
-                          key={`s-${i}`}
-                          x1={scaleX(prev.n)} y1={scaleY(prev.simple)}
-                          x2={scaleX(point.n)} y2={scaleY(point.simple)}
-                          stroke="rgba(120,180,255,0.80)"
-                          strokeWidth="2"
-                          strokeDasharray="5 3"
+        <div className="xl:sticky xl:top-4 xl:self-start">
+          <LabCard dark title="Capital Aₙ vs tiempo n (años)">
+            <div className="mt-4">
+              <CartesianFrame
+                width={580}
+                height={300}
+                xMin={axis.xMin}
+                xMax={axis.xMax}
+                yMin={axis.yMin}
+                yMax={axis.yMax}
+                dark
+                xTicks={generateTicks(axis.xMin, axis.xMax)}
+                yTicks={generateTicks(axis.yMin, axis.yMax, 5)}
+                xTickFormatter={(v) => `${Math.round(v)}a`}
+                yTickFormatter={(v) =>
+                  v >= 10000 ? `${(v / 1000).toFixed(0)}k` :
+                    v >= 1000  ? `${(v / 1000).toFixed(1)}k` :
+                      String(Math.round(v))
+                }
+                xLabel="Años (n)"
+                yLabel="Monto ($)"
+              >
+                {({ scaleX, scaleY }) => (
+                  <>
+                    {/* simple — línea azul discontinua */}
+                    {(view === 'both' || view === 'simple') &&
+                      data.map((point, i) => {
+                        if (i === 0) return null
+                        const prev = data[i - 1]
+                        return (
+                          <line
+                            key={`s-${i}`}
+                            x1={scaleX(prev.n)} y1={scaleY(prev.simple)}
+                            x2={scaleX(point.n)} y2={scaleY(point.simple)}
+                            stroke="rgba(120,180,255,0.80)"
+                            strokeWidth="2"
+                            strokeDasharray="5 3"
+                          />
+                        )
+                      })}
+                    {(view === 'both' || view === 'simple') &&
+                      data.map((point) => (
+                        <circle
+                          key={`sd-${point.n}`}
+                          cx={scaleX(point.n)} cy={scaleY(point.simple)}
+                          r={3.5}
+                          fill="rgba(120,180,255,0.90)"
+                          stroke="rgba(255,255,255,0.30)"
+                          strokeWidth="1.5"
                         />
-                      )
-                    })}
-                  {(view === 'both' || view === 'simple') &&
-                    data.map((point) => (
-                      <circle
-                        key={`sd-${point.n}`}
-                        cx={scaleX(point.n)} cy={scaleY(point.simple)}
-                        r={3.5}
-                        fill="rgba(120,180,255,0.90)"
-                        stroke="rgba(255,255,255,0.30)"
-                        strokeWidth="1.5"
-                      />
-                    ))}
+                      ))}
 
-                  {/* compuesto — línea naranja sólida */}
-                  {(view === 'both' || view === 'compound') &&
-                    data.map((point, i) => {
-                      if (i === 0) return null
-                      const prev = data[i - 1]
-                      return (
-                        <line
-                          key={`c-${i}`}
-                          x1={scaleX(prev.n)} y1={scaleY(prev.compound)}
-                          x2={scaleX(point.n)} y2={scaleY(point.compound)}
-                          stroke="rgba(255,107,53,0.75)"
-                          strokeWidth="2.5"
+                    {/* compuesto — línea naranja sólida */}
+                    {(view === 'both' || view === 'compound') &&
+                      data.map((point, i) => {
+                        if (i === 0) return null
+                        const prev = data[i - 1]
+                        return (
+                          <line
+                            key={`c-${i}`}
+                            x1={scaleX(prev.n)} y1={scaleY(prev.compound)}
+                            x2={scaleX(point.n)} y2={scaleY(point.compound)}
+                            stroke="rgba(255,107,53,0.75)"
+                            strokeWidth="2.5"
+                          />
+                        )
+                      })}
+                    {(view === 'both' || view === 'compound') &&
+                      data.map((point) => (
+                        <circle
+                          key={`cd-${point.n}`}
+                          cx={scaleX(point.n)} cy={scaleY(point.compound)}
+                          r={4.5}
+                          fill="#ff6b35"
+                          stroke="rgba(255,255,255,0.35)"
+                          strokeWidth="1.5"
                         />
-                      )
-                    })}
-                  {(view === 'both' || view === 'compound') &&
-                    data.map((point) => (
-                      <circle
-                        key={`cd-${point.n}`}
-                        cx={scaleX(point.n)} cy={scaleY(point.compound)}
-                        r={4.5}
-                        fill="#ff6b35"
-                        stroke="rgba(255,255,255,0.35)"
-                        strokeWidth="1.5"
-                      />
-                    ))}
-                </>
+                      ))}
+                  </>
+                )}
+              </CartesianFrame>
+            </div>
+            <AxisRangePanel {...axis} />
+
+            {/* leyenda — solo muestra las curvas activas */}
+            <div className="mt-3 flex flex-wrap gap-5">
+              {(view === 'both' || view === 'compound') && (
+                <span className="flex items-center gap-2 text-[0.7rem] text-paper/55">
+                  <svg width="24" height="10" aria-hidden="true">
+                    <line x1="0" y1="5" x2="24" y2="5" stroke="#ff6b35" strokeWidth="2.5" />
+                  </svg>
+                  Interés compuesto — crecimiento exponencial
+                </span>
               )}
-            </CartesianFrame>
-          </div>
-
-          {/* leyenda — solo muestra las curvas activas */}
-          <div className="mt-3 flex flex-wrap gap-5">
-            {(view === 'both' || view === 'compound') && (
-              <span className="flex items-center gap-2 text-[0.7rem] text-paper/55">
-                <svg width="24" height="10" aria-hidden="true">
-                  <line x1="0" y1="5" x2="24" y2="5" stroke="#ff6b35" strokeWidth="2.5" />
-                </svg>
-                Interés compuesto — crecimiento exponencial
-              </span>
-            )}
-            {(view === 'both' || view === 'simple') && (
-              <span className="flex items-center gap-2 text-[0.7rem] text-paper/55">
-                <svg width="24" height="10" aria-hidden="true">
-                  <line x1="0" y1="5" x2="24" y2="5" stroke="rgba(120,180,255,0.85)" strokeWidth="2" strokeDasharray="5 3" />
-                </svg>
-                Interés simple — crecimiento lineal
-              </span>
-            )}
-          </div>
-        </LabCard>
+              {(view === 'both' || view === 'simple') && (
+                <span className="flex items-center gap-2 text-[0.7rem] text-paper/55">
+                  <svg width="24" height="10" aria-hidden="true">
+                    <line x1="0" y1="5" x2="24" y2="5" stroke="rgba(120,180,255,0.85)" strokeWidth="2" strokeDasharray="5 3" />
+                  </svg>
+                  Interés simple — crecimiento lineal
+                </span>
+              )}
+            </div>
+          </LabCard>
+        </div>
 
         <div className="space-y-3">
           <SliderField

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const PI = Math.PI
 const xTicks = [-2 * PI, (-3 * PI) / 2, -PI, -PI / 2, 0, PI / 2, PI, (3 * PI) / 2, 2 * PI]
@@ -127,6 +128,8 @@ export const FunctionTrigonometricLab = () => {
   const [k, setK] = useState(0)
   const family = families.find((item) => item.id === familyId) || families[0]
 
+  const axis = useAxisRange({ xMin: -2 * PI, xMax: 2 * PI, yMin: -5, yMax: 5 })
+
   const period = family.periodBase / b
   const sinusoidalPoints = useMemo(
     () => sampleRange(-2 * PI, 2 * PI, 320, (x) => (a * family.fn(b * (x - h))) + k),
@@ -165,6 +168,7 @@ export const FunctionTrigonometricLab = () => {
                     setB(1)
                     setH(0)
                     setK(0)
+                    axis.resetRange()
                   }}
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${item.id === family.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
@@ -187,7 +191,7 @@ export const FunctionTrigonometricLab = () => {
         </div>
 
         <div className="space-y-5">
-          <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
+          <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)] xl:sticky xl:top-4 xl:self-start">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="max-w-3xl">
                 <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Lectura gráfica</p>
@@ -197,12 +201,12 @@ export const FunctionTrigonometricLab = () => {
             </div>
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
               <CartesianFrame
-                xMin={-2 * PI}
-                xMax={2 * PI}
-                yMin={-5}
-                yMax={5}
-                xTicks={xTicks}
-                yTicks={yTicks}
+                xMin={axis.xMin}
+                xMax={axis.xMax}
+                yMin={axis.yMin}
+                yMax={axis.yMax}
+                xTicks={generateTicks(axis.xMin, axis.xMax)}
+                yTicks={generateTicks(axis.yMin, axis.yMax)}
                 xTickFormatter={formatPiTick}
                 xLabel="x (rad)"
                 yLabel="f(x)"
@@ -221,6 +225,7 @@ export const FunctionTrigonometricLab = () => {
                 )}
               </CartesianFrame>
             </div>
+            <AxisRangePanel {...axis} />
 
             <div className="mt-5 grid gap-4 xl:grid-cols-[1.04fr_0.96fr]">
               <div className="rounded-[1.6rem] border border-white/10 bg-white/6 p-4">

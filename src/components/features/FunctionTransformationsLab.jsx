@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const bases = [
   { id: 'quadratic',    label: 'Cuadrática',   fn: (u) => u ** 2,                              formula: 'f(x) = x²',    xWindow: [-6, 6],    yWindow: [-12, 12] },
@@ -22,6 +23,11 @@ export const FunctionTransformationsLab = () => {
   const a = flipVertical ? -verticalScale : verticalScale
   const b = flipHorizontal ? -horizontalScale : horizontalScale
 
+  const axis = useAxisRange({
+    xMin: base.xWindow[0], xMax: base.xWindow[1],
+    yMin: base.yWindow[0], yMax: base.yWindow[1],
+  })
+
   const basePoints = sampleRange(base.xWindow[0], base.xWindow[1], 220, (x) => base.fn(x))
   const transformedPoints = sampleRange(base.xWindow[0], base.xWindow[1], 220, (x) => {
     const u = b * (x - h)
@@ -40,6 +46,7 @@ export const FunctionTransformationsLab = () => {
     setK(id === 'quadratic' ? -1.4 : 0.8)
     setFlipVertical(false)
     setFlipHorizontal(false)
+    axis.resetRange()
   }
 
   return (
@@ -65,54 +72,57 @@ export const FunctionTransformationsLab = () => {
 
       {/* ── gráfica + controles ───────────────────────────────────────────────── */}
       <div className="grid gap-5 xl:grid-cols-[1.3fr_0.7fr]">
-        <LabCard
-          dark
-          title="Base y transformada sobre el mismo plano"
-        >
-          <div className="mt-4">
-            <CartesianFrame
-              width={580}
-              height={340}
-              xMin={base.xWindow[0]}
-              xMax={base.xWindow[1]}
-              yMin={base.yWindow[0]}
-              yMax={base.yWindow[1]}
-              dark
-              xTicks={[-6, -4, -2, 0, 2, 4, 6].filter((t) => t >= base.xWindow[0] && t <= base.xWindow[1])}
-              yTicks={[-12, -8, -4, 0, 4, 8, 12].filter((t) => t >= base.yWindow[0] && t <= base.yWindow[1])}
-              xLabel="x"
-              yLabel="f(x)"
-            >
-              {({ scaleX, scaleY, padding, width, height }) => (
-                <>
-                  {/* referencia de traslación */}
-                  {(base.id === 'quadratic' || base.id === 'logarithmic') && (
-                    <line x1={scaleX(h)} y1={padding} x2={scaleX(h)} y2={height - padding}
-                      stroke="rgba(84,214,201,0.5)" strokeWidth="1.2" strokeDasharray="6 5" />
-                  )}
-                  {base.id === 'exponential' && (
-                    <line x1={padding} y1={scaleY(k)} x2={width - padding} y2={scaleY(k)}
-                      stroke="rgba(84,214,201,0.5)" strokeWidth="1.2" strokeDasharray="6 5" />
-                  )}
-                  {/* curvas */}
-                  <path d={linePath(basePoints, scaleX, scaleY)} fill="none"
-                    stroke="rgba(84,214,201,0.85)" strokeWidth="2.5" strokeLinecap="round" />
-                  <path d={linePath(transformedPoints, scaleX, scaleY)} fill="none"
-                    stroke="rgba(255,107,53,0.95)" strokeWidth="3.5" strokeLinecap="round" />
-                </>
-              )}
-            </CartesianFrame>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2 text-xs text-paper/60">
-            <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
-              <span className="font-semibold text-aqua">Base: </span>{base.formula}
-            </span>
-            <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
-              <span className="font-semibold text-signal">g(x): </span>
-              a={format(a)}, b={format(b)}, h={format(h)}, k={format(k)}
-            </span>
-          </div>
-        </LabCard>
+        <div className="xl:sticky xl:top-4 xl:self-start">
+          <LabCard
+            dark
+            title="Base y transformada sobre el mismo plano"
+          >
+            <div className="mt-4">
+              <CartesianFrame
+                width={580}
+                height={340}
+                xMin={axis.xMin}
+                xMax={axis.xMax}
+                yMin={axis.yMin}
+                yMax={axis.yMax}
+                dark
+                xTicks={generateTicks(axis.xMin, axis.xMax)}
+                yTicks={generateTicks(axis.yMin, axis.yMax)}
+                xLabel="x"
+                yLabel="f(x)"
+              >
+                {({ scaleX, scaleY, padding, width, height }) => (
+                  <>
+                    {/* referencia de traslación */}
+                    {(base.id === 'quadratic' || base.id === 'logarithmic') && (
+                      <line x1={scaleX(h)} y1={padding} x2={scaleX(h)} y2={height - padding}
+                        stroke="rgba(84,214,201,0.5)" strokeWidth="1.2" strokeDasharray="6 5" />
+                    )}
+                    {base.id === 'exponential' && (
+                      <line x1={padding} y1={scaleY(k)} x2={width - padding} y2={scaleY(k)}
+                        stroke="rgba(84,214,201,0.5)" strokeWidth="1.2" strokeDasharray="6 5" />
+                    )}
+                    {/* curvas */}
+                    <path d={linePath(basePoints, scaleX, scaleY)} fill="none"
+                      stroke="rgba(84,214,201,0.85)" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d={linePath(transformedPoints, scaleX, scaleY)} fill="none"
+                      stroke="rgba(255,107,53,0.95)" strokeWidth="3.5" strokeLinecap="round" />
+                  </>
+                )}
+              </CartesianFrame>
+            </div>
+            <AxisRangePanel {...axis} />
+            <div className="mt-3 flex flex-wrap gap-2 text-xs text-paper/60">
+              <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
+                <span className="font-semibold text-aqua">Base: </span>{base.formula}
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
+                <span className="font-semibold text-signal">g(x): </span>
+                a={format(a)}, b={format(b)}, h={format(h)}, k={format(k)}
+              </span>
+            </div>
+          </LabCard>
+        </div>
 
         <div className="space-y-3">
           <SliderField id="tf-a" label="Escala vertical |a|"      value={verticalScale}   min={0.5} max={3}   step={0.05} onChange={setVerticalScale} />
@@ -158,7 +168,7 @@ export const FunctionTransformationsLab = () => {
         <ModelCard
           title="Función base"
           expression={base.formula}
-          parameters={`Dominio visible: [${base.xWindow[0]}, ${base.xWindow[1]}]`}
+          parameters={`Dominio visible: [${format(axis.xMin)}, ${format(axis.xMax)}]`}
         />
         <ModelCard
           title="Transformada g(x)"
