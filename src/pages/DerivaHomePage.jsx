@@ -338,10 +338,10 @@ export const DerivaHomePage = () => {
             <div className="p-6 md:p-8 lg:p-10">
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-signal">Espacio de modelación</p>
               <h2 className="mt-4 font-display text-[clamp(1.8rem,3.5vw,3rem)] font-bold leading-[0.96] tracking-[-0.04em]">
-                Construye tu propia exploración matemática.
+                Del dato al modelo: ajusta, compara y justifica.
               </h2>
               <p className="mt-5 text-base leading-8 text-paper/70">
-                Toma datos reales, elige una familia de funciones, ajusta parámetros y construye el modelo que mejor explica el fenómeno. Es el corazón de la modelación matemática.
+                Carga datos reales, compara familias de funciones, ajusta parámetros y decide cuál modelo describe mejor el fenómeno. No basta con encontrar la curva — hay que justificar por qué.
               </p>
               <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
                 {[
