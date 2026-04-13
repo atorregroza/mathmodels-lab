@@ -817,7 +817,7 @@ export const complementaryRoutes = [
   {
     id: 'exploracion-matematica',
     title: 'Exploración matemática',
-    status: 'planned',
+    status: 'available',
     audience: 'Estudiantes y docentes de matemáticas',
     purpose: 'Reúne problemas de modelación que puedan convertirse en evaluaciones internas con pregunta acotada, datos, análisis y argumentación matemática.',
     description: 'Esta ruta ayuda a pasar del laboratorio breve a una exploración más extensa: formular la pregunta, justificar supuestos, contrastar modelos y discutir límites del resultado.',
