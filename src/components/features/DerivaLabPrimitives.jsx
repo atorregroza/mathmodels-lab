@@ -144,6 +144,87 @@ export const MetricCard = ({ label, value, detail, className = '', valueClassNam
   )
 }
 
+/* ── Axis range controls ─────────────────────────────────────────────── */
+
+const AxisInput = ({ label, value, onChange }) => {
+  const [draft, setDraft] = useState(String(value))
+  const [focused, setFocused] = useState(false)
+  const display = focused ? draft : String(value)
+
+  const commit = () => {
+    const num = Number(draft)
+    if (Number.isFinite(num)) onChange(num)
+    else setDraft(String(value))
+  }
+
+  return (
+    <label className="flex items-center gap-1.5">
+      <span className="text-[0.6rem] font-semibold uppercase tracking-wider text-paper/45">{label}</span>
+      <input
+        type="number"
+        value={display}
+        onChange={(e) => setDraft(e.target.value)}
+        onFocus={() => { setFocused(true); setDraft(String(value)) }}
+        onBlur={() => { setFocused(false); commit() }}
+        onKeyDown={(e) => { if (e.key === 'Enter') { commit(); e.target.blur() } }}
+        className="w-[4.2rem] rounded-md border border-white/12 bg-white/8 px-2 py-1 text-xs tabular-nums text-paper outline-none focus:border-white/30 focus:bg-white/12"
+      />
+    </label>
+  )
+}
+
+export const AxisRangePanel = ({ xMin, xMax, yMin, yMax, setRange, resetRange, isOverridden }) => {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="mt-1">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[0.65rem] font-semibold transition-colors ${
+          open ? 'bg-white/12 text-paper/80' : 'text-paper/40 hover:text-paper/60'
+        }`}
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+          <path d="M12 3v18M3 12h18" />
+          <path d="M8 8L3 3M16 8l5-5M8 16l-5 5M16 16l5 5" />
+        </svg>
+        Ejes
+        {isOverridden && (
+          <span className="ml-1 h-1.5 w-1.5 rounded-full bg-signal" />
+        )}
+      </button>
+
+      {open && (
+        <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
+          <div className="flex items-center gap-3">
+            <span className="text-[0.6rem] font-bold uppercase tracking-widest text-paper/35">X</span>
+            <AxisInput label="mín" value={xMin} onChange={(v) => setRange('xMin', v)} />
+            <AxisInput label="máx" value={xMax} onChange={(v) => setRange('xMax', v)} />
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-[0.6rem] font-bold uppercase tracking-widest text-paper/35">Y</span>
+            <AxisInput label="mín" value={yMin} onChange={(v) => setRange('yMin', v)} />
+            <AxisInput label="máx" value={yMax} onChange={(v) => setRange('yMax', v)} />
+          </div>
+          {isOverridden && (
+            <button
+              type="button"
+              onClick={resetRange}
+              className="flex items-center gap-1 rounded-md bg-white/10 px-2 py-1 text-[0.6rem] font-semibold text-paper/60 transition-colors hover:bg-white/18 hover:text-paper/80"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <path d="M3 12a9 9 0 1 1 3 6.7" /><path d="M3 22v-6h6" />
+              </svg>
+              Reset
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export const CartesianFrame = ({
   width = 620,
   height = 320,

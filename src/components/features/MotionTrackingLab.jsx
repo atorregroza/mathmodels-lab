@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { useEffect, useState } from 'react'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const sceneFrame = {
   left: 54,
@@ -12,10 +13,6 @@ const sceneFrame = {
 }
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
-
-const buildTicks = (min, max, segments = 4) => (
-  Array.from({ length: segments + 1 }, (_, index) => Number((min + (((max - min) * index) / segments)).toFixed(2)))
-)
 
 const getCompactContext = (text) => {
   const [firstSentence] = text.split('. ')
@@ -799,9 +796,8 @@ export const MotionTrackingLab = () => {
     return () => window.clearInterval(timer)
   }, [playing, scenario.frameCount])
 
-  const timeTicks = useMemo(() => buildTicks(0, scenario.duration), [scenario.duration])
-  const xTicks = useMemo(() => buildTicks(scenario.xDomain[0], scenario.xDomain[1]), [scenario.xDomain])
-  const yTicks = useMemo(() => buildTicks(scenario.yDomain[0], scenario.yDomain[1]), [scenario.yDomain])
+  const xPosAxis = useAxisRange({ xMin: 0, xMax: scenario.duration, yMin: scenario.xDomain[0], yMax: scenario.xDomain[1] })
+  const yPosAxis = useAxisRange({ xMin: 0, xMax: scenario.duration, yMin: scenario.yDomain[0], yMax: scenario.yDomain[1] })
 
   const currentTime = (scenario.duration * frame) / (scenario.frameCount - 1)
   const currentPoint = scenario.position(currentTime)
@@ -909,6 +905,8 @@ export const MotionTrackingLab = () => {
                   setFrame(0)
                   setPlaying(false)
                   setTrackedFrames([])
+                  xPosAxis.resetRange()
+                  yPosAxis.resetRange()
                 }}
                 className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${
                   item.id === scenario.id
@@ -1135,16 +1133,16 @@ export const MotionTrackingLab = () => {
           </LabCard>
 
           <div className="grid gap-5 xl:grid-cols-2">
-            <LabCard title="Posición horizontal x(t)">
+            <LabCard title="Posición horizontal x(t)" className="xl:sticky xl:top-4 xl:self-start">
               <div className="rounded-[1.35rem] border border-ink/8 bg-white px-3 py-3">
                 <CartesianFrame
-                  xMin={0}
-                  xMax={scenario.duration}
-                  yMin={scenario.xDomain[0]}
-                  yMax={scenario.xDomain[1]}
+                  xMin={xPosAxis.xMin}
+                  xMax={xPosAxis.xMax}
+                  yMin={xPosAxis.yMin}
+                  yMax={xPosAxis.yMax}
                   dark={false}
-                  xTicks={timeTicks}
-                  yTicks={xTicks}
+                  xTicks={generateTicks(xPosAxis.xMin, xPosAxis.xMax)}
+                  yTicks={generateTicks(xPosAxis.yMin, xPosAxis.yMax)}
                   className="w-full h-auto aspect-[6/5] overflow-hidden rounded-[1rem]"
                 >
                   {({ scaleX, scaleY, padding, height }) => (
@@ -1181,19 +1179,20 @@ export const MotionTrackingLab = () => {
                   )}
                 </CartesianFrame>
               </div>
+              <AxisRangePanel {...xPosAxis} />
               <p className="mt-3 text-sm leading-6 text-ink/66">La curva turquesa representa la variación ideal del escenario y, cuando hay suficientes datos, la curva naranja muestra el modelo recuperado a partir del seguimiento.</p>
             </LabCard>
 
-            <LabCard title="Componente vertical y(t)">
+            <LabCard title="Componente vertical y(t)" className="xl:sticky xl:top-4 xl:self-start">
               <div className="rounded-[1.35rem] border border-ink/8 bg-white px-3 py-3">
                 <CartesianFrame
-                  xMin={0}
-                  xMax={scenario.duration}
-                  yMin={scenario.yDomain[0]}
-                  yMax={scenario.yDomain[1]}
+                  xMin={yPosAxis.xMin}
+                  xMax={yPosAxis.xMax}
+                  yMin={yPosAxis.yMin}
+                  yMax={yPosAxis.yMax}
                   dark={false}
-                  xTicks={timeTicks}
-                  yTicks={yTicks}
+                  xTicks={generateTicks(yPosAxis.xMin, yPosAxis.xMax)}
+                  yTicks={generateTicks(yPosAxis.yMin, yPosAxis.yMax)}
                   className="w-full h-auto aspect-[6/5] overflow-hidden rounded-[1rem]"
                 >
                   {({ scaleX, scaleY, padding, height }) => (
@@ -1230,6 +1229,7 @@ export const MotionTrackingLab = () => {
                   )}
                 </CartesianFrame>
               </div>
+              <AxisRangePanel {...yPosAxis} />
               <p className="mt-3 text-sm leading-6 text-ink/66">Aquí también aparece primero la referencia ideal del escenario; después, el seguimiento permite comparar esa forma con el ajuste construido desde los datos.</p>
             </LabCard>
           </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── Escenarios ───────────────────────────────────────────────── */
 
@@ -59,6 +60,8 @@ const LadderScene = ({ time, dxdt, ladderL }) => {
   const rMin = Math.min(-8, Math.floor(Math.min(...rateVals) - 1))
   const rMax = Math.max(2, Math.ceil(Math.max(...rateVals) + 1))
 
+  const axis1 = useAxisRange({ xMin: 0, xMax: Math.max(1, tMax), yMin: rMin, yMax: rMax })
+
   return (
     <>
       {/* Animated scene */}
@@ -100,7 +103,7 @@ const LadderScene = ({ time, dxdt, ladderL }) => {
         <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa desconocida</p>
         <h3 className="mt-2 font-display text-xl">dy/dt a lo largo del tiempo</h3>
         <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
-          <CartesianFrame xMin={0} xMax={Math.max(1, tMax)} yMin={rMin} yMax={rMax} xTicks={Array.from({ length: Math.ceil(tMax) + 1 }, (_, i) => i)} yTicks={Array.from({ length: rMax - rMin + 1 }, (_, i) => rMin + i)}>
+          <CartesianFrame xMin={axis1.xMin} xMax={axis1.xMax} yMin={axis1.yMin} yMax={axis1.yMax} xTicks={generateTicks(axis1.xMin, axis1.xMax)} yTicks={generateTicks(axis1.yMin, axis1.yMax)}>
             {({ scaleX, scaleY }) => (
               <>
                 <path d={linePath(ratePoints, scaleX, scaleY)} fill="none" stroke="rgba(255,107,53,0.9)" strokeWidth="3" strokeLinecap="round" />
@@ -109,6 +112,7 @@ const LadderScene = ({ time, dxdt, ladderL }) => {
             )}
           </CartesianFrame>
         </div>
+        <AxisRangePanel {...axis1} />
         <p className="mt-3 text-sm leading-6 text-paper/60">Cuando y se acerca a 0, dy/dt se dispara hacia −∞. La cima cae cada vez más rápido.</p>
       </LabCard>
     </>
@@ -148,6 +152,8 @@ const ConeScene = ({ time, dvdt, coneR, coneH }) => {
   const ratePoints = sampleRange(0.1, Math.max(1, Math.min(tMax, 30)), 120, graphFn)
   const rateVals = ratePoints.map((p) => p.y)
   const rMax = Math.min(50, Math.ceil(Math.max(...rateVals) + 1))
+
+  const axis1 = useAxisRange({ xMin: 0, xMax: Math.max(1, Math.min(tMax, 30)), yMin: 0, yMax: rMax })
 
   return (
     <>
@@ -220,7 +226,7 @@ const ConeScene = ({ time, dvdt, coneR, coneH }) => {
         <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa desconocida</p>
         <h3 className="mt-2 font-display text-xl">dh/dt a lo largo del tiempo</h3>
         <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
-          <CartesianFrame xMin={0} xMax={Math.max(1, Math.min(tMax, 30))} yMin={0} yMax={rMax} xTicks={Array.from({ length: Math.min(11, Math.ceil(tMax) + 1) }, (_, i) => Math.round(i * tMax / 10))} yTicks={Array.from({ length: Math.min(11, rMax + 1) }, (_, i) => Math.round(i * rMax / 10))}>
+          <CartesianFrame xMin={axis1.xMin} xMax={axis1.xMax} yMin={axis1.yMin} yMax={axis1.yMax} xTicks={generateTicks(axis1.xMin, axis1.xMax)} yTicks={generateTicks(axis1.yMin, axis1.yMax)}>
             {({ scaleX, scaleY }) => (
               <>
                 <path d={linePath(ratePoints, scaleX, scaleY)} fill="none" stroke="rgba(199,244,100,0.9)" strokeWidth="3" strokeLinecap="round" />
@@ -229,6 +235,7 @@ const ConeScene = ({ time, dvdt, coneR, coneH }) => {
             )}
           </CartesianFrame>
         </div>
+        <AxisRangePanel {...axis1} />
         <p className="mt-3 text-sm leading-6 text-paper/60">dh/dt es grande al inicio (cono estrecho) y disminuye a medida que h crece (sección transversal más ancha).</p>
       </LabCard>
     </>
@@ -262,6 +269,8 @@ const LighthouseScene = ({ time, dtheta, dist }) => {
   const ratePoints = sampleRange(0, Math.max(1, tMax), 150, graphFn)
   const rateVals = ratePoints.map((p) => p.y).filter((v) => v < 100)
   const rMax = Math.min(100, Math.ceil(Math.max(10, ...rateVals) + 2))
+
+  const axis1 = useAxisRange({ xMin: 0, xMax: Math.max(1, tMax), yMin: 0, yMax: rMax })
 
   return (
     <>
@@ -324,7 +333,7 @@ const LighthouseScene = ({ time, dtheta, dist }) => {
         <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa desconocida</p>
         <h3 className="mt-2 font-display text-xl">dx/dt a lo largo del tiempo</h3>
         <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
-          <CartesianFrame xMin={0} xMax={Math.max(1, tMax)} yMin={0} yMax={rMax} xTicks={Array.from({ length: Math.min(11, Math.ceil(tMax) + 1) }, (_, i) => Math.round(i * tMax / 10))} yTicks={Array.from({ length: 6 }, (_, i) => Math.round(i * rMax / 5))}>
+          <CartesianFrame xMin={axis1.xMin} xMax={axis1.xMax} yMin={axis1.yMin} yMax={axis1.yMax} xTicks={generateTicks(axis1.xMin, axis1.xMax)} yTicks={generateTicks(axis1.yMin, axis1.yMax)}>
             {({ scaleX, scaleY }) => (
               <>
                 <path d={linePath(ratePoints.filter((p) => p.y < 100), scaleX, scaleY)} fill="none" stroke="rgba(255,230,80,0.9)" strokeWidth="3" strokeLinecap="round" />
@@ -333,6 +342,7 @@ const LighthouseScene = ({ time, dtheta, dist }) => {
             )}
           </CartesianFrame>
         </div>
+        <AxisRangePanel {...axis1} />
         <p className="mt-3 text-sm leading-6 text-paper/60">dx/dt = d·sec²(θ)·(dθ/dt). Cuando θ → 90°, sec²(θ) → ∞ y la velocidad del punto de luz se dispara.</p>
       </LabCard>
     </>
@@ -432,7 +442,7 @@ export const RelatedRatesLab = () => {
         </div>
 
         {/* ── RIGHT: Visualization ────────────────────────────── */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           {scenarioId === 'ladder' && <LadderScene time={time} dxdt={dxdt} ladderL={ladderL} />}
           {scenarioId === 'cone' && <ConeScene time={time} dvdt={dvdt} coneR={coneR} coneH={coneH} />}
           {scenarioId === 'lighthouse' && <LighthouseScene time={time} dtheta={dtheta} dist={dist} />}

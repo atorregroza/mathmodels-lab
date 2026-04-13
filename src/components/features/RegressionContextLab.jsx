@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format } from './derivaLabUtils'
+import { CartesianFrame, LabCard, MetricCard, SliderField, AxisRangePanel } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── datasets ──────────────────────────────────────────── */
 
@@ -90,6 +91,7 @@ export const RegressionContextLab = () => {
     setShowBest(false)
     setUserA(0)
     setUserB(1)
+    axis.resetRange()
   }
 
   const active = showBest ? best : { a: userA, b: userB }
@@ -112,17 +114,7 @@ export const RegressionContextLab = () => {
   const activeR = showBest ? best.r : best.r
   const activeR2 = showBest ? best.r2 : best.r2
 
-  const makeTicks = (min, max, count) => {
-    const range = max - min
-    const step = Math.pow(10, Math.floor(Math.log10(range / count)))
-    const ticks = []
-    const start = Math.ceil(min / step) * step
-    for (let v = start; v <= max; v += step) {
-      ticks.push(parseFloat(v.toPrecision(6)))
-      if (ticks.length > 15) break
-    }
-    return ticks
-  }
+  const axis = useAxisRange({ xMin: xMin - xPad, xMax: xMax + xPad, yMin: yMin - yPad * 3, yMax: yMax + yPad * 3 })
 
   const handleExport = () => {
     const rows = [
@@ -191,13 +183,13 @@ export const RegressionContextLab = () => {
         </div>
 
         {/* ── right: chart + metrics ── */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark>
             <CartesianFrame
-              xMin={xMin - xPad} xMax={xMax + xPad}
-              yMin={yMin - yPad * 3} yMax={yMax + yPad * 3}
-              xTicks={makeTicks(xMin - xPad, xMax + xPad, 7)}
-              yTicks={makeTicks(yMin - yPad * 3, yMax + yPad * 3, 6)}
+              xMin={axis.xMin} xMax={axis.xMax}
+              yMin={axis.yMin} yMax={axis.yMax}
+              xTicks={generateTicks(axis.xMin, axis.xMax)}
+              yTicks={generateTicks(axis.yMin, axis.yMax)}
               className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
             >
               {({ scaleX, scaleY }) => (
@@ -231,6 +223,7 @@ export const RegressionContextLab = () => {
                 </>
               )}
             </CartesianFrame>
+            <AxisRangePanel {...axis} />
           </LabCard>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

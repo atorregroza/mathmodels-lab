@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── Escenarios ───────────────────────────────────────────────── */
 
@@ -217,6 +218,10 @@ export const LinearMotionLab = () => {
   const vMin = Math.floor(Math.min(...vVals) - 1)
   const vMax = Math.ceil(Math.max(...vVals) + 1)
 
+  // Axis-range hooks
+  const posAxis = useAxisRange({ xMin: 0, xMax: sc.tMax, yMin: sMin, yMax: sMax })
+  const velAxis = useAxisRange({ xMin: 0, xMax: sc.tMax, yMin: vMin, yMax: vMax })
+
   // Number line range
   const nlMin = sMin - 1
   const nlMax = sMax + 1
@@ -245,6 +250,8 @@ export const LinearMotionLab = () => {
                     setTime(item.tMax / 2)
                     setT1(0)
                     setT2(item.tMax / 2)
+                    posAxis.resetRange()
+                    velAxis.resetRange()
                   }}
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${item.id === sc.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
@@ -273,7 +280,7 @@ export const LinearMotionLab = () => {
         </div>
 
         {/* ── RIGHT: Visualization ────────────────────────────── */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
 
           {/* Number line */}
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
@@ -330,16 +337,17 @@ export const LinearMotionLab = () => {
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Posición</p>
             <h3 className="mt-2 font-display text-xl">{sc.sLabel}</h3>
             <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
-              <CartesianFrame xMin={0} xMax={sc.tMax} yMin={sMin} yMax={sMax} xTicks={ticks(0, sc.tMax)} yTicks={ticks(sMin, sMax)} xLabel="t (s)" yLabel="s(t) (m)">
+              <CartesianFrame xMin={posAxis.xMin} xMax={posAxis.xMax} yMin={posAxis.yMin} yMax={posAxis.yMax} xTicks={generateTicks(posAxis.xMin, posAxis.xMax)} yTicks={generateTicks(posAxis.yMin, posAxis.yMax)} xLabel="t (s)" yLabel="s(t) (m)">
                 {({ scaleX, scaleY }) => (
                   <>
                     <path d={linePath(sPoints, scaleX, scaleY)} fill="none" stroke="rgba(80,150,255,0.9)" strokeWidth="3" strokeLinecap="round" />
                     <circle cx={scaleX(time)} cy={scaleY(sNow)} r="6" fill="#5096ff" stroke="white" strokeWidth="2" />
-                    <line x1={scaleX(time)} y1={scaleY(sNow) + 8} x2={scaleX(time)} y2={scaleY(sMin)} stroke="rgba(80,150,255,0.2)" strokeWidth="1" strokeDasharray="4 4" />
+                    <line x1={scaleX(time)} y1={scaleY(sNow) + 8} x2={scaleX(time)} y2={scaleY(posAxis.yMin)} stroke="rgba(80,150,255,0.2)" strokeWidth="1" strokeDasharray="4 4" />
                   </>
                 )}
               </CartesianFrame>
             </div>
+            <AxisRangePanel {...posAxis} />
           </LabCard>
 
           {/* v(t) graph with shaded areas */}
@@ -347,7 +355,7 @@ export const LinearMotionLab = () => {
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Velocidad e integrales</p>
             <h3 className="mt-2 font-display text-xl">{sc.vLabel} — intervalo [{format(left)}, {format(right)}]</h3>
             <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
-              <CartesianFrame xMin={0} xMax={sc.tMax} yMin={vMin} yMax={vMax} xTicks={ticks(0, sc.tMax)} yTicks={ticks(vMin, vMax)} xLabel="t (s)" yLabel="v(t) (m/s)">
+              <CartesianFrame xMin={velAxis.xMin} xMax={velAxis.xMax} yMin={velAxis.yMin} yMax={velAxis.yMax} xTicks={generateTicks(velAxis.xMin, velAxis.xMax)} yTicks={generateTicks(velAxis.yMin, velAxis.yMax)} xLabel="t (s)" yLabel="v(t) (m/s)">
                 {({ scaleX, scaleY, padding, height }) => (
                   <>
                     {/* Shaded areas */}
@@ -374,6 +382,7 @@ export const LinearMotionLab = () => {
                 )}
               </CartesianFrame>
             </div>
+            <AxisRangePanel {...velAxis} />
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <MetricCard label="Posición actual" value={format(sNow)} detail={`s(${format(time)}) en ${sc.sLabel.split('(')[1]?.replace(')', '') || 'unidades'}`} />

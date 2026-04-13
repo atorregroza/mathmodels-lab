@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const scenarios = [
   {
@@ -45,6 +46,7 @@ export const AreaAccumulationLab = () => {
     return scenario.rate(sample) * dt
   }).reduce((sum, value) => sum + value, 0)
   const points = sampleRange(0, scenario.domainMax, 120, scenario.rate)
+  const axis = useAxisRange({ xMin: 0, xMax: scenario.domainMax, yMin: 0, yMax: Math.max(...points.map((point) => point.y)) * 1.15 })
 
   return (
     <div className="rounded-[2.2rem] border border-ink/10 bg-white/78 p-5 shadow-[0_28px_70px_rgba(18,23,35,0.08)] md:p-8">
@@ -61,7 +63,7 @@ export const AreaAccumulationLab = () => {
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setScenarioId(item.id)}
+                  onClick={() => { setScenarioId(item.id); axis.resetRange() }}
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${item.id === scenario.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
                   <p className="font-semibold">{item.label}</p>
@@ -90,12 +92,12 @@ export const AreaAccumulationLab = () => {
           </LabCard>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa y acumulación</p>
             <h3 className="mt-3 font-display text-3xl">Lo que entra por unidad de tiempo y lo que se acumula después</h3>
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
-              <CartesianFrame xMin={0} xMax={scenario.domainMax} yMin={0} yMax={Math.max(...points.map((point) => point.y)) * 1.15} xTicks={[0, 2, 4, 6, 8, 10, 12].filter((tick) => tick <= scenario.domainMax)} yTicks={[0, 10, 20, 30, 40, 50, 60, 70]} xLabel="t" yLabel={scenario.rateLabel}>
+              <CartesianFrame xMin={axis.xMin} xMax={axis.xMax} yMin={axis.yMin} yMax={axis.yMax} xTicks={generateTicks(axis.xMin, axis.xMax)} yTicks={generateTicks(axis.yMin, axis.yMax)} xLabel="t" yLabel={scenario.rateLabel}>
                 {({ scaleX, scaleY, height, padding }) => (
                   <>
                     {Array.from({ length: rectangles }, (_, index) => {
@@ -117,6 +119,7 @@ export const AreaAccumulationLab = () => {
                 )}
               </CartesianFrame>
             </div>
+            <AxisRangePanel {...axis} />
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <MetricCard label="Tasa actual" value={format(rateNow)} detail={scenario.rateLabel} />

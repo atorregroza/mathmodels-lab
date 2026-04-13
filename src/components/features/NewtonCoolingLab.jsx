@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, sampleRange, linePath } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, sampleRange, linePath } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 import { computeR2, computeAIC, computeResiduals, durbinWatson } from './modelFitting'
 
 /* ───────────────────────── CIUDADES COLOMBIANAS ───────────────────────── */
@@ -215,18 +216,6 @@ export const NewtonCoolingLab = () => {
   const tMax = 33
   const yMaxVal = Math.max(T0_1, city2 ? T0_2 : 0) + 5
   const yMinVal = Math.min(city1.Ts, city2 ? city2.Ts : city1.Ts) - 3
-  const yTicks = []
-  const yStep = Math.ceil((yMaxVal - yMinVal) / 8 / 5) * 5
-  for (let v = Math.floor(yMinVal / yStep) * yStep; v <= yMaxVal; v += yStep) yTicks.push(v)
-  const xTicks = [0, 5, 10, 15, 20, 25, 30]
-
-  /* ── curvas para SVG ── */
-  const curvePoints1_m1 = sampleRange(0, 30, 200, a.fn1)
-  const curvePoints1_m2 = sampleRange(0, 30, 200, a.fn2)
-  const curvePoints1_m3 = sampleRange(0, 30, 200, a.fn3)
-  const curvePointsB_m1 = cityB ? sampleRange(0, 30, 200, cityB.fn1) : []
-  const curvePointsB_m2 = cityB ? sampleRange(0, 30, 200, cityB.fn2) : []
-  const curvePointsB_m3 = cityB ? sampleRange(0, 30, 200, cityB.fn3) : []
 
   /* ── residuales ── */
   const resMax = Math.max(
@@ -236,6 +225,17 @@ export const NewtonCoolingLab = () => {
     2
   )
   const resYMax = Math.ceil(resMax + 0.5)
+
+  const curvesAxis = useAxisRange({ xMin: -1, xMax: tMax, yMin: yMinVal, yMax: yMaxVal })
+  const residAxis  = useAxisRange({ xMin: -1, xMax: tMax, yMin: -resYMax, yMax: resYMax })
+
+  /* ── curvas para SVG ── */
+  const curvePoints1_m1 = sampleRange(0, 30, 200, a.fn1)
+  const curvePoints1_m2 = sampleRange(0, 30, 200, a.fn2)
+  const curvePoints1_m3 = sampleRange(0, 30, 200, a.fn3)
+  const curvePointsB_m1 = cityB ? sampleRange(0, 30, 200, cityB.fn1) : []
+  const curvePointsB_m2 = cityB ? sampleRange(0, 30, 200, cityB.fn2) : []
+  const curvePointsB_m3 = cityB ? sampleRange(0, 30, 200, cityB.fn3) : []
 
   /* ── CSV ── */
   const handleDownload = () => {
@@ -279,7 +279,7 @@ export const NewtonCoolingLab = () => {
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Ciudad principal</p>
             <div className="flex flex-wrap gap-2">
               {CITIES.map((c) => (
-                <button key={c.id} onClick={() => { setCity1Id(c.id); if (city2Id === c.id) setCity2Id(null) }}
+                <button key={c.id} onClick={() => { setCity1Id(c.id); if (city2Id === c.id) setCity2Id(null); curvesAxis.resetRange(); residAxis.resetRange() }}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                     city1Id === c.id
                       ? 'text-white shadow-md scale-105'
@@ -295,11 +295,11 @@ export const NewtonCoolingLab = () => {
           <div>
             <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Comparar con <span className="text-ink/25">(opcional)</span></p>
             <div className="flex flex-wrap gap-2">
-              <button onClick={() => setCity2Id(null)}
+              <button onClick={() => { setCity2Id(null); curvesAxis.resetRange(); residAxis.resetRange() }}
                 className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${!city2Id ? 'bg-ink text-paper' : 'bg-ink/5 text-ink/40 hover:bg-ink/10'}`}
               >Ninguna</button>
               {CITIES.filter((c) => c.id !== city1Id).map((c) => (
-                <button key={c.id} onClick={() => setCity2Id(c.id)}
+                <button key={c.id} onClick={() => { setCity2Id(c.id); curvesAxis.resetRange(); residAxis.resetRange() }}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                     city2Id === c.id
                       ? 'text-white shadow-md scale-105'
@@ -335,7 +335,7 @@ export const NewtonCoolingLab = () => {
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Recipiente</p>
           <div className="flex gap-2">
             {CONTAINERS.map((c) => (
-              <button key={c.id} onClick={() => setContainerId(c.id)}
+              <button key={c.id} onClick={() => { setContainerId(c.id); curvesAxis.resetRange(); residAxis.resetRange() }}
                 className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
                   containerId === c.id ? 'bg-ink text-paper shadow-md' : 'border border-ink/10 bg-white text-ink/50 hover:bg-ink/5'
                 }`}
@@ -351,7 +351,7 @@ export const NewtonCoolingLab = () => {
       {/* ── Vista toggle ── */}
       <div className="flex flex-wrap gap-2">
         {VIEWS.map((v) => (
-          <button key={v.id} onClick={() => setView(v.id)}
+          <button key={v.id} onClick={() => { setView(v.id); curvesAxis.resetRange(); residAxis.resetRange() }}
             className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
               view === v.id ? 'bg-ink text-paper' : 'border border-ink/12 bg-white text-ink'
             }`}
@@ -384,12 +384,13 @@ export const NewtonCoolingLab = () => {
 
       {/* ── GRÁFICA PRINCIPAL: Curvas T(t) ── */}
       {view === 'curves' && (
+        <div className="xl:sticky xl:top-4 xl:self-start">
         <LabCard dark title="Temperatura T(t) vs tiempo">
           <div className="mt-4">
             <CartesianFrame
               width={640} height={340}
-              xMin={-1} xMax={tMax} yMin={yMinVal} yMax={yMaxVal}
-              xTicks={xTicks} yTicks={yTicks}
+              xMin={curvesAxis.xMin} xMax={curvesAxis.xMax} yMin={curvesAxis.yMin} yMax={curvesAxis.yMax}
+              xTicks={generateTicks(curvesAxis.xMin, curvesAxis.xMax)} yTicks={generateTicks(curvesAxis.yMin, curvesAxis.yMax)}
               xLabel="t (min)" yLabel="T (°C)"
               dark className="w-full h-auto overflow-visible rounded-[1.3rem]"
             >
@@ -439,6 +440,7 @@ export const NewtonCoolingLab = () => {
               )}
             </CartesianFrame>
           </div>
+          <AxisRangePanel {...curvesAxis} />
           {/* Leyenda — solo modelos activos */}
           <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/60">
             <span className="flex items-center gap-1.5"><span className="inline-block w-2.5 h-2.5 rounded-full bg-white" /> {city1.name}</span>
@@ -467,16 +469,18 @@ export const NewtonCoolingLab = () => {
             )}
           </div>
         </LabCard>
+        </div>
       )}
 
       {/* ── GRÁFICA DE RESIDUALES ── */}
       {view === 'residuals' && (
+        <div className="xl:sticky xl:top-4 xl:self-start">
         <LabCard dark title="Residuales: T_obs − T_modelo">
           <div className="mt-4">
             <CartesianFrame
               width={640} height={280}
-              xMin={-1} xMax={tMax} yMin={-resYMax} yMax={resYMax}
-              xTicks={xTicks} yTicks={[-resYMax, -Math.round(resYMax / 2), 0, Math.round(resYMax / 2), resYMax]}
+              xMin={residAxis.xMin} xMax={residAxis.xMax} yMin={residAxis.yMin} yMax={residAxis.yMax}
+              xTicks={generateTicks(residAxis.xMin, residAxis.xMax)} yTicks={generateTicks(residAxis.yMin, residAxis.yMax)}
               xLabel="t (min)" yLabel="Residual (°C)"
               dark className="w-full h-auto overflow-visible rounded-[1.3rem]"
             >
@@ -505,12 +509,14 @@ export const NewtonCoolingLab = () => {
               )}
             </CartesianFrame>
           </div>
+          <AxisRangePanel {...residAxis} />
           <div className="mt-3 flex flex-wrap gap-4 text-xs text-white/60">
             <span className="flex items-center gap-1.5"><span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: modelColors[0] }} /> Newton</span>
             <span className="flex items-center gap-1.5"><span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ background: modelColors[1] }} /> Dos exp.</span>
             <span className="flex items-center gap-1.5"><span className="inline-block w-0 h-0 border-l-[5px] border-r-[5px] border-b-[6px] border-transparent" style={{ borderBottomColor: modelColors[2] }} /> Polinomio</span>
           </div>
         </LabCard>
+        </div>
       )}
 
       {/* ── COMPARACIÓN DE MODELOS ── */}

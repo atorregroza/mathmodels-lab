@@ -208,7 +208,7 @@ export const HeightsStatisticsLab = () => {
         </div>
 
         {/* right */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark title="Histograma con curva normal">
             <Histogram data={group.data} mu={s.mean} sigma={s.sd} />
             <div className="mt-2 flex items-center justify-center gap-4 text-xs">

@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const Fraction = ({ numerator, denominator }) => (
   <span className="inline-flex align-middle">
@@ -140,6 +141,8 @@ export const FunctionRationalLab = () => {
   const model = config.buildModel(params)
   const segments = buildSegments(model.verticals, config.xWindow, model.fn)
 
+  const axis = useAxisRange({ xMin: config.xWindow[0], xMax: config.xWindow[1], yMin: config.yWindow[0], yMax: config.yWindow[1] })
+
   const updateParam = (key, value) => {
     setParamsByCase((current) => ({
       ...current,
@@ -148,6 +151,11 @@ export const FunctionRationalLab = () => {
         [key]: value,
       },
     }))
+  }
+
+  const handleCaseChange = (id) => {
+    setCaseId(id)
+    axis.resetRange()
   }
 
   return (
@@ -165,7 +173,7 @@ export const FunctionRationalLab = () => {
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setCaseId(item.id)}
+                  onClick={() => handleCaseChange(item.id)}
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${item.id === config.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
                   <p className="font-semibold">{item.label}</p>
@@ -197,18 +205,18 @@ export const FunctionRationalLab = () => {
           </LabCard>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="overflow-hidden rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Lectura gráfica</p>
             <h3 className="mt-3 font-display text-3xl">Asíntotas, ramas y comportamiento por intervalos</h3>
             <div className="mt-5 overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
               <CartesianFrame
-                xMin={config.xWindow[0]}
-                xMax={config.xWindow[1]}
-                yMin={config.yWindow[0]}
-                yMax={config.yWindow[1]}
-                xTicks={[-6, -4, -2, 0, 2, 4, 6].filter((tick) => tick >= config.xWindow[0] && tick <= config.xWindow[1])}
-                yTicks={[-8, -4, 0, 4, 8].filter((tick) => tick >= config.yWindow[0] && tick <= config.yWindow[1])}
+                xMin={axis.xMin}
+                xMax={axis.xMax}
+                yMin={axis.yMin}
+                yMax={axis.yMax}
+                xTicks={generateTicks(axis.xMin, axis.xMax)}
+                yTicks={generateTicks(axis.yMin, axis.yMax)}
                 xLabel="x"
                 yLabel="f(x)"
                 className="w-full h-auto overflow-hidden rounded-[1.1rem]"
@@ -223,10 +231,10 @@ export const FunctionRationalLab = () => {
                     )}
                     {model.oblique && (
                       <line
-                        x1={scaleX(config.xWindow[0])}
-                        y1={scaleY((model.oblique.m * config.xWindow[0]) + model.oblique.b)}
-                        x2={scaleX(config.xWindow[1])}
-                        y2={scaleY((model.oblique.m * config.xWindow[1]) + model.oblique.b)}
+                        x1={scaleX(axis.xMin)}
+                        y1={scaleY((model.oblique.m * axis.xMin) + model.oblique.b)}
+                        x2={scaleX(axis.xMax)}
+                        y2={scaleY((model.oblique.m * axis.xMax) + model.oblique.b)}
                         stroke="rgba(84,214,201,0.96)"
                         strokeWidth="1.4"
                         strokeDasharray="6 6"
@@ -239,6 +247,8 @@ export const FunctionRationalLab = () => {
                 )}
               </CartesianFrame>
             </div>
+
+            <AxisRangePanel {...axis} />
 
             <div className="mt-4 flex flex-wrap gap-3 text-sm text-paper/72">
               {model.references.map((reference) => (

@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const scenarios = [
   {
@@ -108,6 +109,10 @@ export const IntegralNetChangeLab = () => {
   const yMin = Math.min(-4, Math.floor(Math.min(...yValues) - 0.8))
   const yMax = Math.max(4, Math.ceil(Math.max(...yValues) + 0.8))
   const yTicks = buildTicks(yMin, yMax)
+  const axis = useAxisRange({
+    xMin: 0, xMax: 9,
+    yMin, yMax,
+  })
 
   return (
     <div className="rounded-[2.2rem] border border-ink/10 bg-white/78 p-5 shadow-[0_28px_70px_rgba(18,23,35,0.08)] md:p-8">
@@ -123,7 +128,7 @@ export const IntegralNetChangeLab = () => {
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setScenarioId(item.id)}
+                  onClick={() => { setScenarioId(item.id); axis.resetRange() }}
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${item.id === scenario.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
                   <p className="font-semibold">{item.label}</p>
@@ -136,12 +141,12 @@ export const IntegralNetChangeLab = () => {
           <SliderField id="net-b" label="Límite derecho b" value={b} min={0} max={9} step={0.1} onChange={setB} />
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Lectura gráfica</p>
             <h3 className="mt-3 font-display text-3xl">Área positiva, área negativa y balance final</h3>
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
-              <CartesianFrame xMin={0} xMax={9} yMin={yMin} yMax={yMax} xTicks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]} yTicks={yTicks} xLabel="t" yLabel="r(t)">
+              <CartesianFrame xMin={axis.xMin} xMax={axis.xMax} yMin={axis.yMin} yMax={axis.yMax} xTicks={generateTicks(axis.xMin, axis.xMax)} yTicks={generateTicks(axis.yMin, axis.yMax)} xLabel="t" yLabel="r(t)">
                 {({ scaleX, scaleY, padding, height }) => (
                   <>
                     {areaSegments.map((segment, index) => (
@@ -159,6 +164,8 @@ export const IntegralNetChangeLab = () => {
                 )}
               </CartesianFrame>
             </div>
+
+            <AxisRangePanel {...axis} />
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <MetricCard label="Integral neta" value={format(values.net)} detail="Cambio total con signo." />

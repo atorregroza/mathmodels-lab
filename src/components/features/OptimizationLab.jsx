@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, linePath, sampleRange, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── scenarios ──────────────────────────────────────────────── */
 
@@ -557,18 +558,17 @@ export const OptimizationLab = () => {
 
   // graph data — fixed Y range per scenario to prevent jitter
   const graphPoints = sampleRange(sc.paramMin, paramMax, 200, evalObj)
-  const { yMin, yMax, xTicks, yTicks } = useMemo(() => {
+  const { yMin: defaultYMin, yMax: defaultYMax } = useMemo(() => {
     const yVals = graphPoints.map((p) => p.y).filter(Number.isFinite)
     const rawMin = Math.min(...yVals)
     const rawMax = Math.max(...yVals)
     const pad = Math.max((rawMax - rawMin) * 0.1, 1)
     const yMn = sc.minimize ? rawMin - pad : 0
     const yMx = rawMax + pad
-    const xT = Array.from({ length: 6 }, (_, i) => parseFloat((sc.paramMin + (i / 5) * (paramMax - sc.paramMin)).toPrecision(3)))
-    const yR = yMx - yMn
-    const yT = Array.from({ length: 5 }, (_, i) => parseFloat((yMn + (i / 4) * yR).toPrecision(3)))
-    return { yMin: yMn, yMax: yMx, xTicks: xT, yTicks: yT }
+    return { yMin: yMn, yMax: yMx }
   }, [sc.id, paramMax])
+
+  const graphAxis = useAxisRange({ xMin: sc.paramMin, xMax: paramMax, yMin: defaultYMin, yMax: defaultYMax })
 
   // CSV export
   const handleCsv = () => {
@@ -582,6 +582,7 @@ export const OptimizationLab = () => {
     setScenarioId(id)
     const next = scenarios.find((s) => s.id === id)
     if (next) setParam(next.paramDefault)
+    graphAxis.resetRange()
   }
 
   return (
@@ -635,19 +636,19 @@ export const OptimizationLab = () => {
         </div>
 
         {/* RIGHT: function graph */}
-        <div className="space-y-3">
+        <div className="space-y-3 xl:sticky xl:top-4 xl:self-start">
           <div className="rounded-[1.4rem] border border-white/10 bg-ink p-4">
             <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/45">Función objetivo</p>
             <p className="mb-3 font-mono text-xs text-paper/60">{sc.objectiveLabel}</p>
             <CartesianFrame
               width={540}
               height={280}
-              xMin={sc.paramMin}
-              xMax={paramMax}
-              yMin={yMin}
-              yMax={yMax}
-              xTicks={xTicks}
-              yTicks={yTicks}
+              xMin={graphAxis.xMin}
+              xMax={graphAxis.xMax}
+              yMin={graphAxis.yMin}
+              yMax={graphAxis.yMax}
+              xTicks={generateTicks(graphAxis.xMin, graphAxis.xMax)}
+              yTicks={generateTicks(graphAxis.yMin, graphAxis.yMax)}
               xLabel={sc.paramLabel}
               yLabel={sc.yAxisLabel}
               dark
@@ -667,10 +668,11 @@ export const OptimizationLab = () => {
                     {sc.minimize ? 'mín' : 'máx'} ({format(optX)}, {format(optVal)})
                   </text>
                   <circle cx={scaleX(clampedParam)} cy={scaleY(currentVal)} r="6" fill="#ff6b35" stroke="white" strokeWidth="2" />
-                  <line x1={scaleX(clampedParam)} y1={scaleY(yMin)} x2={scaleX(clampedParam)} y2={scaleY(currentVal)} stroke="#ff6b35" strokeWidth="1" strokeDasharray="4 3" />
+                  <line x1={scaleX(clampedParam)} y1={scaleY(graphAxis.yMin)} x2={scaleX(clampedParam)} y2={scaleY(currentVal)} stroke="#ff6b35" strokeWidth="1" strokeDasharray="4 3" />
                 </>
               )}
             </CartesianFrame>
+            <AxisRangePanel {...graphAxis} />
           </div>
 
           <div className="flex flex-wrap items-center gap-3">

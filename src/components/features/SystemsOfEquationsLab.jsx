@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, generateTicks } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 // ── math core ─────────────────────────────────────────────────────────────────
 const solve = (a1, b1, c1, a2, b2, c2) => {
@@ -426,7 +427,6 @@ const SCENARIOS = [
 export const SystemsOfEquationsLab = () => {
   const [scenarioId, setScenarioId] = useState('encuentro')
   const [method, setMethod]         = useState('cramer')
-  const [axisScale, setAxisScale]   = useState(10)  // adjustable axis range
 
   // Encuentro params
   const [D,  setD]  = useState(300)
@@ -500,23 +500,21 @@ export const SystemsOfEquationsLab = () => {
     return Math.min(Math.ceil(raw / 5) * 5, 500)
   })()
 
-  // ── graph helpers ───────────────────────────────────────────────────────────
-  const AXIS = axisScale
-  const lineY = (x, a, b, c) => Math.abs(b) < 1e-9 ? null : (c - a * x) / b
+  const axis1 = useAxisRange({
+    xMin: -autoScale, xMax: autoScale,
+    yMin: -autoScale, yMax: autoScale,
+  })
 
-  // Dynamic ticks based on scale
-  const tickStep = AXIS <= 4 ? 1 : AXIS <= 8 ? 2 : AXIS <= 15 ? 5 : 10
-  const TICKS = Array.from(
-    { length: Math.floor((2 * AXIS) / tickStep) + 1 },
-    (_, i) => Math.round(-AXIS + i * tickStep),
-  ).filter((v) => Math.abs(v) <= AXIS)
+  // ── graph helpers ───────────────────────────────────────────────────────────
+  const AXIS = Math.max(Math.abs(axis1.xMin), Math.abs(axis1.xMax), Math.abs(axis1.yMin), Math.abs(axis1.yMax))
+  const lineY = (x, a, b, c) => Math.abs(b) < 1e-9 ? null : (c - a * x) / b
 
   // Two-point line: compute exact endpoints at x = ±AXIS (extended slightly so
   // the clipPath of CartesianFrame clips a complete segment, never a short stub)
   const makePts = (a, b, c) => {
     if (Math.abs(b) < 1e-9) return []   // vertical line handled by vLine
-    const x1 = -AXIS - 2
-    const x2 =  AXIS + 2
+    const x1 = axis1.xMin - 2
+    const x2 = axis1.xMax + 2
     return [
       { x: x1, y: (c - a * x1) / b },
       { x: x2, y: (c - a * x2) / b },
@@ -534,8 +532,8 @@ export const SystemsOfEquationsLab = () => {
 
   // Check if intersection is visible in current scale
   const solVisible = sol &&
-    Math.abs(sol.x) <= AXIS * 1.05 &&
-    Math.abs(sol.y) <= AXIS * 1.05
+    sol.x >= axis1.xMin * 1.05 && sol.x <= axis1.xMax * 1.05 &&
+    sol.y >= axis1.yMin * 1.05 && sol.y <= axis1.yMax * 1.05
 
   // ── equation display ─────────────────────────────────────────────────────────
   const eqStr = (a, b, c) => {
@@ -566,7 +564,7 @@ export const SystemsOfEquationsLab = () => {
       {/* ── scenario selector ───────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-2">
         {SCENARIOS.map((sc) => (
-          <button key={sc.id} type="button" onClick={() => setScenarioId(sc.id)}
+          <button key={sc.id} type="button" onClick={() => { setScenarioId(sc.id); axis1.resetRange() }}
             className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
               scenarioId === sc.id
                 ? 'bg-ink text-paper shadow-[0_8px_20px_rgba(18,23,35,0.18)]'
@@ -670,24 +668,8 @@ export const SystemsOfEquationsLab = () => {
       <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
 
         {/* cartesian plane */}
+        <div className="xl:sticky xl:top-4 xl:self-start">
         <LabCard dark title="Interpretación geométrica — intersección de rectas">
-          {/* axis scale control */}
-          <div className="mt-3 flex items-end gap-3">
-            <div className="flex-1">
-              <SliderField
-                id="axisScale" label="Escala de ejes (±)"
-                value={axisScale} min={2} max={500} step={1}
-                onChange={setAxisScale}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => setAxisScale(autoScale)}
-              className="mb-1 shrink-0 rounded-full border border-ink/14 bg-paper px-4 py-2 text-xs font-semibold text-ink/70 transition-colors hover:border-ink/28 hover:text-ink"
-            >
-              Ajustar vista
-            </button>
-          </div>
           {!solVisible && sol && (
             <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-signal/20 bg-signal/8 px-3 py-2">
               <p className="text-[0.72rem] text-signal/80">
@@ -695,7 +677,7 @@ export const SystemsOfEquationsLab = () => {
               </p>
               <button
                 type="button"
-                onClick={() => setAxisScale(autoScale)}
+                onClick={() => axis1.resetRange()}
                 className="shrink-0 rounded-full bg-signal/15 px-3 py-1 text-[0.68rem] font-semibold text-signal transition-colors hover:bg-signal/25"
               >
                 Ver ahora →
@@ -705,22 +687,24 @@ export const SystemsOfEquationsLab = () => {
           <div className="mt-3">
             <CartesianFrame
               width={580} height={400}
-              xMin={-AXIS} xMax={AXIS}
-              yMin={-AXIS} yMax={AXIS}
+              xMin={axis1.xMin} xMax={axis1.xMax}
+              yMin={axis1.yMin} yMax={axis1.yMax}
               xLabel="x"
               yLabel="y"
-              dark xTicks={TICKS} yTicks={TICKS}
+              dark
+              xTicks={generateTicks(axis1.xMin, axis1.xMax)}
+              yTicks={generateTicks(axis1.yMin, axis1.yMax)}
             >
               {({ scaleX, scaleY }) => (
                 <>
                   {vLine1 !== null
-                    ? <line x1={scaleX(vLine1)} y1={scaleY(-AXIS)} x2={scaleX(vLine1)} y2={scaleY(AXIS)}
+                    ? <line x1={scaleX(vLine1)} y1={scaleY(axis1.yMin)} x2={scaleX(vLine1)} y2={scaleY(axis1.yMax)}
                       stroke="rgba(255,107,53,0.85)" strokeWidth="2.5" />
                     : <path d={toPath(pts1, scaleX, scaleY)} fill="none"
                       stroke="rgba(255,107,53,0.85)" strokeWidth="2.5" strokeLinecap="round" />
                   }
                   {vLine2 !== null
-                    ? <line x1={scaleX(vLine2)} y1={scaleY(-AXIS)} x2={scaleX(vLine2)} y2={scaleY(AXIS)}
+                    ? <line x1={scaleX(vLine2)} y1={scaleY(axis1.yMin)} x2={scaleX(vLine2)} y2={scaleY(axis1.yMax)}
                       stroke="rgba(120,180,255,0.85)" strokeWidth="2.5"
                       strokeDasharray={stype === 'indeterminado' ? '8 4' : 'none'} />
                     : <path d={toPath(pts2, scaleX, scaleY)} fill="none"
@@ -729,9 +713,9 @@ export const SystemsOfEquationsLab = () => {
                   }
                   {solVisible && stype === 'determinado' && (
                     <>
-                      <line x1={scaleX(sol.x)} y1={scaleY(-AXIS)} x2={scaleX(sol.x)} y2={scaleY(AXIS)}
+                      <line x1={scaleX(sol.x)} y1={scaleY(axis1.yMin)} x2={scaleX(sol.x)} y2={scaleY(axis1.yMax)}
                         stroke="rgba(255,255,255,0.10)" strokeWidth="1" strokeDasharray="4 3" />
-                      <line x1={scaleX(-AXIS)} y1={scaleY(sol.y)} x2={scaleX(AXIS)} y2={scaleY(sol.y)}
+                      <line x1={scaleX(axis1.xMin)} y1={scaleY(sol.y)} x2={scaleX(axis1.xMax)} y2={scaleY(sol.y)}
                         stroke="rgba(255,255,255,0.10)" strokeWidth="1" strokeDasharray="4 3" />
                       <circle cx={scaleX(sol.x)} cy={scaleY(sol.y)} r={8}
                         fill="white" stroke="rgba(255,255,255,0.6)" strokeWidth="2" />
@@ -745,6 +729,7 @@ export const SystemsOfEquationsLab = () => {
               )}
             </CartesianFrame>
           </div>
+          <AxisRangePanel {...axis1} />
           <div className="mt-3 flex flex-wrap gap-5">
             {[
               { color: 'rgba(255,107,53,0.85)', label: `Ec.1: ${eqStr(a1, b1, c1)}` },
@@ -758,6 +743,7 @@ export const SystemsOfEquationsLab = () => {
             ))}
           </div>
         </LabCard>
+        </div>
 
         {/* algebraic solution */}
         <div className="space-y-4">

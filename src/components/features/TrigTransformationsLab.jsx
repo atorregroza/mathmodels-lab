@@ -1,10 +1,9 @@
 import { useMemo, useState, useCallback } from 'react'
-import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const PI = Math.PI
-const xTicks = [-2 * PI, (-3 * PI) / 2, -PI, -PI / 2, 0, PI / 2, PI, (3 * PI) / 2, 2 * PI]
-const yTicks = [-4, -2, 0, 2, 4]
 
 const formatPiTick = (value) => {
   const ratio = value / PI
@@ -122,6 +121,8 @@ export const TrigTransformationsLab = () => {
     setScore(Math.max(0, Math.round(100 * Math.exp(-error * 0.8))))
   }, [challenge, guess])
 
+  const axis = useAxisRange({ xMin: -2 * PI, xMax: 2 * PI, yMin: -5, yMax: 5 })
+
   return (
     <div className="rounded-[2.2rem] border border-ink/10 bg-white/78 p-5 shadow-[0_28px_70px_rgba(18,23,35,0.08)] md:p-8">
       <div className="grid gap-8 xl:grid-cols-[0.76fr_1.24fr]">
@@ -140,7 +141,7 @@ export const TrigTransformationsLab = () => {
             <div className="mt-2 grid grid-cols-2 gap-3">
               {[{ id: 'explore', label: 'Explorar' }, { id: 'challenge', label: 'Desaf\u00edo' }].map((m) => (
                 <button key={m.id} type="button"
-                  onClick={() => { setMode(m.id); if (m.id === 'challenge' && !challenge) generateChallenge() }}
+                  onClick={() => { setMode(m.id); if (m.id === 'challenge' && !challenge) generateChallenge(); axis.resetRange() }}
                   className={`rounded-[1.2rem] border px-4 py-3 text-sm font-semibold transition-colors ${
                     mode === m.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'
                   }`}
@@ -155,7 +156,7 @@ export const TrigTransformationsLab = () => {
                 <div className="mt-2 grid grid-cols-3 gap-3">
                   {families.map((f) => (
                     <button key={f.id} type="button"
-                      onClick={() => { setBaseId(f.id); setA(f.id === 'tan' ? 0.9 : 2); setB(1); setH(0); setK(0) }}
+                      onClick={() => { setBaseId(f.id); setA(f.id === 'tan' ? 0.9 : 2); setB(1); setH(0); setK(0); axis.resetRange() }}
                       className={`rounded-[1.2rem] border px-4 py-3 text-sm font-semibold transition-colors ${
                         baseId === f.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'
                       }`}
@@ -231,7 +232,7 @@ export const TrigTransformationsLab = () => {
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <div className="max-w-3xl">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Lectura gr&aacute;fica</p>
@@ -247,8 +248,8 @@ export const TrigTransformationsLab = () => {
             </div>
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
               <CartesianFrame
-                xMin={-2 * PI} xMax={2 * PI} yMin={-5} yMax={5}
-                xTicks={xTicks} yTicks={yTicks}
+                xMin={axis.xMin} xMax={axis.xMax} yMin={axis.yMin} yMax={axis.yMax}
+                xTicks={generateTicks(axis.xMin, axis.xMax)} yTicks={generateTicks(axis.yMin, axis.yMax)}
                 xTickFormatter={formatPiTick}
                 xLabel="x (rad)" yLabel="f(x)"
                 className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
@@ -303,6 +304,7 @@ export const TrigTransformationsLab = () => {
                 )}
               </CartesianFrame>
             </div>
+            <AxisRangePanel {...axis} />
           </LabCard>
 
           {mode === 'explore' && (

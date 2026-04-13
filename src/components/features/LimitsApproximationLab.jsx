@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const scenarios = [
   {
@@ -59,6 +60,10 @@ export const LimitsApproximationLab = () => {
   const exact = scenario.derivative(a)
   const diff = Math.abs(left - right)
   const points = sampleRange(0, scenario.domainMax, 120, scenario.func)
+  const axis = useAxisRange({
+    xMin: 0, xMax: scenario.domainMax,
+    yMin: 0, yMax: Math.max(...points.map((point) => point.y)) * 1.1,
+  })
   const tableRows = [1, 0.8, 0.5, 0.3, 0.2, 0.15, 0.1, 0.05].map((value) => {
     const l = (scenario.func(a) - scenario.func(a - value)) / value
     const r = (scenario.func(a + value) - scenario.func(a)) / value
@@ -80,7 +85,7 @@ export const LimitsApproximationLab = () => {
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setScenarioId(item.id)}
+                  onClick={() => { setScenarioId(item.id); axis.resetRange() }}
                   className={`rounded-[1.2rem] border px-4 py-4 text-left transition-colors ${item.id === scenario.id ? 'border-ink bg-ink text-paper' : 'border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
                   <p className="font-semibold">{item.label}</p>
@@ -94,7 +99,7 @@ export const LimitsApproximationLab = () => {
           <SliderField id="limits-h" label="Tamaño del intervalo h" value={h} min={0.02} max={1} step={0.01} onChange={setH} />
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
@@ -108,12 +113,12 @@ export const LimitsApproximationLab = () => {
 
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
               <CartesianFrame
-                xMin={0}
-                xMax={scenario.domainMax}
-                yMin={0}
-                yMax={Math.max(...points.map((point) => point.y)) * 1.1}
-                xTicks={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter((tick) => tick <= scenario.domainMax)}
-                yTicks={[0, 1, 2, 3, 4, 5, 6]}
+                xMin={axis.xMin}
+                xMax={axis.xMax}
+                yMin={axis.yMin}
+                yMax={axis.yMax}
+                xTicks={generateTicks(axis.xMin, axis.xMax)}
+                yTicks={generateTicks(axis.yMin, axis.yMax)}
                 xLabel="x"
                 yLabel="f(x)"
               >
@@ -128,6 +133,8 @@ export const LimitsApproximationLab = () => {
                 )}
               </CartesianFrame>
             </div>
+
+            <AxisRangePanel {...axis} />
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <MetricCard label="Razón por izquierda" value={format(left)} detail="Usa el intervalo [a - h, a]." />

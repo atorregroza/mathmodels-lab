@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
-import { CartesianFrame, LabCard, MetricCard, SliderField, ModelCard } from './DerivaLabPrimitives'
-import { downloadCsv, format, sampleRange, linePath } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField, ModelCard } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, sampleRange, linePath } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 /* ── math helpers ──────────────────────────────────────── */
 
@@ -25,11 +26,15 @@ export const NormalDistributionLab = () => {
   const [a, setA] = useState(-1)
   const [b, setB] = useState(1)
 
-  // Fixed axis range — axes never move when adjusting μ or σ
-  // μ ∈ [-5,5], σ ∈ [0.3,3] → worst case: -5 - 4*3 = -17, 5 + 4*3 = 17
-  const xMin = -17
-  const xMax = 17
-  const yMaxFixed = 1.45 // σ=0.3 → peak ≈ 1.33, with padding
+  // Default axis range — worst case: μ ∈ [-5,5], σ ∈ [0.3,3]
+  const defaultXMin = -17
+  const defaultXMax = 17
+  const defaultYMax = 1.45 // σ=0.3 → peak ≈ 1.33, with padding
+
+  const axis = useAxisRange({
+    xMin: defaultXMin, xMax: defaultXMax,
+    yMin: 0, yMax: defaultYMax,
+  })
 
   const curve = useMemo(
     () => sampleRange(mu - 4.5 * sigma, mu + 4.5 * sigma, 300, (x) => normalPdf(x, mu, sigma)),
@@ -55,13 +60,6 @@ export const NormalDistributionLab = () => {
     const pts = sampleRange(clampA, clampB, 120, (x) => normalPdf(x, mu, sigma))
     return pts
   }, [a, b, mu, sigma])
-
-  // Fixed integer ticks — stable regardless of μ/σ
-  const xTicks = useMemo(() => {
-    const ticks = []
-    for (let v = -16; v <= 16; v += 2) ticks.push(v)
-    return ticks
-  }, [])
 
   const handleExport = () => {
     const rows = [
@@ -117,12 +115,12 @@ export const NormalDistributionLab = () => {
         </div>
 
         {/* ── right: chart + metrics ── */}
-        <div className="space-y-5">
+        <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark>
             <CartesianFrame
-              xMin={xMin} xMax={xMax} yMin={0} yMax={yMaxFixed}
-              xTicks={xTicks}
-              yTicks={[0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2]}
+              xMin={axis.xMin} xMax={axis.xMax} yMin={axis.yMin} yMax={axis.yMax}
+              xTicks={generateTicks(axis.xMin, axis.xMax)}
+              yTicks={generateTicks(axis.yMin, axis.yMax, 6)}
               yTickFormatter={(v) => v.toFixed(1)}
               className="w-full h-auto aspect-[16/9] overflow-hidden rounded-[1.1rem]"
             >
@@ -168,6 +166,7 @@ export const NormalDistributionLab = () => {
                 </>
               )}
             </CartesianFrame>
+            <AxisRangePanel {...axis} />
           </LabCard>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

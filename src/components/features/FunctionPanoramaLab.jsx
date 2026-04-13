@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
-import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
+import { AxisRangePanel, CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
+import { useAxisRange } from '../../hooks/useAxisRange'
 
 const families = [
   {
@@ -84,6 +85,8 @@ export const FunctionPanoramaLab = () => {
   const family = families.find((item) => item.id === familyId) || families[0]
   const [params, setParams] = useState(family.params)
 
+  const axis = useAxisRange({ xMin: -6, xMax: 6, yMin: -8, yMax: 8 })
+
   const points = sampleRange(-6, 6, 200, (x) => family.fn(x, params))
 
   return (
@@ -104,6 +107,7 @@ export const FunctionPanoramaLab = () => {
                   onClick={() => {
                     setFamilyId(item.id)
                     setParams(item.params)
+                    axis.resetRange()
                   }}
                   className={`rounded-full px-4 py-2.5 text-sm font-semibold transition-colors ${familyId === item.id ? 'bg-ink text-paper shadow-[0_10px_24px_rgba(18,23,35,0.18)]' : 'border border-ink/10 bg-paper text-ink hover:border-ink/30'}`}
                 >
@@ -170,12 +174,12 @@ export const FunctionPanoramaLab = () => {
               </div>
               <div className="mt-5 overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
                 <CartesianFrame
-                  xMin={-6}
-                  xMax={6}
-                  yMin={-8}
-                  yMax={8}
-                  xTicks={[-6, -4, -2, 0, 2, 4, 6]}
-                  yTicks={[-8, -4, 0, 4, 8]}
+                  xMin={axis.xMin}
+                  xMax={axis.xMax}
+                  yMin={axis.yMin}
+                  yMax={axis.yMax}
+                  xTicks={generateTicks(axis.xMin, axis.xMax)}
+                  yTicks={generateTicks(axis.yMin, axis.yMax)}
                   xLabel="x"
                   yLabel="f(x)"
                   className="w-full h-auto overflow-hidden rounded-[1.1rem]"
@@ -185,6 +189,7 @@ export const FunctionPanoramaLab = () => {
                   )}
                 </CartesianFrame>
               </div>
+              <AxisRangePanel {...axis} />
 
               <div className="mt-4 flex flex-wrap gap-3 text-sm text-paper/72">
                 <div className="rounded-full border border-white/10 bg-white/6 px-3 py-2"><span className="font-semibold text-graph">Dominio:</span> {typeof family.domain === 'function' ? family.domain(params) : family.domain}</div>
