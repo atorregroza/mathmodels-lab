@@ -4,10 +4,10 @@ import { downloadCsv, format, generateTicks, linePath, sampleRange } from './der
 import { useAxisRange } from '../../hooks/useAxisRange'
 
 const bases = [
-  { id: 'quadratic',    label: 'Cuadrática',   fn: (u) => u ** 2,                              formula: 'f(x) = x²',    xWindow: [-6, 6],    yWindow: [-12, 12] },
-  { id: 'cubic',        label: 'Cúbica',        fn: (u) => u ** 3,                              formula: 'f(x) = x³',    xWindow: [-4.5, 4.5], yWindow: [-12, 12] },
-  { id: 'exponential',  label: 'Exponencial',   fn: (u) => Math.exp(u),                         formula: 'f(x) = eˣ',    xWindow: [-5, 5],    yWindow: [-8, 12]  },
-  { id: 'logarithmic',  label: 'Logarítmica',   fn: (u) => (u > 0 ? Math.log(u) : Number.NaN), formula: 'f(x) = ln(x)', xWindow: [-6, 6],    yWindow: [-8, 8]   },
+  { id: 'quadratic',    label: 'Cuadrática',   fn: (u) => u ** 2,                              formula: 'f(x) = x²',    substitute: (u) => `\\left(${u}\\right)^{2}`,  xWindow: [-6, 6],    yWindow: [-12, 12] },
+  { id: 'cubic',        label: 'Cúbica',        fn: (u) => u ** 3,                              formula: 'f(x) = x³',    substitute: (u) => `\\left(${u}\\right)^{3}`,  xWindow: [-4.5, 4.5], yWindow: [-12, 12] },
+  { id: 'exponential',  label: 'Exponencial',   fn: (u) => Math.exp(u),                         formula: 'f(x) = eˣ',    substitute: (u) => `e^{${u}}`,                  xWindow: [-5, 5],    yWindow: [-8, 12]  },
+  { id: 'logarithmic',  label: 'Logarítmica',   fn: (u) => (u > 0 ? Math.log(u) : Number.NaN), formula: 'f(x) = ln(x)', substitute: (u) => `\\ln\\left(${u}\\right)`,  xWindow: [-6, 6],    yWindow: [-8, 8]   },
 ]
 
 export const FunctionTransformationsLab = () => {
@@ -35,8 +35,11 @@ export const FunctionTransformationsLab = () => {
   })
 
   const sign = (v, pos = '+', neg = '−') => (v >= 0 ? pos : neg)
+  // signo de h se invierte: f(x − h) con h>0 se lee (x − h); con h<0 se lee (x + |h|)
+  const inner = `${format(b)}(x ${sign(h, '−', '+')} ${format(Math.abs(h))})`
+  const generalFormula = 'g(x) = a·f(b(x − h)) + k'
   const transformedFormula =
-    `g(x) = ${format(a)}·f(${format(b)}(x ${sign(h)} ${format(Math.abs(h))})) ${sign(k)} ${format(Math.abs(k))}`
+    `g(x) = ${format(a)}·${base.substitute(inner)} ${sign(k)} ${format(Math.abs(k))}`
 
   const handleBaseChange = (id) => {
     setBaseId(id)
@@ -164,14 +167,19 @@ export const FunctionTransformationsLab = () => {
       </div>
 
       {/* ── fórmulas ─────────────────────────────────────────────────────────── */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         <ModelCard
           title="Función base"
           expression={base.formula}
           parameters={`Dominio visible: [${format(axis.xMin)}, ${format(axis.xMax)}]`}
         />
         <ModelCard
-          title="Transformada g(x)"
+          title="Modelo general"
+          expression={generalFormula}
+          parameters="Forma paramétrica con a, b, h, k"
+        />
+        <ModelCard
+          title="Modelo evaluado"
           expression={transformedFormula}
           parameters={`a = ${format(a)},  b = ${format(b)},  h = ${format(h)},  k = ${format(k)}`}
         />
