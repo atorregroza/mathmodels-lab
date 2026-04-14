@@ -27,9 +27,19 @@ export function toLatex(input) {
   // minus Unicode → ASCII minus
   s = s.replace(/−/g, '-')
 
-  // frac(num, den)  — denom admite un nivel de paréntesis anidado
-  s = s.replace(/frac\(([^,)]+),\s*([^)(]*(?:\([^)]*\)[^)(]*)*)\)/g,
-    (_, n, d) => `\\frac{${n.trim()}}{${d.trim()}}`)
+  // frac(num, den)  — aplicado repetidamente para soportar anidamiento arbitrario
+  {
+    let prev
+    do {
+      prev = s
+      s = s.replace(/frac\(([^,()]+),\s*([^)(]*(?:\([^)]*\)[^)(]*)*)\)/g,
+        (_, n, d) => `\\frac{${n.trim()}}{${d.trim()}}`)
+    } while (s !== prev)
+  }
+
+  // subíndices multi-carácter: T_int → T_{int}, h_out → h_{out}
+  // (solo cuando siguen 2+ letras/dígitos sin llaves previas)
+  s = s.replace(/([A-Za-z])_([A-Za-z0-9]{2,})\b/g, '$1_{$2}')
 
   // e^(expr) → e^{expr}
   s = s.replace(/e\^\(([^)]+)\)/g, 'e^{$1}')

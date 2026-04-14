@@ -378,7 +378,7 @@ export const ThermalInsulationLab = () => {
             {showModelDetail && (
               <>
                 <ModelCard
-                  title={showConvection ? 'Modelo con convección superficial' : 'Ley de Fourier (estado estacionario)'}
+                  title={showConvection ? 'Modelo general (con convección superficial)' : 'Modelo general (Ley de Fourier)'}
                   expression={showConvection
                     ? 'q = frac(T_int − T_ext, frac(1,h_in) + Σ frac(Lᵢ,kᵢ) + frac(1,h_out))'
                     : 'q = frac(T_int − T_ext, Σ frac(Lᵢ,kᵢ))'
@@ -387,7 +387,11 @@ export const ThermalInsulationLab = () => {
                     ? `donde h_in = ${H_IN} W/(m²·K), h_out = ${H_OUT} W/(m²·K)`
                     : 'donde kᵢ = conductividad térmica (W/(m·K)), Lᵢ = espesor (m)'
                   }
-                  conditions={`q = ${format(m.q)} W/m² · R_total = ${format(m.Rtotal)} m²·K/W · ΔT = ${Math.abs(Tin - Tout)}°C`}
+                />
+                <ModelCard
+                  title="Modelo evaluado"
+                  expression={`q = frac(${format(Tin)} − ${format(Tout)}, ${format(m.Rtotal)}) = ${format(m.q)} W/m²`}
+                  parameters={`ΔT = ${format(Math.abs(Tin - Tout))}°C,  R_total = ${format(m.Rtotal)} m²·K/W`}
                 />
                 <div className="overflow-x-auto rounded-[1.2rem] border border-ink/10 bg-paper">
                   <table className="w-full text-xs text-ink/70">
