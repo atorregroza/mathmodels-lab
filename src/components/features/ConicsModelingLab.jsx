@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { Math as MathRender } from '../ui/Math'
 import { format, downloadCsv } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -11,28 +12,28 @@ const scenarios = [
     label: 'Circunferencia',
     title: 'Cobertura de señal WiFi',
     context: 'Un router emite señal WiFi en todas direcciones con alcance r desde su posición (h, k). ¿Qué puntos del plano quedan dentro de la cobertura? ¿Dónde ubicar el router para cubrir ciertos puntos?',
-    equation: '(x − h)² + (y − k)² = r²',
+    equation: String.raw`(x - h)^{2} + (y - k)^{2} = r^{2}`,
   },
   {
     id: 'parabola',
     label: 'Parábola',
     title: 'Reflector parabólico',
     context: 'Una antena parabólica concentra rayos paralelos (señal satelital, luz) en su foco. La forma del reflector determina dónde se ubica el foco. ¿Qué profundidad y apertura concentran mejor la señal?',
-    equation: 'y − k = frac(1,4p)(x − h)²',
+    equation: String.raw`y - k = \frac{1}{4p}(x - h)^{2}`,
   },
   {
     id: 'ellipse',
     label: 'Elipse',
     title: 'Órbita planetaria',
     context: 'Un planeta orbita una estrella ubicada en uno de los focos de una elipse. La excentricidad determina qué tan "alargada" es la órbita. ¿Cómo afecta esto a la distancia mínima (perihelio) y máxima (afelio)?',
-    equation: 'frac(x²,a²) + frac(y²,b²) = 1',
+    equation: String.raw`\frac{x^{2}}{a^{2}} + \frac{y^{2}}{b^{2}} = 1`,
   },
   {
     id: 'artemis',
     label: 'Artemis II',
     title: 'Misión Artemis II — Trayectoria real (abril 2026)',
     context: 'El 1 de abril de 2026, cuatro astronautas de la NASA partieron en Artemis II: la primera misión tripulada a la Luna en más de 50 años. La nave Orion sigue una trayectoria de retorno libre (free-return): una elipse que rodea la Luna y regresa a la Tierra sin necesidad de motor.',
-    equation: 'Elipse de transferencia: e ≈ 0.969',
+    equation: String.raw`\text{Elipse de transferencia: } e \approx 0.969`,
   },
 ]
 
@@ -538,7 +539,9 @@ export const ConicsModelingLab = () => {
 
           <div className="flex flex-wrap items-center gap-3">
             <LabCard title="Ecuación" className="flex-1">
-              <p className="mt-1 font-mono text-sm text-ink/80">{sc.equation}</p>
+              <div className="mt-1 text-sm text-ink/80">
+                <MathRender raw>{sc.equation}</MathRender>
+              </div>
             </LabCard>
             <button onClick={handleCsv} className="rounded-full border border-ink/10 bg-paper px-4 py-2 text-sm font-semibold text-ink/70 transition-colors hover:border-ink/30">CSV</button>
           </div>
