@@ -24,7 +24,8 @@
       "Bash(ls -la /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
       "Bash(grep -l \"f\\(x\\)\\\\|formula\\\\|equation\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
       "Bash(npm install:*)",
-      "Bash(grep -n \"newtonCooling\\\\|slug\\\\|path\" src/content/labs.*)"
+      "Bash(grep -n \"newtonCooling\\\\|slug\\\\|path\" src/content/labs.*)",
+      "Bash(node -e \"console.log\\(Object.keys\\(require\\('./package.json'\\).scripts\\).join\\(' '\\)\\)\")"
     ]
   }
 }
