@@ -11,7 +11,20 @@
       "Bash(git checkout:*)",
       "WebSearch",
       "WebFetch(domain:alfa.im.pwr.edu.pl)",
-      "WebFetch(domain:www.hackyourcourse.com)"
+      "WebFetch(domain:www.hackyourcourse.com)",
+      "WebFetch(domain:info.lanterna.com)",
+      "WebFetch(domain:manuals.plus)",
+      "WebFetch(domain:www.revisiondojo.com)",
+      "WebFetch(domain:geta7.com)",
+      "Bash(grep -r \"²\\\\|³\\\\|₀\\\\|₁\\\\|₂\\\\|∑\\\\|∫\\\\|√\\\\|π\\\\|μ\\\\|σ\\\\|≈\\\\|±\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx --files-with-matches)",
+      "Bash(grep -r \"f\\(x\\)\\\\|y =\\\\|x\\\\^2\\\\|<sup>\\\\|<sub>\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx --files-with-matches)",
+      "Bash(wc -l /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
+      "Bash(grep -r \"input\\\\|onChange\\\\|formula\\\\|SliderField\\\\|ModelCard\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
+      "Bash(grep -o \"²\\\\|³\\\\|⁴\\\\|₀\\\\|₁\\\\|₂\\\\|∑\\\\|∫\\\\|√\\\\|π\\\\|μ\\\\|σ\\\\|≈\\\\|±\\\\|≠\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
+      "Bash(ls -la /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
+      "Bash(grep -l \"f\\(x\\)\\\\|formula\\\\|equation\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
+      "Bash(npm install:*)",
+      "Bash(grep -n \"newtonCooling\\\\|slug\\\\|path\" src/content/labs.*)"
     ]
   }
 }

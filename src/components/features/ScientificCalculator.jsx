@@ -57,17 +57,41 @@ class Parser {
 
   mulDiv() {
     let left = this.power()
-    while (this.peek() === '×' || this.peek() === '÷' || this.peek() === '*' || this.peek() === '/') {
-      const op = this.expr[this.pos++]
-      const right = this.power()
-      if (op === '÷' || op === '/') {
-        if (right === 0) throw new Error('÷ por 0')
-        left = left / right
-      } else {
+    while (true) {
+      const ch = this.peek()
+      if (ch === '×' || ch === '·' || ch === '*' || ch === '÷' || ch === '/') {
+        const op = this.expr[this.pos++]
+        const right = this.power()
+        if (op === '÷' || op === '/') {
+          if (right === 0) throw new Error('÷ por 0')
+          left = left / right
+        } else {
+          left = left * right
+        }
+      } else if (this.isImplicitMulStart()) {
+        // multiplicación implícita: 2x, 3(x+1), 2sin(x), (x+1)(x-1), xπ, etc.
+        const right = this.power()
         left = left * right
+      } else {
+        break
       }
     }
     return left
+  }
+
+  isImplicitMulStart() {
+    const ch = this.peek()
+    if (!ch) return false
+    if (ch === '(' || ch === 'x' || ch === 'π') return true
+    if (ch === 'e') {
+      // 'e' como constante solo si no es seguido de dígito (evitar confusión con notación científica futura)
+      const next = this.expr[this.pos + 1]
+      return next === undefined || !/\d/.test(next)
+    }
+    if (/\d/.test(ch)) return true
+    if (/^pi\b/i.test(this.expr.slice(this.pos))) return true
+    if (/^(asin|acos|atan|sin|cos|tan|ln|log|sqrt|abs)/.test(this.expr.slice(this.pos))) return true
+    return false
   }
 
   power() {
@@ -116,9 +140,15 @@ class Parser {
     }
 
     if (this.expr[this.pos] === 'π') { this.pos++; return Math.PI }
-    if (this.expr[this.pos] === 'e' && !/^e\d/.test(this.expr.slice(this.pos))) {
+    // alias textual: "pi" / "Pi" / "PI" / "pI" — útil cuando no hay π en el teclado
+    if (/^pi\b/i.test(this.expr.slice(this.pos)) && !/[a-z]/i.test(this.expr[this.pos + 2] || '')) {
+      this.pos += 2
+      return Math.PI
+    }
+    if (this.expr[this.pos] === 'e') {
       const next = this.expr[this.pos + 1]
-      if (next === undefined || /[+\-×÷*/^)!]/.test(next)) {
+      // 'e' es constante salvo cuando lo sigue un dígito (reservado para notación científica)
+      if (next === undefined || !/\d/.test(next)) {
         this.pos++
         return Math.E
       }
@@ -458,7 +488,7 @@ const ROWS_MAIN = [
 
 /* ── mini graph component ───────────────────────────────────── */
 
-function MiniGraph({ functions, xRange, yRangeOverride = null, analysisPoints = [] }) {
+function MiniGraph({ functions, xRange, yRangeOverride = null, analysisPoints = [], shadedIntegral = null }) {
   const clipId = useId().replace(/:/g, '')
   const W = 340
   const H = 200
@@ -569,6 +599,33 @@ function MiniGraph({ functions, xRange, yRangeOverride = null, analysisPoints = 
 
       {/* curves */}
       <g clipPath={`url(#${clipId})`}>
+        {/* shaded integral region (first curve, drawn under the stroke) */}
+        {shadedIntegral && curves[0] && shadedIntegral.expr === curves[0].expr && (() => {
+          const { a, b, value, color } = shadedIntegral
+          const lo = Math.min(a, b), hi = Math.max(a, b)
+          const yA = evalForGraph(shadedIntegral.expr, lo)
+          const yB = evalForGraph(shadedIntegral.expr, hi)
+          if (yA === null || yB === null) return null
+          const between = curves[0].points.filter(p => p.x > lo && p.x < hi)
+          const pts = [{ x: lo, y: yA }, ...between, { x: hi, y: yB }]
+          const y0 = sy(0)
+          const pathD = `M ${sx(lo)},${y0} L ${sx(lo)},${sy(yA)} ` +
+            pts.slice(1).map(p => `L ${sx(p.x)},${sy(p.y)}`).join(' ') +
+            ` L ${sx(hi)},${y0} Z`
+          // label near the region
+          const midX = (sx(lo) + sx(hi)) / 2
+          const labelText = `área ≈ ${parseFloat(value.toPrecision(5))}`
+          return (
+            <g key="shaded-integral">
+              <path d={pathD} fill={color} opacity="0.22" />
+              <line x1={sx(lo)} y1={pad} x2={sx(lo)} y2={H - pad} stroke={color} strokeWidth="1" strokeDasharray="3 3" opacity="0.55" />
+              <line x1={sx(hi)} y1={pad} x2={sx(hi)} y2={H - pad} stroke={color} strokeWidth="1" strokeDasharray="3 3" opacity="0.55" />
+              <rect x={midX - 42} y={pad + 4} width="84" height="16" rx="4" fill="rgba(14,18,25,0.85)" stroke={color} strokeWidth="0.8" opacity="0.9" />
+              <text x={midX} y={pad + 15} fill={color} fontSize="9" textAnchor="middle" fontWeight="600">{labelText}</text>
+            </g>
+          )
+        })()}
+
         {curves.map((c, ci) => {
           if (c.points.length < 2) return null
           // split into segments to handle discontinuities
@@ -647,6 +704,8 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
   const [showTable, setShowTable] = useState(false)
   const [tableStep, setTableStep] = useState('1')
   const [solverGuess, setSolverGuess] = useState('0')
+  // { a, b, value, expr } — null when no integral currently displayed
+  const [shadedIntegral, setShadedIntegral] = useState(null)
   // matrix state
   const [matA, setMatA] = useState('1 0\n0 1')
   const [matB, setMatB] = useState('1 0\n0 1')
@@ -892,7 +951,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                 {/* graph canvas */}
                 <div className="border-b border-white/8 p-3">
                   {validGraphFns.length > 0 ? (
-                    <MiniGraph functions={validGraphFns} xRange={xRange} yRangeOverride={yRangeManual} analysisPoints={analysisData.points} />
+                    <MiniGraph functions={validGraphFns} xRange={xRange} yRangeOverride={yRangeManual} analysisPoints={analysisData.points} shadedIntegral={shadedIntegral} />
                   ) : (
                     <div className="flex h-[200px] items-center justify-center rounded-xl bg-[#0e1219] text-sm text-paper/30">
                       Escribe una función para graficar
@@ -1043,63 +1102,94 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
 
                 {/* ── calculus tools ── */}
                 {validGraphFns.length > 0 && (
-                  <div className="space-y-2 border-t border-white/8 px-3 py-2.5">
-                    <p className="text-[0.6rem] uppercase tracking-wider text-paper/35">Herramientas</p>
+                  <div className="space-y-3 border-t border-white/8 px-3 py-3">
+                    <div>
+                      <p className="text-[0.6rem] uppercase tracking-wider text-paper/40">Herramientas de análisis</p>
+                      <p className="mt-0.5 text-[0.58rem] italic text-paper/35">acepta π, e y expresiones. Si no tienes π en el teclado, escribe <span className="font-mono not-italic text-paper/55">pi</span> (ej: pi/4, 2pi, -pi/2)</p>
+                    </div>
 
                     {/* integral */}
-                    <div className="flex items-center gap-1.5 text-[0.65rem]">
-                      <span className="text-paper/40">∫</span>
-                      <input type="text" value={integralBounds.a} onChange={e => setIntegralBounds(p => ({ ...p, a: e.target.value }))} placeholder="a" className="w-12 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
-                      <span className="text-paper/40">→</span>
-                      <input type="text" value={integralBounds.b} onChange={e => setIntegralBounds(p => ({ ...p, b: e.target.value }))} placeholder="b" className="w-12 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
-                      <button
-                        onClick={() => {
-                          const a = parseFloat(integralBounds.a), b = parseFloat(integralBounds.b)
-                          if (!isNaN(a) && !isNaN(b) && validGraphFns[0]?.expr) {
-                            const result = numericalIntegral(validGraphFns[0].expr, a, b)
-                            setHistory(`∫[${a},${b}] ${validGraphFns[0].expr} = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Error'}`)
-                          }
-                        }}
-                        className="rounded bg-aqua/15 px-2 py-1 font-semibold text-aqua hover:bg-aqua/25"
-                      >Calcular</button>
+                    <div className="space-y-1.5">
+                      <p className="flex items-baseline gap-1.5 text-[0.62rem]">
+                        <span className="font-semibold text-paper/75">Integral definida</span>
+                        <span className="text-paper/40">área entre la curva y el eje x</span>
+                      </p>
+                      <div className="flex items-center gap-1.5 text-[0.65rem]">
+                        <span className="font-serif text-base italic text-paper/55">∫</span>
+                        <input type="text" value={integralBounds.a} onChange={e => { setIntegralBounds(p => ({ ...p, a: e.target.value })); setShadedIntegral(null) }} placeholder="desde" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
+                        <span className="text-paper/40">→</span>
+                        <input type="text" value={integralBounds.b} onChange={e => { setIntegralBounds(p => ({ ...p, b: e.target.value })); setShadedIntegral(null) }} placeholder="hasta" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
+                        <button
+                          onClick={() => {
+                            const a = evalForGraph(integralBounds.a, 0)
+                            const b = evalForGraph(integralBounds.b, 0)
+                            if (a !== null && b !== null && validGraphFns[0]?.expr) {
+                              const result = numericalIntegral(validGraphFns[0].expr, a, b)
+                              setHistory(`∫ desde ${integralBounds.a} hasta ${integralBounds.b} de ${validGraphFns[0].expr} dx = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Error'}`)
+                              setShadedIntegral(result !== null ? { a, b, value: result, expr: validGraphFns[0].expr, color: validGraphFns[0].color } : null)
+                            } else {
+                              setHistory(`No se pudo interpretar "${integralBounds.a}" o "${integralBounds.b}"`)
+                            }
+                          }}
+                          className="ml-auto rounded bg-aqua/15 px-2.5 py-1 font-semibold text-aqua hover:bg-aqua/25"
+                        >Calcular</button>
+                      </div>
                     </div>
 
                     {/* derivative */}
-                    <div className="flex items-center gap-1.5 text-[0.65rem]">
-                      <span className="text-paper/40">f'(</span>
-                      <input type="text" value={derivPoint} onChange={e => setDerivPoint(e.target.value)} placeholder="x₀" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
-                      <span className="text-paper/40">)</span>
-                      <button
-                        onClick={() => {
-                          const x0 = parseFloat(derivPoint)
-                          if (!isNaN(x0) && validGraphFns[0]?.expr) {
-                            const result = numericalDerivative(validGraphFns[0].expr, x0)
-                            setHistory(`f'(${x0}) = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Error'}`)
-                          }
-                        }}
-                        className="rounded bg-aqua/15 px-2 py-1 font-semibold text-aqua hover:bg-aqua/25"
-                      >Calcular</button>
+                    <div className="space-y-1.5">
+                      <p className="flex items-baseline gap-1.5 text-[0.62rem]">
+                        <span className="font-semibold text-paper/75">Derivada en un punto</span>
+                        <span className="text-paper/40">pendiente de la curva</span>
+                      </p>
+                      <div className="flex items-center gap-1.5 text-[0.65rem]">
+                        <span className="italic text-paper/55">f'(x₀)  en x₀ =</span>
+                        <input type="text" value={derivPoint} onChange={e => setDerivPoint(e.target.value)} placeholder="0" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
+                        <button
+                          onClick={() => {
+                            const x0 = evalForGraph(derivPoint, 0)
+                            if (x0 !== null && validGraphFns[0]?.expr) {
+                              const result = numericalDerivative(validGraphFns[0].expr, x0)
+                              setHistory(`f'(${derivPoint}) = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Error'}`)
+                            } else {
+                              setHistory(`No se pudo interpretar "${derivPoint}"`)
+                            }
+                          }}
+                          className="ml-auto rounded bg-aqua/15 px-2.5 py-1 font-semibold text-aqua hover:bg-aqua/25"
+                        >Calcular</button>
+                      </div>
                     </div>
 
                     {/* solver */}
-                    <div className="flex items-center gap-1.5 text-[0.65rem]">
-                      <span className="text-paper/40">f(x)=0</span>
-                      <input type="text" value={solverGuess} onChange={e => setSolverGuess(e.target.value)} placeholder="x₀" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
-                      <button
-                        onClick={() => {
-                          const x0 = parseFloat(solverGuess)
-                          if (!isNaN(x0) && validGraphFns[0]?.expr) {
-                            const result = solveEquation(validGraphFns[0].expr, x0, xRange[0], xRange[1])
-                            setHistory(`Solve: x = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Sin solución'}`)
-                          }
-                        }}
-                        className="rounded bg-aqua/15 px-2 py-1 font-semibold text-aqua hover:bg-aqua/25"
-                      >Resolver</button>
+                    <div className="space-y-1.5">
+                      <p className="flex items-baseline gap-1.5 text-[0.62rem]">
+                        <span className="font-semibold text-paper/75">Raíz de f(x) = 0</span>
+                        <span className="text-paper/40">dónde la curva cruza el eje x</span>
+                      </p>
+                      <div className="flex items-center gap-1.5 text-[0.65rem]">
+                        <span className="italic text-paper/55">estimación inicial</span>
+                        <input type="text" value={solverGuess} onChange={e => setSolverGuess(e.target.value)} placeholder="≈" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
+                        <button
+                          onClick={() => {
+                            const x0 = evalForGraph(solverGuess, 0)
+                            if (x0 !== null && validGraphFns[0]?.expr) {
+                              const result = solveEquation(validGraphFns[0].expr, x0, xRange[0], xRange[1])
+                              setHistory(result !== null ? `Raíz cerca de ${solverGuess}:  x = ${parseFloat(result.toPrecision(8))}` : `Sin raíz cerca de ${solverGuess}`)
+                            } else {
+                              setHistory(`No se pudo interpretar "${solverGuess}"`)
+                            }
+                          }}
+                          className="ml-auto rounded bg-aqua/15 px-2.5 py-1 font-semibold text-aqua hover:bg-aqua/25"
+                        >Resolver</button>
+                      </div>
                     </div>
 
                     {/* result display */}
                     {history && (mode === 'graph') && (
-                      <div className="rounded-lg bg-aqua/8 px-3 py-1.5 font-mono text-[0.65rem] text-aqua">{history}</div>
+                      <div className="rounded-lg border border-aqua/20 bg-aqua/8 px-3 py-2">
+                        <p className="mb-0.5 text-[0.55rem] uppercase tracking-wider text-aqua/60">Resultado</p>
+                        <p className="font-mono text-[0.7rem] text-aqua break-all">{history}</p>
+                      </div>
                     )}
 
                     {/* table toggle */}

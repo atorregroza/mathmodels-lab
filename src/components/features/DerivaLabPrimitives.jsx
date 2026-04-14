@@ -1,58 +1,5 @@
 import { useId, useState } from 'react'
-
-// Supports three special patterns inside formula strings:
-//   frac(num, den)  → proper vertical fraction (denominator supports one level of nested parens)
-//   e^(exp)         → e with superscript
-//   ^{exp}          → superscript for any base  — use instead of the ^ caret (IB-safe notation)
-const renderMathExpression = (expression) => {
-  if (typeof expression !== 'string') return expression
-
-  const tokens = []
-  // Match frac | e^(...) | ^{...} — in order of appearance
-  const pattern = /frac\(([^,)]+),([^)(]*(?:\([^)]*\)[^)(]*)*)\)|e\^\(([^)]+)\)|\^\{([^}]+)\}/g
-  let last = 0
-  let match
-  let key = 0
-
-  while ((match = pattern.exec(expression)) !== null) {
-    if (match.index > last) tokens.push(expression.slice(last, match.index))
-
-    if (match[0].startsWith('frac')) {
-      const num = match[1].trim()
-      const den = match[2].trim()
-      tokens.push(
-        <span
-          key={key++}
-          className="mx-0.5 inline-flex flex-col items-center align-middle leading-none"
-        >
-          <span className="border-b border-current px-1 pb-0.5 text-[0.88em] leading-snug">{num}</span>
-          <span className="px-1 pt-0.5 text-[0.88em] leading-snug">{den}</span>
-        </span>,
-      )
-    } else if (match[0].startsWith('e^')) {
-      tokens.push(
-        <span key={key++} className="inline-flex items-start">
-          <span>e</span>
-          <sup className="ml-[1px] text-[0.72em] leading-none">{match[3]}</sup>
-        </span>,
-      )
-    } else {
-      // ^{exp} — superscript only (base is the preceding text token)
-      tokens.push(
-        <sup key={key++} className="text-[0.78em] leading-none">{match[4]}</sup>,
-      )
-    }
-
-    last = match.index + match[0].length
-  }
-
-  if (tokens.length === 0) return expression
-  if (last < expression.length) tokens.push(expression.slice(last))
-
-  return tokens.map((t, i) =>
-    typeof t === 'string' ? <span key={`t-${i}`}>{t}</span> : t,
-  )
-}
+import { Math as MathRender } from '../ui/Math'
 
 export const LabCard = ({ title, children, dark = false, className = '' }) => (
   <div className={`${dark ? 'border-white/10 bg-ink text-paper' : 'border-ink/10 bg-white text-ink'} rounded-[1.6rem] border p-5 ${className}`}>
@@ -76,7 +23,9 @@ export const ModelCard = ({
   <div className={`${dark ? 'border-white/10 bg-white/6 text-paper' : 'border-ink/10 bg-paper text-ink'} overflow-x-auto rounded-[1.2rem] border px-4 py-4 ${className}`}>
     <p className={`text-[0.72rem] uppercase tracking-[0.2em] font-semibold ${dark ? 'text-paper/60' : 'text-ink/55'}`}>{title}</p>
     <div className={`mt-2 min-w-max whitespace-nowrap ${dark ? 'text-paper' : 'text-ink'}`}>
-      <div className="text-[1.02rem] font-semibold md:text-[1.1rem]">{renderMathExpression(expression)}</div>
+      <div className="text-[1.02rem] font-semibold md:text-[1.1rem]">
+        <MathRender>{expression}</MathRender>
+      </div>
     </div>
     {(parameters || conditions) && (
       <div className={`mt-3 space-y-1 text-sm leading-6 ${dark ? 'text-paper/72' : 'text-ink/66'}`}>
