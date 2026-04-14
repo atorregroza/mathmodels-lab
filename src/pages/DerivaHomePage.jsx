@@ -59,11 +59,36 @@ export const DerivaHomePage = () => {
               Del fenómeno al modelo matemático.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/70">
-              Laboratorios interactivos donde el estudiante parte de una situación real, formula preguntas, ajusta parámetros y construye el modelo que explica el fenómeno.
+              33 laboratorios interactivos con proceso guiado: el estudiante observa un fenómeno real, ajusta parámetros y construye el modelo — paso a paso.
             </p>
             <p className="mt-4 font-display text-xl font-semibold tracking-[-0.02em] text-signal">
-              Investiga. Modela. Justifica.
+              Observa. Modela. Valida.
             </p>
+
+            {/* badges */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {['Gratis', 'Sin registro', 'Bachillerato y preuniversitario'].map(b => (
+                <span key={b} className="rounded-full bg-ink/5 px-3 py-1 text-xs font-medium text-ink/55">{b}</span>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Link
+                to="/laboratorios"
+                className="inline-flex items-center gap-2 rounded-full bg-aqua px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(80,150,255,0.25)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(80,150,255,0.3)]"
+              >
+                Explorar laboratorios
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
+              <a
+                href="#como-funciona"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink/60 transition-colors hover:text-ink"
+              >
+                Ver cómo funciona
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
+              </a>
+            </div>
           </div>
           <div className="hidden overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(18,23,35,0.15)] xl:block">
             <img
@@ -85,10 +110,10 @@ export const DerivaHomePage = () => {
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-aqua/15 text-aqua">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>
               </span>
-              <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Soy estudiante</h2>
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Para estudiantes</h2>
             </div>
             <p className="mt-3 text-sm leading-6 text-ink/65">
-              Quiero explorar, practicar y entender mejor los temas de matemáticas de nivel medio y avanzado con simuladores interactivos.
+              Explora situaciones reales, ajusta parámetros y construye modelos matemáticos con simuladores interactivos de nivel medio y avanzado.
             </p>
             <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-aqua transition-transform group-hover:translate-x-1">
               Ver laboratorios
@@ -104,10 +129,10 @@ export const DerivaHomePage = () => {
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-graph/15 text-graph">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
               </span>
-              <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Soy docente</h2>
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.02em]">Para docentes</h2>
             </div>
             <p className="mt-3 text-sm leading-6 text-ink/65">
-              Quiero preparar clases con simuladores alineados a programas internacionales y secuencias por unidad.
+              Cada laboratorio incluye guía de uso en clase, secuencias por unidad alineadas a currículos internacionales y datos descargables.
             </p>
             <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-graph transition-transform group-hover:translate-x-1">
               Ver secuencia por unidad
@@ -221,7 +246,7 @@ export const DerivaHomePage = () => {
         </motion.div>
 
         {/* ── 3. MODELING SPACE ── */}
-        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-ink/12 bg-ink text-paper shadow-[0_28px_80px_rgba(18,23,35,0.25)]">
+        <motion.div id="como-funciona" {...fadeIn} className="mt-14 scroll-mt-24 overflow-hidden rounded-[2rem] border border-ink/12 bg-ink text-paper shadow-[0_28px_80px_rgba(18,23,35,0.25)]">
           <div className="grid xl:grid-cols-[1.1fr_0.9fr]">
             <div className="p-6 md:p-8 lg:p-10">
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-signal">Espacio de modelación</p>
@@ -326,12 +351,12 @@ export const DerivaHomePage = () => {
                   </svg>
                 </span>
                 <div>
-                  <h3 className="font-display text-2xl font-semibold tracking-[-0.02em]">Monografía IB</h3>
+                  <h3 className="font-display text-2xl font-semibold tracking-[-0.02em]">Monografía</h3>
                   <span className="rounded-full bg-violet/15 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-violet">Disponible</span>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-7 text-ink/68">
-                Simulaciones con datos reales, planeación guiada desde los dos itinerarios, criterios A–E y propuestas interdisciplinarias con asignaturas del DP.
+                Simulaciones con datos reales, planeación guiada paso a paso y propuestas interdisciplinarias para tu investigación extendida.
               </p>
               <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-violet transition-transform group-hover:translate-x-1">
                 Explorar monografía
@@ -341,51 +366,6 @@ export const DerivaHomePage = () => {
           </div>
         </motion.div>
 
-        {/* ── FOR TEACHERS — compact ── */}
-        <motion.div {...fadeIn} className="mt-14 overflow-hidden rounded-[2rem] border border-graph/15 bg-graph/5">
-          <div className="grid xl:grid-cols-[1fr_0.42fr]">
-            <div className="p-6 md:p-8">
-              <p className="section-kicker text-graph">Para docentes</p>
-              <h2 className="mt-3 font-display text-[clamp(1.6rem,3vw,2.4rem)] font-semibold leading-[1.02] tracking-[-0.03em]">
-                Cada laboratorio incluye guía de uso en clase.
-              </h2>
-              <div className="mt-5 flex flex-wrap gap-4">
-                <div className="flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-graph/15 text-graph">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-                  </span>
-                  <span className="text-sm font-semibold text-ink/70">Currículos internacionales</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-graph/15 text-graph">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                  </span>
-                  <span className="text-sm font-semibold text-ink/70">Secuencias por unidad</span>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-graph/15 text-graph">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  </span>
-                  <span className="text-sm font-semibold text-ink/70">Datos descargables</span>
-                </div>
-              </div>
-              <Link
-                to="/secuencia"
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-graph px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(34,197,160,0.2)]"
-              >
-                Ver secuencia completa
-              </Link>
-            </div>
-            <div className="hidden xl:block">
-              <img
-                src="/images/teacher-student.jpg"
-                alt="Docente y estudiantes analizando un simulador matemático"
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </motion.div>
 
         {/* ── ABOUT SECTION — compact ── */}
         <div className="mt-20 border-t border-ink/8 pt-14">

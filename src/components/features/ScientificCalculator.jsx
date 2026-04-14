@@ -161,6 +161,233 @@ function evalForGraph(expr, xVal) {
   }
 }
 
+/* ── numerical analysis helpers ─────────────────────────────── */
+
+function bisect(fn, a, b, tol = 1e-9, maxIter = 60) {
+  let fa = fn(a), fb = fn(b)
+  if (fa === null || fb === null) return null
+  for (let i = 0; i < maxIter; i++) {
+    const m = (a + b) / 2
+    const fm = fn(m)
+    if (fm === null) return null
+    if (Math.abs(fm) < tol || (b - a) / 2 < tol) return m
+    if (Math.sign(fm) === Math.sign(fa)) { a = m; fa = fm } else { b = m; fb = fm }
+  }
+  return (a + b) / 2
+}
+
+function findZerosRaw(fn, xMin, xMax, steps = 400) {
+  const zeros = []
+  const dx = (xMax - xMin) / steps
+  let prev = fn(xMin)
+  for (let i = 1; i <= steps; i++) {
+    const x = xMin + i * dx
+    const cur = fn(x)
+    if (prev !== null && cur !== null) {
+      // sign-change detection (simple roots)
+      if (Math.sign(prev) !== Math.sign(cur) && Math.abs(prev - cur) < 1000) {
+        const z = bisect(fn, x - dx, x)
+        if (z !== null && !zeros.some(zz => Math.abs(zz - z) < dx * 3)) zeros.push(z)
+      }
+      // double-root detection: |f| has a local minimum near zero
+      if (i >= 2) {
+        const prev2 = fn(x - 2 * dx)
+        if (prev2 !== null) {
+          const a = Math.abs(prev2), b = Math.abs(prev), c = Math.abs(cur)
+          if (b < a && b < c && b < dx * 0.5) {
+            const candidate = x - dx
+            if (!zeros.some(zz => Math.abs(zz - candidate) < dx * 3)) zeros.push(candidate)
+          }
+        }
+      }
+    }
+    prev = cur
+  }
+  return zeros
+}
+
+function findZeros(expr, xMin, xMax) {
+  return findZerosRaw(x => evalForGraph(expr, x), xMin, xMax)
+}
+
+function findYIntercept(expr) {
+  const y = evalForGraph(expr, 0)
+  return y !== null ? { x: 0, y } : null
+}
+
+function findExtrema(expr, xMin, xMax) {
+  const h = 1e-6
+  const deriv = x => {
+    const a = evalForGraph(expr, x - h)
+    const b = evalForGraph(expr, x + h)
+    return (a !== null && b !== null) ? (b - a) / (2 * h) : null
+  }
+  const criticals = findZerosRaw(deriv, xMin, xMax, 500)
+  return criticals.map(cx => {
+    const y = evalForGraph(expr, cx)
+    const d2 = (() => {
+      const a = evalForGraph(expr, cx - h)
+      const b = evalForGraph(expr, cx)
+      const c = evalForGraph(expr, cx + h)
+      return (a !== null && b !== null && c !== null) ? (c - 2 * b + a) / (h * h) : 0
+    })()
+    return { x: cx, y, type: d2 > 0.01 ? 'min' : d2 < -0.01 ? 'max' : 'inflexión' }
+  }).filter(p => p.y !== null)
+}
+
+function findIntersections(expr1, expr2, xMin, xMax) {
+  const diff = x => {
+    const a = evalForGraph(expr1, x)
+    const b = evalForGraph(expr2, x)
+    return (a !== null && b !== null) ? a - b : null
+  }
+  return findZerosRaw(diff, xMin, xMax).map(x => ({ x, y: evalForGraph(expr1, x) })).filter(p => p.y !== null)
+}
+
+/* ── numerical integration (Simpson's 3/8) ─────────────────── */
+
+function numericalIntegral(expr, a, b, n = 1000) {
+  if (a === b) return 0
+  if (a > b) return -numericalIntegral(expr, b, a, n)
+  n = n % 2 === 0 ? n : n + 1
+  const h = (b - a) / n
+  let sum = evalForGraph(expr, a) ?? 0
+  sum += evalForGraph(expr, b) ?? 0
+  for (let i = 1; i < n; i++) {
+    const x = a + i * h
+    const y = evalForGraph(expr, x)
+    if (y === null) continue
+    sum += (i % 2 === 0 ? 2 : 4) * y
+  }
+  return (h / 3) * sum
+}
+
+/* ── numerical derivative ──────────────────────────────────── */
+
+function numericalDerivative(expr, x0) {
+  const h = 1e-5
+  const a = evalForGraph(expr, x0 - h)
+  const b = evalForGraph(expr, x0 + h)
+  if (a === null || b === null) return null
+  return (b - a) / (2 * h)
+}
+
+/* ── table of values ───────────────────────────────────────── */
+
+function generateTable(expr, xMin, xMax, step) {
+  const rows = []
+  for (let x = xMin; x <= xMax + step * 0.01; x += step) {
+    const xRound = parseFloat(x.toPrecision(10))
+    const y = evalForGraph(expr, xRound)
+    rows.push({ x: xRound, y })
+    if (rows.length > 200) break
+  }
+  return rows
+}
+
+/* ── equation solver (Newton-Raphson with bisection fallback) ─ */
+
+function solveEquation(expr, x0, xMin, xMax) {
+  const fn = x => evalForGraph(expr, x)
+  // try Newton-Raphson from x0
+  let x = x0
+  const h = 1e-7
+  for (let i = 0; i < 50; i++) {
+    const fx = fn(x)
+    if (fx === null) break
+    if (Math.abs(fx) < 1e-10) return x
+    const dfx = ((fn(x + h) ?? 0) - (fn(x - h) ?? 0)) / (2 * h)
+    if (Math.abs(dfx) < 1e-14) break
+    const xNew = x - fx / dfx
+    if (xNew < xMin || xNew > xMax) break
+    x = xNew
+  }
+  // fallback: scan for sign changes
+  const zeros = findZeros(expr, xMin, xMax)
+  if (zeros.length > 0) {
+    zeros.sort((a, b) => Math.abs(a - x0) - Math.abs(b - x0))
+    return zeros[0]
+  }
+  return null
+}
+
+/* ── matrix operations ─────────────────────────────────────── */
+
+function parseMatrix(text) {
+  return text.trim().split('\n').map(row =>
+    row.split(/[,;\s]+/).map(Number).filter(n => !isNaN(n))
+  ).filter(row => row.length > 0)
+}
+
+function matAdd(a, b) {
+  if (a.length !== b.length || a[0].length !== b[0].length) return null
+  return a.map((row, i) => row.map((v, j) => v + b[i][j]))
+}
+
+function matMul(a, b) {
+  if (a[0].length !== b.length) return null
+  const rows = a.length, cols = b[0].length, n = b.length
+  return Array.from({ length: rows }, (_, i) =>
+    Array.from({ length: cols }, (_, j) =>
+      a[i].reduce((s, v, k) => s + v * b[k][j], 0)
+    )
+  )
+}
+
+function matDet(m) {
+  const n = m.length
+  if (n === 1) return m[0][0]
+  if (n === 2) return m[0][0] * m[1][1] - m[0][1] * m[1][0]
+  let det = 0
+  for (let j = 0; j < n; j++) {
+    const minor = m.slice(1).map(row => [...row.slice(0, j), ...row.slice(j + 1)])
+    det += (j % 2 === 0 ? 1 : -1) * m[0][j] * matDet(minor)
+  }
+  return det
+}
+
+function matTranspose(m) {
+  return m[0].map((_, j) => m.map(row => row[j]))
+}
+
+function matRref(m) {
+  const rows = m.length, cols = m[0].length
+  const r = m.map(row => [...row])
+  let lead = 0
+  for (let row = 0; row < rows && lead < cols; row++) {
+    let i = row
+    while (i < rows && Math.abs(r[i][lead]) < 1e-10) i++
+    if (i === rows) { lead++; row--; continue }
+    [r[row], r[i]] = [r[i], r[row]]
+    const div = r[row][lead]
+    r[row] = r[row].map(v => v / div)
+    for (let j = 0; j < rows; j++) {
+      if (j === row) continue
+      const factor = r[j][lead]
+      r[j] = r[j].map((v, k) => v - factor * r[row][k])
+    }
+    lead++
+  }
+  return r
+}
+
+function matInverse(m) {
+  const n = m.length
+  if (n !== m[0].length) return null
+  const det = matDet(m)
+  if (Math.abs(det) < 1e-10) return null
+  const aug = m.map((row, i) => [...row, ...Array.from({ length: n }, (_, j) => i === j ? 1 : 0)])
+  const rref = matRref(aug)
+  return rref.map(row => row.slice(n))
+}
+
+function formatMatrix(m) {
+  return m.map(row => row.map(v => {
+    const r = Math.abs(v) < 1e-10 ? 0 : parseFloat(v.toPrecision(6))
+    return String(r)
+  }).join('\t')).join('\n')
+}
+
 /* ── graph colors ───────────────────────────────────────────── */
 
 const GRAPH_COLORS = ['#5096ff', '#ff6b35', '#22c55e', '#a855f7', '#f59e0b']
@@ -231,13 +458,13 @@ const ROWS_MAIN = [
 
 /* ── mini graph component ───────────────────────────────────── */
 
-function MiniGraph({ functions, xRange }) {
+function MiniGraph({ functions, xRange, yRangeOverride = null, analysisPoints = [] }) {
   const clipId = useId().replace(/:/g, '')
   const W = 340
   const H = 200
   const pad = 24
   const [xMin, xMax] = xRange
-  const samples = 200
+  const samples = 500
 
   const curves = useMemo(() => {
     return functions.map((fn) => {
@@ -251,19 +478,32 @@ function MiniGraph({ functions, xRange }) {
     })
   }, [functions, xMin, xMax])
 
-  // compute y range from data
-  let yMin = -1, yMax = 1
+  // compute y range from data — percentile-based to handle outliers
+  let yMin = Infinity, yMax = -Infinity
+  const allY = []
   for (const c of curves) {
     for (const pt of c.points) {
-      if (Math.abs(pt.y) < 1000) {
-        if (pt.y < yMin) yMin = pt.y
-        if (pt.y > yMax) yMax = pt.y
-      }
+      if (isFinite(pt.y)) allY.push(pt.y)
     }
   }
-  const yPad = Math.max((yMax - yMin) * 0.15, 0.5)
-  yMin -= yPad
-  yMax += yPad
+  if (allY.length > 0) {
+    allY.sort((a, b) => a - b)
+    const lo = Math.floor(allY.length * 0.02)
+    const hi = Math.ceil(allY.length * 0.98) - 1
+    yMin = allY[Math.max(0, lo)]
+    yMax = allY[Math.min(allY.length - 1, hi)]
+    if (yMin === yMax) { yMin -= 1; yMax += 1 }
+  } else {
+    yMin = -1; yMax = 1
+  }
+  if (yRangeOverride) {
+    yMin = yRangeOverride[0]
+    yMax = yRangeOverride[1]
+  } else {
+    const yPad = Math.max((yMax - yMin) * 0.15, 0.5)
+    yMin -= yPad
+    yMax += yPad
+  }
 
   const sx = (v) => pad + ((v - xMin) / ((xMax - xMin) || 1)) * (W - pad * 2)
   const sy = (v) => H - pad - ((v - yMin) / ((yMax - yMin) || 1)) * (H - pad * 2)
@@ -271,12 +511,16 @@ function MiniGraph({ functions, xRange }) {
   // generate nice ticks
   const makeTicks = (min, max, count) => {
     const range = max - min
-    const step = Math.pow(10, Math.floor(Math.log10(range / count)))
+    if (range <= 0) return [min]
+    const rawStep = range / count
+    const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)))
+    const residual = rawStep / magnitude
+    const niceStep = residual <= 1.5 ? 1 * magnitude : residual <= 3.5 ? 2 * magnitude : residual <= 7.5 ? 5 * magnitude : 10 * magnitude
     const ticks = []
-    const start = Math.ceil(min / step) * step
-    for (let v = start; v <= max; v += step) {
-      ticks.push(parseFloat(v.toPrecision(6)))
-      if (ticks.length > 20) break
+    const start = Math.ceil(min / niceStep) * niceStep
+    for (let v = start; v <= max + niceStep * 0.01; v += niceStep) {
+      ticks.push(parseFloat(v.toPrecision(10)))
+      if (ticks.length > 15) break
     }
     return ticks
   }
@@ -308,17 +552,20 @@ function MiniGraph({ functions, xRange }) {
         <line x1={pad} y1={sy(0)} x2={W - pad} y2={sy(0)} stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
       )}
 
-      {/* tick labels */}
-      {xTicks.map((t) => (
-        Math.abs(t) > 0.001 && yMin <= 0 && yMax >= 0 ? (
-          <text key={`xl${t}`} x={sx(t)} y={sy(0) + 14} fill="rgba(255,255,255,0.45)" fontSize="8" textAnchor="middle">{t}</text>
-        ) : null
-      ))}
-      {yTicks.map((t) => (
-        Math.abs(t) > 0.001 && xMin <= 0 && xMax >= 0 ? (
-          <text key={`yl${t}`} x={sx(0) - 6} y={sy(t) + 3} fill="rgba(255,255,255,0.45)" fontSize="8" textAnchor="end">{t}</text>
-        ) : null
-      ))}
+      {/* tick labels — always visible */}
+      {(() => {
+        const xLabelY = (yMin <= 0 && yMax >= 0) ? sy(0) + 14 : H - pad + 14
+        const yLabelX = (xMin <= 0 && xMax >= 0) ? sx(0) - 6 : pad - 4
+        const fmtTick = v => Math.abs(v) < 1e-10 ? 0 : parseFloat(v.toPrecision(6))
+        return (<>
+          {xTicks.map((t) => (
+            <text key={`xl${t}`} x={sx(t)} y={xLabelY} fill="rgba(255,255,255,0.45)" fontSize="8" textAnchor="middle">{fmtTick(t)}</text>
+          ))}
+          {yTicks.map((t) => (
+            <text key={`yl${t}`} x={yLabelX} y={sy(t) + 3} fill="rgba(255,255,255,0.45)" fontSize="8" textAnchor="end">{fmtTick(t)}</text>
+          ))}
+        </>)
+      })()}
 
       {/* curves */}
       <g clipPath={`url(#${clipId})`}>
@@ -350,6 +597,32 @@ function MiniGraph({ functions, xRange }) {
             />
           ))
         })}
+
+        {/* analysis points */}
+        {analysisPoints.map((pt, i) => {
+          const cx = sx(pt.x), cy = sy(pt.y)
+          const label = `(${pt.x.toFixed(2)}, ${pt.y.toFixed(2)})`
+          if (pt.shape === 'diamond') return (
+            <g key={`ap${i}`}>
+              <polygon points={`${cx},${cy-5} ${cx+5},${cy} ${cx},${cy+5} ${cx-5},${cy}`} fill={pt.color} opacity="0.9"><title>{label}</title></polygon>
+            </g>
+          )
+          if (pt.shape === 'triangle-up') return (
+            <g key={`ap${i}`}>
+              <polygon points={`${cx},${cy-6} ${cx+5},${cy+3} ${cx-5},${cy+3}`} fill={pt.color} opacity="0.9"><title>{label}</title></polygon>
+            </g>
+          )
+          if (pt.shape === 'triangle-down') return (
+            <g key={`ap${i}`}>
+              <polygon points={`${cx-5},${cy-3} ${cx+5},${cy-3} ${cx},${cy+6}`} fill={pt.color} opacity="0.9"><title>{label}</title></polygon>
+            </g>
+          )
+          return (
+            <g key={`ap${i}`}>
+              <circle cx={cx} cy={cy} r="4.5" fill={pt.fill || pt.color} stroke={pt.color} strokeWidth="2" opacity="0.9"><title>{label}</title></circle>
+            </g>
+          )
+        })}
       </g>
     </svg>
   )
@@ -358,16 +631,63 @@ function MiniGraph({ functions, xRange }) {
 /* ── main component ─────────────────────────────────────────── */
 
 export function ScientificCalculator({ open, onToggle, standalone = false }) {
-  const [mode, setMode] = useState('calc') // 'calc' | 'graph' | 'stats' | 'dist'
+  const [mode, setMode] = useState('calc') // 'calc' | 'graph' | 'stats' | 'dist' | 'matrix'
   const [expr, setExpr] = useState('')
   const [history, setHistory] = useState('')
   const [showSci, setShowSci] = useState(true)
   const [graphFns, setGraphFns] = useState([{ expr: 'sin(x)', color: GRAPH_COLORS[0] }])
   const [xRange, setXRange] = useState([-10, 10])
+  const [yRangeManual, setYRangeManual] = useState(null) // null = auto
   const panelRef = useRef(null)
   const graphInputRefs = useRef([])
+  const [showAnalysis, setShowAnalysis] = useState(false)
+  // calculus tools state
+  const [integralBounds, setIntegralBounds] = useState({ a: '', b: '' })
+  const [derivPoint, setDerivPoint] = useState('')
+  const [showTable, setShowTable] = useState(false)
+  const [tableStep, setTableStep] = useState('1')
+  const [solverGuess, setSolverGuess] = useState('0')
+  // matrix state
+  const [matA, setMatA] = useState('1 0\n0 1')
+  const [matB, setMatB] = useState('1 0\n0 1')
+  const [matOp, setMatOp] = useState('mul')
+  const [matResult, setMatResult] = useState('')
 
   const preview = safeEval(expr)
+
+  const validGraphFnsForAnalysis = graphFns.filter(fn => fn.expr.trim() && evalForGraph(fn.expr, 0) !== null)
+
+  const analysisData = useMemo(() => {
+    if (!showAnalysis) return { perFn: [], intersections: [], points: [] }
+    const [xMin, xMax] = xRange
+    const perFn = validGraphFnsForAnalysis.map(fn => ({
+      expr: fn.expr,
+      color: fn.color,
+      zeros: findZeros(fn.expr, xMin, xMax),
+      yIntercept: findYIntercept(fn.expr),
+      extrema: findExtrema(fn.expr, xMin, xMax),
+    }))
+
+    const intersections = []
+    for (let i = 0; i < validGraphFnsForAnalysis.length; i++) {
+      for (let j = i + 1; j < validGraphFnsForAnalysis.length; j++) {
+        const pts = findIntersections(validGraphFnsForAnalysis[i].expr, validGraphFnsForAnalysis[j].expr, xMin, xMax)
+        if (pts.length) intersections.push({ i, j, color1: validGraphFnsForAnalysis[i].color, color2: validGraphFnsForAnalysis[j].color, pts })
+      }
+    }
+
+    const points = []
+    perFn.forEach(fn => {
+      fn.zeros.forEach(x => points.push({ x, y: 0, color: fn.color, fill: '#0e1219', shape: 'circle' }))
+      if (fn.yIntercept) points.push({ x: 0, y: fn.yIntercept.y, color: fn.color, fill: fn.color, shape: 'circle' })
+      fn.extrema.forEach(e => points.push({ x: e.x, y: e.y, color: fn.color, shape: e.type === 'max' ? 'triangle-up' : e.type === 'min' ? 'triangle-down' : 'circle' }))
+    })
+    intersections.forEach(inter => {
+      inter.pts.forEach(p => points.push({ x: p.x, y: p.y, color: '#fff', shape: 'diamond' }))
+    })
+
+    return { perFn, intersections, points }
+  }, [showAnalysis, validGraphFnsForAnalysis, xRange])
 
   const handleButton = useCallback((btn) => {
     if (btn.action === 'clear') {
@@ -406,7 +726,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
 
   // keyboard support
   useEffect(() => {
-    if (!open || mode === 'graph' || mode === 'stats' || mode === 'dist') return
+    if (!open || mode === 'graph' || mode === 'stats' || mode === 'dist' || mode === 'matrix') return
     const handler = (e) => {
       if (e.key === 'Escape') { onToggle(); return }
       if (e.key === 'Enter') {
@@ -468,27 +788,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
 
   return (
     <>
-      {/* floating button — opens calculator in popup window */}
-      {!standalone && <button
-        onClick={() => window.open('/calculadora', 'mathmodels-calc', 'width=480,height=750,resizable=yes,scrollbars=yes')}
-        className="fixed bottom-6 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-signal text-white shadow-[0_8px_32px_rgba(255,107,53,0.35)] transition-all hover:scale-110 active:scale-95 md:bottom-8 md:left-8"
-        aria-label="Abrir calculadora"
-        title="Calculadora científica"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="4" y="2" width="16" height="20" rx="2" />
-          <line x1="8" y1="6" x2="16" y2="6" />
-          <line x1="8" y1="10" x2="8" y2="10.01" />
-          <line x1="12" y1="10" x2="12" y2="10.01" />
-          <line x1="16" y1="10" x2="16" y2="10.01" />
-          <line x1="8" y1="14" x2="8" y2="14.01" />
-          <line x1="12" y1="14" x2="12" y2="14.01" />
-          <line x1="16" y1="14" x2="16" y2="14.01" />
-          <line x1="8" y1="18" x2="8" y2="18.01" />
-          <line x1="12" y1="18" x2="12" y2="18.01" />
-          <line x1="16" y1="18" x2="16" y2="18.01" />
-        </svg>
-      </button>}
+      {/* floating button removed — calculator access is via navbar */}
 
       {/* inline panel — used when rendered standalone at /calculadora */}
       <AnimatePresence>
@@ -511,6 +811,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                 {modeBtn('graph', 'Graf')}
                 {modeBtn('stats', 'Stats')}
                 {modeBtn('dist', 'Dist')}
+                {modeBtn('matrix', 'Mat')}
               </div>
               {mode === 'calc' && (
                 <button
@@ -591,7 +892,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                 {/* graph canvas */}
                 <div className="border-b border-white/8 p-3">
                   {validGraphFns.length > 0 ? (
-                    <MiniGraph functions={validGraphFns} xRange={xRange} />
+                    <MiniGraph functions={validGraphFns} xRange={xRange} yRangeOverride={yRangeManual} analysisPoints={analysisData.points} />
                   ) : (
                     <div className="flex h-[200px] items-center justify-center rounded-xl bg-[#0e1219] text-sm text-paper/30">
                       Escribe una función para graficar
@@ -599,18 +900,49 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                   )}
                 </div>
 
-                {/* x range slider */}
-                <div className="flex items-center gap-3 border-b border-white/8 px-4 py-2">
-                  <span className="text-[0.6rem] uppercase tracking-wider text-paper/40">Rango x</span>
-                  <span className="text-xs font-mono text-paper/55">[{xRange[0]}, {xRange[1]}]</span>
-                  <input
-                    type="range"
-                    min="2"
-                    max="50"
-                    value={xRange[1]}
-                    onChange={(e) => { const v = Number(e.target.value); setXRange([-v, v]) }}
-                    className="ml-auto h-1.5 w-20 cursor-pointer accent-aqua"
-                  />
+                {/* window controls */}
+                <div className="flex flex-col gap-1.5 border-b border-white/8 px-4 py-2.5">
+                  {[
+                    { label: 'x', range: xRange, setRange: setXRange, manual: xRange, autoVal: null },
+                    { label: 'y', range: yRangeManual, setRange: setYRangeManual, manual: yRangeManual, autoVal: true },
+                  ].map(({ label, range, setRange, manual, autoVal }) => (
+                    <div key={label} className="flex items-center gap-2">
+                      <span className="w-14 text-[0.6rem] uppercase tracking-wider text-paper/40">Ventana {label}</span>
+                      <input
+                        type="text"
+                        placeholder="min"
+                        value={range ? range[0] : ''}
+                        onChange={(e) => {
+                          const v = e.target.value
+                          if (v === '' && autoVal) { setRange(null); return }
+                          if (v === '-' || v === '') return
+                          const n = Number(v)
+                          if (!isNaN(n)) setRange([n, range ? range[1] : 10])
+                        }}
+                        className="w-14 rounded bg-white/8 px-1.5 py-1 font-mono text-[0.65rem] text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40"
+                      />
+                      <span className="text-paper/30">→</span>
+                      <input
+                        type="text"
+                        placeholder="max"
+                        value={range ? range[1] : ''}
+                        onChange={(e) => {
+                          const v = e.target.value
+                          if (v === '' && autoVal) { setRange(null); return }
+                          if (v === '-' || v === '') return
+                          const n = Number(v)
+                          if (!isNaN(n)) setRange([range ? range[0] : -10, n])
+                        }}
+                        className="w-14 rounded bg-white/8 px-1.5 py-1 font-mono text-[0.65rem] text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40"
+                      />
+                      {autoVal && (
+                        <button
+                          onClick={() => setRange(null)}
+                          className={`ml-auto rounded px-2 py-0.5 text-[0.6rem] font-semibold transition-colors ${!range ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/40 hover:bg-white/10'}`}
+                        >Auto</button>
+                      )}
+                    </div>
+                  ))}
                 </div>
 
                 {/* function inputs */}
@@ -651,6 +983,164 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                   )}
                 </div>
 
+                {/* analysis toggle + panel */}
+                <div className="border-t border-white/8 px-3 py-2">
+                  <button
+                    onClick={() => setShowAnalysis(v => !v)}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${showAnalysis ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/50 hover:bg-white/10 hover:text-paper/70'}`}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    Análisis
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`ml-auto transition-transform ${showAnalysis ? 'rotate-180' : ''}`}><path d="M6 9l6 6 6-6"/></svg>
+                  </button>
+
+                  {showAnalysis && analysisData.perFn.length > 0 && (() => {
+                    const fmt = v => { const s = v.toFixed(3); return s === '-0.000' ? '0.000' : s }
+                    return (
+                    <div className="mt-2 space-y-2 text-[0.65rem]">
+                      {analysisData.perFn.map((fn, i) => (
+                        <div key={i} className="space-y-1 rounded-lg bg-white/4 px-3 py-2">
+                          <div className="flex items-center gap-2">
+                            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: fn.color }} />
+                            <span className="font-mono text-paper/60">{fn.expr}</span>
+                          </div>
+                          {fn.yIntercept && (
+                            <p className="text-paper/50">
+                              <span className="text-paper/35">Corte Y:</span>{' '}
+                              (0, {fmt(fn.yIntercept.y)})
+                            </p>
+                          )}
+                          {fn.zeros.length > 0 && (
+                            <p className="text-paper/50">
+                              <span className="text-paper/35">Ceros:</span>{' '}
+                              {fn.zeros.map(z => `x = ${fmt(z)}`).join(', ')}
+                            </p>
+                          )}
+                          {fn.extrema.length > 0 && (
+                            <p className="text-paper/50">
+                              <span className="text-paper/35">Extremos:</span>{' '}
+                              {fn.extrema.map(e => `${e.type === 'max' ? 'Máx' : e.type === 'min' ? 'Mín' : 'Infl'} (${fmt(e.x)}, ${fmt(e.y)})`).join(', ')}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                      {analysisData.intersections.length > 0 && (
+                        <div className="rounded-lg bg-white/4 px-3 py-2">
+                          <p className="mb-1 font-semibold text-paper/45">Intersecciones</p>
+                          {analysisData.intersections.map((inter, k) => (
+                            <p key={k} className="text-paper/50">
+                              <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: inter.color1 }} />{' '}
+                              <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: inter.color2 }} />{' '}
+                              {inter.pts.map(p => `(${fmt(p.x)}, ${fmt(p.y)})`).join(', ')}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    )
+                  })()}
+                </div>
+
+                {/* ── calculus tools ── */}
+                {validGraphFns.length > 0 && (
+                  <div className="space-y-2 border-t border-white/8 px-3 py-2.5">
+                    <p className="text-[0.6rem] uppercase tracking-wider text-paper/35">Herramientas</p>
+
+                    {/* integral */}
+                    <div className="flex items-center gap-1.5 text-[0.65rem]">
+                      <span className="text-paper/40">∫</span>
+                      <input type="text" value={integralBounds.a} onChange={e => setIntegralBounds(p => ({ ...p, a: e.target.value }))} placeholder="a" className="w-12 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
+                      <span className="text-paper/40">→</span>
+                      <input type="text" value={integralBounds.b} onChange={e => setIntegralBounds(p => ({ ...p, b: e.target.value }))} placeholder="b" className="w-12 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
+                      <button
+                        onClick={() => {
+                          const a = parseFloat(integralBounds.a), b = parseFloat(integralBounds.b)
+                          if (!isNaN(a) && !isNaN(b) && validGraphFns[0]?.expr) {
+                            const result = numericalIntegral(validGraphFns[0].expr, a, b)
+                            setHistory(`∫[${a},${b}] ${validGraphFns[0].expr} = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Error'}`)
+                          }
+                        }}
+                        className="rounded bg-aqua/15 px-2 py-1 font-semibold text-aqua hover:bg-aqua/25"
+                      >Calcular</button>
+                    </div>
+
+                    {/* derivative */}
+                    <div className="flex items-center gap-1.5 text-[0.65rem]">
+                      <span className="text-paper/40">f'(</span>
+                      <input type="text" value={derivPoint} onChange={e => setDerivPoint(e.target.value)} placeholder="x₀" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
+                      <span className="text-paper/40">)</span>
+                      <button
+                        onClick={() => {
+                          const x0 = parseFloat(derivPoint)
+                          if (!isNaN(x0) && validGraphFns[0]?.expr) {
+                            const result = numericalDerivative(validGraphFns[0].expr, x0)
+                            setHistory(`f'(${x0}) = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Error'}`)
+                          }
+                        }}
+                        className="rounded bg-aqua/15 px-2 py-1 font-semibold text-aqua hover:bg-aqua/25"
+                      >Calcular</button>
+                    </div>
+
+                    {/* solver */}
+                    <div className="flex items-center gap-1.5 text-[0.65rem]">
+                      <span className="text-paper/40">f(x)=0</span>
+                      <input type="text" value={solverGuess} onChange={e => setSolverGuess(e.target.value)} placeholder="x₀" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" />
+                      <button
+                        onClick={() => {
+                          const x0 = parseFloat(solverGuess)
+                          if (!isNaN(x0) && validGraphFns[0]?.expr) {
+                            const result = solveEquation(validGraphFns[0].expr, x0, xRange[0], xRange[1])
+                            setHistory(`Solve: x = ${result !== null ? parseFloat(result.toPrecision(8)) : 'Sin solución'}`)
+                          }
+                        }}
+                        className="rounded bg-aqua/15 px-2 py-1 font-semibold text-aqua hover:bg-aqua/25"
+                      >Resolver</button>
+                    </div>
+
+                    {/* result display */}
+                    {history && (mode === 'graph') && (
+                      <div className="rounded-lg bg-aqua/8 px-3 py-1.5 font-mono text-[0.65rem] text-aqua">{history}</div>
+                    )}
+
+                    {/* table toggle */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setShowTable(v => !v)}
+                        className={`flex items-center gap-1.5 rounded px-2 py-1 text-[0.65rem] font-semibold transition-colors ${showTable ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/50 hover:bg-white/10'}`}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+                        Tabla
+                      </button>
+                      {showTable && (
+                        <div className="flex items-center gap-1 text-[0.6rem]">
+                          <span className="text-paper/35">Paso:</span>
+                          <input type="text" value={tableStep} onChange={e => setTableStep(e.target.value)} className="w-10 rounded bg-white/8 px-1.5 py-0.5 font-mono text-paper text-center outline-none focus:ring-1 focus:ring-aqua/40" />
+                        </div>
+                      )}
+                    </div>
+                    {showTable && validGraphFns[0]?.expr && (() => {
+                      const step = parseFloat(tableStep) || 1
+                      const rows = generateTable(validGraphFns[0].expr, xRange[0], xRange[1], step)
+                      return (
+                        <div className="max-h-40 overflow-y-auto rounded-lg bg-white/4">
+                          <table className="w-full text-[0.6rem]">
+                            <thead><tr className="border-b border-white/8">
+                              <th className="px-3 py-1 text-left font-semibold text-paper/40">x</th>
+                              <th className="px-3 py-1 text-left font-semibold text-paper/40">f(x)</th>
+                            </tr></thead>
+                            <tbody>{rows.map((r, i) => (
+                              <tr key={i} className="border-b border-white/4">
+                                <td className="px-3 py-0.5 font-mono text-paper/55">{r.x}</td>
+                                <td className="px-3 py-0.5 font-mono text-paper/55">{r.y !== null ? parseFloat(r.y.toPrecision(6)) : '—'}</td>
+                              </tr>
+                            ))}</tbody>
+                          </table>
+                        </div>
+                      )
+                    })()}
+                  </div>
+                )}
+
                 {/* quick examples */}
                 <div className="flex flex-wrap gap-1.5 border-t border-white/8 px-3 py-2.5">
                   {['sin(x)', 'x^2', 'cos(x)', 'ln(x)', 'sqrt(x)', '1÷x'].map((ex) => (
@@ -667,6 +1157,58 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* ── MATRIX MODE ── */}
+            {mode === 'matrix' && (
+              <div className="flex flex-col space-y-3 p-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[0.6rem] uppercase tracking-wider text-paper/35">Matriz A</label>
+                    <textarea value={matA} onChange={e => setMatA(e.target.value)} rows={3} className="mt-1 w-full rounded-lg bg-white/8 px-3 py-2 font-mono text-xs text-paper outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" placeholder="1 2&#10;3 4" />
+                  </div>
+                  <div>
+                    <label className="text-[0.6rem] uppercase tracking-wider text-paper/35">Matriz B</label>
+                    <textarea value={matB} onChange={e => setMatB(e.target.value)} rows={3} className="mt-1 w-full rounded-lg bg-white/8 px-3 py-2 font-mono text-xs text-paper outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" placeholder="1 0&#10;0 1" />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    ['mul', 'A × B'], ['add', 'A + B'], ['det', 'det(A)'],
+                    ['inv', 'A⁻¹'], ['trans', 'Aᵀ'], ['rref', 'RREF(A)']
+                  ].map(([op, label]) => (
+                    <button
+                      key={op}
+                      onClick={() => {
+                        setMatOp(op)
+                        const a = parseMatrix(matA)
+                        const b = parseMatrix(matB)
+                        try {
+                          let res
+                          if (op === 'mul') res = matMul(a, b)
+                          else if (op === 'add') res = matAdd(a, b)
+                          else if (op === 'det') { setMatResult(`det(A) = ${matDet(a)}`); return }
+                          else if (op === 'inv') res = matInverse(a)
+                          else if (op === 'trans') res = matTranspose(a)
+                          else if (op === 'rref') res = matRref(a.map(r => [...r]))
+                          setMatResult(res ? formatMatrix(res) : 'Error: dimensiones incompatibles o matriz singular')
+                        } catch { setMatResult('Error') }
+                      }}
+                      className={`rounded-full px-2.5 py-1 text-[0.65rem] font-semibold transition-colors ${matOp === op ? 'bg-aqua/20 text-aqua' : 'bg-white/6 text-paper/50 hover:bg-white/12'}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
+                {matResult && (
+                  <div className="rounded-lg bg-white/4 p-3">
+                    <p className="mb-1 text-[0.6rem] uppercase tracking-wider text-paper/35">Resultado</p>
+                    <pre className="whitespace-pre font-mono text-xs leading-5 text-paper/70">{matResult}</pre>
+                  </div>
+                )}
               </div>
             )}
 
