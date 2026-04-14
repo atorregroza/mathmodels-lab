@@ -108,9 +108,14 @@ export const NormalDistributionLab = () => {
           </LabCard>
 
           <ModelCard
-            title="Función densidad"
+            title="Modelo general"
             expression="f(x) = frac(1,σ√(2π)) · e^{-(x-μ)²/(2σ²)}"
             parameters="μ ∈ ℝ, σ > 0"
+          />
+          <ModelCard
+            title="Modelo evaluado"
+            expression={`f(x) = frac(1, ${format(sigma)}√(2π)) · e^{-(x ${mu >= 0 ? '−' : '+'} ${format(Math.abs(mu))})²/(2·${format(sigma)}²)}`}
+            parameters={`μ = ${format(mu)},  σ = ${format(sigma)}`}
           />
         </div>
 
