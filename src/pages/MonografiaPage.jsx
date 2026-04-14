@@ -134,7 +134,7 @@ function TallerGate({ onUnlock }) {
 
         <motion.div {...fadeIn} className="mt-12 grid gap-5 md:grid-cols-3">
           {[
-            { icon: '🎡', title: 'Simulaciones', desc: 'Modelos interactivos con datos reales para recolectar evidencia y visualizar fenómenos.' },
+            { icon: '🔬', title: 'Simulaciones', desc: 'Modelos interactivos con datos reales para recolectar evidencia y visualizar fenómenos.' },
             { icon: '📋', title: 'Planeación guiada', desc: 'Preguntas de investigación, modelos matemáticos y mapeo a los 5 criterios A–E.' },
             { icon: '🌐', title: 'Interdisciplinario', desc: 'Propuestas con asignaturas del DP, marcos del IB y doble lente en criterio D.' },
           ].map((f, i) => (
@@ -165,7 +165,6 @@ function TallerGate({ onUnlock }) {
         </motion.div>
 
         <motion.div {...fadeIn} className="mt-8 text-center">
-          <p className="text-xs text-ink/30 mb-3">¿Ya participaste en el taller?</p>
           <form onSubmit={verificar} className="inline-flex items-center gap-2">
             <input
               type="password"
