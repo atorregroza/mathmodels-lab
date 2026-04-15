@@ -6,6 +6,7 @@ import { Breadcrumb } from '../components/layout/PlatformShell'
 const simComponentMap = {
   newtonCooling: lazy(() => import('../components/features/NewtonCoolingLab').then(m => ({ default: m.NewtonCoolingLab }))),
   thermalInsulation: lazy(() => import('../components/features/ThermalInsulationLab').then(m => ({ default: m.ThermalInsulationLab }))),
+  hipoGrowth: lazy(() => import('../components/features/HipoGrowthLab').then(m => ({ default: m.HipoGrowthLab }))),
 }
 
 function PlanContent({ planeacion }) {

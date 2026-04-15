@@ -1994,6 +1994,81 @@ export const monografiaContent = {
         ],
       },
     },
+    {
+      id: 'hipos-invasion',
+      titulo: 'Crecimiento de invasiones biológicas',
+      subtitulo: 'Los hipopótamos de Escobar y 4 casos históricos comparables',
+      descripcion: 'Modelo exponencial, logístico y logístico con cosecha aplicados a 5 invasiones biológicas reales. Analiza la ventana de control de los hipopótamos en el Magdalena Medio comparándola con conejos en Australia, carpas en el Mississippi, estorninos en Norteamérica y cabras en Galápagos.',
+      temas: ['Ecuaciones diferenciales', 'Modelo logístico', 'Bifurcación silla-nodo', 'Análisis de estabilidad', 'Runge-Kutta 4', 'Selección de modelos (AIC)'],
+      componentKey: 'hipoGrowth',
+      color: '#F97316',
+      emoji: '🦛',
+      planeacion: {
+        disciplinar: {
+          rq: '¿En qué medida el modelo logístico con cosecha dP/dt = rP(1 − P/K) − H predice el crecimiento poblacional de los hipopótamos introducidos en el Magdalena Medio colombiano (1981–2024), y qué revela el umbral de bifurcación silla-nodo H_crítico = rK/4 — junto con el análisis comparativo frente a cuatro invasiones biológicas históricas (conejos en Australia, carpas asiáticas en EEUU, estorninos en Norteamérica y cabras en Galápagos) — sobre la viabilidad matemática y temporal de las estrategias de control consideradas por el gobierno colombiano?',
+          tension: 'El modelo exponencial (Malthus) ajusta sorprendentemente bien los primeros 30 años de los hipopótamos colombianos (R² > 0.95 en ln(P) vs t), lo que explica por qué la percepción pública tarda en reaccionar — pero predice un absurdo (>10⁴ individuos en 2070). El logístico requiere estimar una capacidad de carga K incierta (500–5000 según Castelblanco-Martínez 2021). El hallazgo central: la ventana de control se cierra EXPONENCIALMENTE. Si H < rK/4 (bifurcación silla-nodo), el sistema tiene dos equilibrios — uno estable residual y uno inestable tipo Allee — y no se puede erradicar, solo reducir. Comparando los 5 casos: Galápagos actuó cuando P ≈ 2/3·K y erradicó totalmente; Australia esperó hasta P ≈ K y solo logró control parcial; Colombia está hoy en P ≈ 0.17·K — matemáticamente en el punto óptimo para actuar, pero políticamente paralizada.',
+          modelos: [
+            'Exponencial (Malthus): dP/dt = rP ⟹ P(t) = P₀·eʳᵗ (linealizable por ln(P) vs t)',
+            'Logístico (Verhulst, 1838): dP/dt = rP(1 − P/K) ⟹ P(t) = K/(1 + ((K−P₀)/P₀)·e⁻ʳᵗ) por separación de variables',
+            'Logístico con cosecha: dP/dt = rP(1 − P/K) − H (integrado por Runge-Kutta 4)',
+            'Puntos fijos: P± = K/2·(1 ± √(1 − 4H/(rK))); estabilidad por f′(P±)',
+            'Umbral de bifurcación silla-nodo: H_crítico = rK/4 (máximo de rP(1−P/K))',
+            'Estimación de r por linealización: ln(P) = ln(P₀) + rt (regresión lineal simple)',
+          ],
+          datosSimulacion: [
+            'Curvas P(t) superpuestas de los 3 modelos sobre datos históricos documentados de cada caso',
+            'Plano fase dP/dt vs P mostrando puntos fijos estables (P₊) e inestables (P₋ — efecto Allee)',
+            'Gráfica de residuales con patrón sistemático en modelo exponencial (los residuales crecen con t)',
+            'Curva H_min(τ) = rP(τ)(1−P(τ)/K) que muestra cómo sube la cosecha necesaria al demorar la intervención',
+            'Tabla comparativa R², AIC, Durbin-Watson entre los 3 modelos y los 5 casos',
+            'Métricas clave: H_crítico, año de inflexión (P = K/2), P proyectada a 2050 sin control, r estimado por linealización',
+            'CSV exportable con año, P_observado, predicciones de los 3 modelos, residuales y resumen estadístico completo',
+          ],
+          criterios: {
+            A: 'RQ comparativa con 5 casos reales, variables operacionalizadas (r, K, H, tInterv), método triangulado: EDO analítica + integración numérica RK4 + estadística inferencial + comparación cross-case. Estructura: problema → teoría → ajuste → diagnóstico → comparación → recomendación.',
+            B: 'Derivación completa de Verhulst por separación de variables. Adimensionalización τ = rt. Análisis de estabilidad vía jacobiano f′(P)=r(1−2P/K) sin cosecha; con cosecha, Jacobiano modificado. Derivación del umbral rK/4 como máximo de rP(1−P/K). Linealización ln(P) vs t como herramienta IB estándar. Notación consistente.',
+            C: 'Ajuste por linealización + regresión no lineal implícita en la simulación. Gráficas P(t) con datos reales + residuales + plano fase. Demostración paso a paso de por qué el exponencial falla para t grande (extrapolación divergente) y por qué el logístico falla cuando hay intervención. Comparación cruzada entre los 5 casos con tabla de parámetros ajustados.',
+            D: 'CRITERIO CENTRAL (8 pts). (1) Supuestos: r constante (roto en Australia por mixomatosis → resistencia evolutiva), K constante (roto por expansión geográfica en Colombia), H constante (simplificación de políticas reales), sin dispersión espacial, sin estocasticidad. (2) Error cuantificado: R² + residuales + DW + AIC. (3) Sensibilidad OAT: ∂t_extinción/∂H, ∂P_final/∂r, ∂P_final/∂K con valores numéricos. (4) Alternativas: 3 modelos de tipo diferente (analítico cerrado, analítico cerrado, numérico RK4). (5) Extensiones: modelo estocástico (SDE), reacción-difusión espacial, Lotka-Volterra con humano como depredador, r(t) decreciente por resistencia.',
+            E: 'Motivación: problema de actualidad nacional, debate ético-político (sacrificio vs conservación). Decisiones: elegir logístico vs Gompertz, incluir H constante o H(t) escalonado, usar datos oficiales MinAmbiente vs estimaciones académicas. Sorpresa: la matemática sola no dicta la solución — Galápagos y Australia tenían el MISMO modelo y desenlaces opuestos por decisiones políticas.',
+          },
+        },
+        interdisciplinario: [
+          {
+            marco: 'Sostenibilidad, desarrollo y cambio',
+            marcoEmoji: '🌱',
+            asignatura: 'Biología',
+            rq: '¿Cómo interactúan la tasa intrínseca de crecimiento r, la capacidad de carga ecosistémica K y las redes tróficas del Magdalena Medio para determinar el impacto de los hipopótamos sobre la biodiversidad nativa (manatíes, chigüiros, nutrias), y qué estrategia de control minimiza la pérdida de servicios ecosistémicos según el modelo logístico con cosecha?',
+            integra: {
+              matematicas: 'Modelos: solución analítica de Verhulst y umbral H_crítico = rK/4 como indicador cuantitativo de viabilidad del control. Sensibilidad paramétrica ∂P/∂r, ∂P/∂K. Análisis de estabilidad de Lyapunov (opcional HL). Comparación AIC entre logístico puro y logístico con efecto Allee (modelo alternativo: dP/dt = rP(1−P/K)(P/A − 1)).',
+              otraAsignatura: 'Modelos: capacidad de carga ecológica K estimada por producción primaria del humedal y densidad de hipopótamos por km² en hábitat nativo (Uganda, Zambia). Redes tróficas: desplazamiento competitivo del manatí antillano (Trichechus manatus) por solapamiento de nicho. Eutrofización: entrada de 8–9 kg heces/hipo/día al río → proliferación de cianobacterias → muerte de peces nativos. Comparación con el caso documentado del cocodrilo aguja (Crocodylus acutus).',
+            },
+            criterioD: 'Doble lente: (1) Matemáticamente, el logístico predice P_eq = K ≈ 1200 para 2070; pero K asume recursos estáticos — la deforestación reduce K, lo que podría ralentizar el crecimiento pero también extinguir más rápido a las especies nativas. ¿Cómo se modela K(t)? (2) Biológicamente, incluso con H = H_crítico, los servicios ecosistémicos (calidad del agua, diversidad de peces) podrían tardar 30+ años en recuperarse — porque los cambios ecológicos no son simétricos a los cambios poblacionales. ¿El modelo debe incluir una variable "daño acumulado" proporcional a la integral ∫₀ᵗ P(τ)dτ?',
+          },
+          {
+            marco: 'Poder, igualdad y justicia',
+            marcoEmoji: '⚖️',
+            asignatura: 'Filosofía / Ética ambiental',
+            rq: '¿Hasta qué punto el umbral matemático H_crítico = rK/4 — que define objetivamente cuándo el control poblacional es viable — puede orientar una decisión ética sobre el sacrificio de hipopótamos en Colombia, y qué revelan los casos de Galápagos (erradicación aceptada) y Australia (control debatido) sobre la relación entre evidencia matemática, valor moral del animal individual y justicia intergeneracional?',
+            integra: {
+              matematicas: 'Modelos: el umbral H_crítico como criterio objetivo de decisión — por debajo de él, toda estrategia de control solo reduce a un estado residual, nunca erradica. Análisis costo-beneficio: ∫₀ᵀ costo(H)dt vs pérdida de servicios ecosistémicos. Sensibilidad de t_extinción al retraso Δt en la intervención (la "ventana de control" cuantificada).',
+              otraAsignatura: 'Marcos éticos: utilitarismo (Singer — maximizar bienestar total = sacrificar hipopótamos salva más vida animal nativa), deontología (Regan — derechos del individuo = cada hipo tiene derecho a la vida), ética ambientalista (Leopold — la tierra como sujeto moral). Comparación con el debate Galápagos (sacrificio aceptado porque "no pertenecen") vs Australia (mixomatosis considerada cruel). Colonialismo epistémico: ¿quién decide qué especie "no pertenece"? El hipopótamo no eligió llegar.',
+            },
+            criterioD: 'Doble lente: (1) Matemáticamente, postergar la decisión en Colombia tiene costo cuantificable — ∂H_min/∂t > 0 exponencialmente — pero eso no resuelve el debate moral, solo lo tensiona temporalmente. ¿Puede una simulación matemática legitimar una decisión ética o solo informarla? (2) Éticamente, el caso de Galápagos muestra que la evidencia matemática sí movió la opinión pública (erradicación aceptada), pero Australia muestra que puede NO moverla (oposición a mixomatosis pese a datos claros). ¿Qué factores culturales determinan que un argumento matemático sea ético-mente persuasivo?',
+          },
+          {
+            marco: 'Movimiento, tiempo y espacio',
+            marcoEmoji: '🌍',
+            asignatura: 'Geografía / Economía',
+            rq: '¿Cómo predice el modelo de reacción-difusión (extensión espacial del logístico) la dispersión de los hipopótamos a lo largo del río Magdalena desde Puerto Triunfo hacia el Caribe, y qué revela el análisis costo-beneficio combinado con la velocidad de frente de onda c = 2√(rD) sobre la estrategia óptima de ubicación geográfica de los puntos de control?',
+            integra: {
+              matematicas: 'Modelos: ecuación de Fisher-KPP ∂P/∂t = D·∂²P/∂x² + rP(1−P/K) como extensión espacial. Velocidad de onda viajera c = 2√(rD). Tiempo estimado hasta un punto geográfico x: t = x/c. Análisis económico: valor presente neto VPN = ∫₀ᵀ (beneficio(t) − costo(t))·e⁻ʳ_descuentoᵗ dt de cada estrategia (H uniforme vs H concentrado en frente de onda).',
+              otraAsignatura: 'Geografía: cartografía del Magdalena Medio, longitud navegable (~1200 km desde Puerto Triunfo a Barranquilla), tramos con ciénagas vs cauce principal (los hipos prefieren ciénagas — D varía espacialmente). Economía: costos reales del control (USD 8000–15000 por hipo esterilizado vs USD 3000–5000 por sacrificado según Shurin 2023), presupuesto disponible del MinAmbiente, análisis de elasticidad política.',
+            },
+            criterioD: 'Doble lente: (1) El modelo de Fisher-KPP predice que la onda viajera llega a Barrancabermeja en ~18 años si D ≈ 5 km²/año — pero el río tiene tramos lentos (ciénagas) y rápidos (cauce), lo que hace D espacialmente variable. ¿Justifica un modelo más complejo (D(x)) o el modelo uniforme da una cota superior útil? (2) Económicamente, concentrar H en el frente de onda (al norte de Puerto Berrío) minimiza costo total porque evita dispersión irreversible — pero políticamente es difícil defender "no cazar en Puerto Triunfo donde están los atractivos turísticos". ¿La matemática puede justificar una estrategia impopular?',
+          },
+        ],
+      },
+    },
   ],
 
   proceso: [
