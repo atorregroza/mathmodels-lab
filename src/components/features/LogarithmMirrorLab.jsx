@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -218,6 +219,15 @@ export const LogarithmMirrorLab = () => {
           </div>
 
           <AxisRangePanel {...axis} />
+
+          <div className="mt-3">
+            <LiveFormula
+              label="Par conjugado evaluado"
+              general={String.raw`f(x) = a^{x} \quad\Longleftrightarrow\quad g(x) = \log_{a}(x)`}
+              evaluated={`f(x) = ${bl === 'e' ? 'e' : bl}^{x} \\quad\\Longleftrightarrow\\quad g(x) = \\log_{${bl}}(x)`}
+              raw
+            />
+          </div>
 
           {/* leyenda */}
           <div className="mt-3 flex flex-wrap gap-5">

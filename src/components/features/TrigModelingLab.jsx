@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, linePath, sampleRange } from './derivaLabUtils'
 
 const CONTEXTS = [
@@ -252,6 +253,15 @@ export const TrigModelingLab = () => {
                   </>
                 )}
               </CartesianFrame>
+            </div>
+
+            <div className="mt-3">
+              <LiveFormula
+                label="Modelo evaluado"
+                general={`g(${ctx.xLabel.charAt(0).toLowerCase()}) = a \\cdot \\${symbol === 'sen' ? 'operatorname{sen}' : symbol}(b(${ctx.xLabel.charAt(0).toLowerCase()} - h)) + k`}
+                evaluated={`g(${ctx.xLabel.charAt(0).toLowerCase()}) = ${format(a)} \\cdot \\${symbol === 'sen' ? 'operatorname{sen}' : symbol}(${format(b)}(${ctx.xLabel.charAt(0).toLowerCase()} ${h >= 0 ? '-' : '+'} ${format(Math.abs(h))})) ${k >= 0 ? '+' : '-'} ${format(Math.abs(k))}`}
+                raw
+              />
             </div>
           </LabCard>
 

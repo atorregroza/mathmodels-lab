@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -115,6 +116,13 @@ export const FunctionTransformationsLab = () => {
               </CartesianFrame>
             </div>
             <AxisRangePanel {...axis} />
+            <div className="mt-3">
+              <LiveFormula
+                label="Modelo evaluado"
+                general="g(x) = a \cdot f(b(x - h)) + k"
+                evaluated={transformedFormula.replace('g(x) = ', 'g(x) = ')}
+              />
+            </div>
             <div className="mt-3 flex flex-wrap gap-2 text-xs text-paper/60">
               <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5">
                 <span className="font-semibold text-aqua">Base: </span>{base.formula}

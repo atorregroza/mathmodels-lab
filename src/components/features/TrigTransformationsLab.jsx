@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -305,6 +306,26 @@ export const TrigTransformationsLab = () => {
               </CartesianFrame>
             </div>
             <AxisRangePanel {...axis} />
+            {mode === 'explore' && (
+              <div className="mt-3">
+                <LiveFormula
+                  label="Modelo evaluado"
+                  general={`g(x) = a \\cdot \\${family.symbol === 'sen' ? 'operatorname{sen}' : family.symbol}(b(x - h)) + k`}
+                  evaluated={`g(x) = ${format(a)} \\cdot \\${family.symbol === 'sen' ? 'operatorname{sen}' : family.symbol}(${format(b)}(x ${h >= 0 ? '-' : '+'} ${format(Math.abs(h))})) ${k >= 0 ? '+' : '-'} ${format(Math.abs(k))}`}
+                  raw
+                />
+              </div>
+            )}
+            {mode === 'challenge' && challenge && (
+              <div className="mt-3">
+                <LiveFormula
+                  label="Tu modelo en vivo"
+                  general="g(x) = a \cdot f(b(x - h)) + k"
+                  evaluated={`g(x) = ${format(guess.a)} \\cdot f(${format(guess.b)}(x ${guess.h >= 0 ? '-' : '+'} ${format(Math.abs(guess.h))})) ${guess.k >= 0 ? '+' : '-'} ${format(Math.abs(guess.k))}`}
+                  raw
+                />
+              </div>
+            )}
           </LabCard>
 
           {mode === 'explore' && (
@@ -326,11 +347,7 @@ export const TrigTransformationsLab = () => {
                   detail={family.id === 'tan' ? 'Excluye las as\u00edntotas verticales' : 'Definida en todos los reales'} dark={false} />
               </div>
 
-              <div className="grid gap-4 xl:grid-cols-2">
-                <ModelCard title="Funci\u00f3n base" expression={`f(x) = ${family.symbol}(x)`} />
-                <ModelCard title="Modelo actual"
-                  expression={`g(x) = ${format(a)}\u00b7${family.symbol}(${format(b)}(x ${h >= 0 ? '-' : '+'} ${format(Math.abs(h))})) ${k >= 0 ? '+' : '-'} ${format(Math.abs(k))}`} />
-              </div>
+              <ModelCard title="Funci\u00f3n base" expression={`f(x) = ${family.symbol}(x)`} />
 
               <LabCard title="Descarga">
                 <p className="text-sm leading-6 text-ink/68">Exporta una muestra de ambas curvas para seguir el an&aacute;lisis.</p>

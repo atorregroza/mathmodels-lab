@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, sampleRange, linePath } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 import { computeR2, computeAIC, computeResiduals, durbinWatson } from './modelFitting'
@@ -930,6 +931,14 @@ export const HipoGrowthLab = () => {
             </CartesianFrame>
           </div>
           <AxisRangePanel {...popAxis} />
+          <div className="mt-3">
+            <LiveFormula
+              label="Modelo logístico evaluado"
+              general={String.raw`P(t) = \frac{K}{1 + \frac{K - P_0}{P_0} \cdot e^{-rt}}`}
+              evaluated={`P(t) = \\frac{${format(K)}}{1 + \\frac{${format(K - activeCase.P0)}}{${format(activeCase.P0)}} \\cdot e^{-${r.toFixed(3)}\\,t}}`}
+              raw
+            />
+          </div>
           <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/60">
             <span className="flex items-center gap-1.5">
               <span className="inline-block w-2.5 h-2.5 rounded-full bg-white" /> Observados

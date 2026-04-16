@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -165,6 +166,25 @@ export const CompoundInterestLab = () => {
               </CartesianFrame>
             </div>
             <AxisRangePanel {...axis} />
+
+            <div className="mt-3 space-y-2">
+              {(view === 'both' || view === 'compound') && (
+                <LiveFormula
+                  label="Compuesto evaluado"
+                  general={String.raw`A_n = C_0 \cdot (1 + r)^{n}`}
+                  evaluated={`A_{${years}} = ${format(capital)} \\cdot (1 + ${format(r)})^{${years}} = ${format(compoundFinal)}`}
+                  raw
+                />
+              )}
+              {(view === 'both' || view === 'simple') && (
+                <LiveFormula
+                  label="Simple evaluado"
+                  general={String.raw`A_n = C_0 \cdot (1 + r \cdot n)`}
+                  evaluated={`A_{${years}} = ${format(capital)} \\cdot (1 + ${format(r)} \\cdot ${years}) = ${format(simpleFinal)}`}
+                  raw
+                />
+              )}
+            </div>
 
             {/* leyenda — solo muestra las curvas activas */}
             <div className="mt-3 flex flex-wrap gap-5">

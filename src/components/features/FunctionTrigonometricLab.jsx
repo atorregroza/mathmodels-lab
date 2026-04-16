@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -230,8 +231,12 @@ export const FunctionTrigonometricLab = () => {
                 <p className="text-[0.68rem] uppercase tracking-[0.2em] text-paper/45">Modelo y controles</p>
                 <div className="mt-3 space-y-3">
                   <ModelCard title="Función base" expression={family.baseFormula} dark />
-                  <ModelCard title="Modelo general" expression={family.generalModel} parameters={'a, b, h, k ∈ R'} conditions={'b > 0'} dark />
-                  <ModelCard title="Modelo actual" expression={`g(x) = ${format(a)}·${family.symbol}(${format(b)}(x ${h >= 0 ? '-' : '+'} ${format(Math.abs(h))})) ${k >= 0 ? '+' : '-'} ${format(Math.abs(k))}`} dark />
+                  <LiveFormula
+                    label="Modelo evaluado"
+                    general={family.generalModel}
+                    evaluated={`g(x) = ${format(a)} \\cdot \\${family.symbol === 'sen' ? 'operatorname{sen}' : family.symbol}(${format(b)}(x ${h >= 0 ? '-' : '+'} ${format(Math.abs(h))})) ${k >= 0 ? '+' : '-'} ${format(Math.abs(k))}`}
+                    raw
+                  />
                 </div>
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                   <SliderField id="trig-a" label={family.parameterLabel} value={a} min={-3} max={3} step={0.1} onChange={setA} />

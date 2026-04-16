@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
-import { Math as MathRender } from '../ui/Math'
+import { LiveFormula } from './LiveFormula'
 import { format, downloadCsv } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -538,11 +538,23 @@ export const ConicsModelingLab = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <LabCard title="Ecuación" className="flex-1">
-              <div className="mt-1 text-sm text-ink/80">
-                <MathRender raw>{sc.equation}</MathRender>
-              </div>
-            </LabCard>
+            <div className="flex-1 min-w-0">
+              <LiveFormula
+                tone="dark"
+                label="Ecuación evaluada"
+                general={sc.equation}
+                evaluated={
+                  scenarioId === 'circle'
+                    ? `(x ${cH >= 0 ? '-' : '+'} ${format(Math.abs(cH))})^{2} + (y ${cK >= 0 ? '-' : '+'} ${format(Math.abs(cK))})^{2} = ${format(cR * cR)}`
+                    : scenarioId === 'parabola'
+                      ? `y = \\frac{1}{${format(4 * pP)}}\\, x^{2}`
+                      : scenarioId === 'ellipse'
+                        ? `\\frac{x^{2}}{${format(eA * eA)}} + \\frac{y^{2}}{${format((eA * Math.sqrt(1 - eE * eE)) ** 2)}} = 1`
+                        : `\\text{Elipse de transferencia: } e \\approx ${ARTEMIS.eccentricity.toFixed(4)}`
+                }
+                raw
+              />
+            </div>
             <button onClick={handleCsv} className="rounded-full border border-ink/10 bg-paper px-4 py-2 text-sm font-semibold text-ink/70 transition-colors hover:border-ink/30">CSV</button>
           </div>
         </div>

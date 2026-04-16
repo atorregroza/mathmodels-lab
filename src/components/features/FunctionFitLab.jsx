@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -127,6 +128,14 @@ export const FunctionFitLab = () => {
                 </CartesianFrame>
               </div>
               <AxisRangePanel {...axis} />
+
+              <div className="mt-3">
+                <LiveFormula
+                  label="Modelo de ajuste evaluado"
+                  general={model.generalModel}
+                  evaluated={model.formula(params)}
+                />
+              </div>
 
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 <MetricCard label="Error cuadrático medio" value={format(mse)} detail="Resume cuán lejos está el modelo de los datos." />

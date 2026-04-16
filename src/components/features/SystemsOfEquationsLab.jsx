@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, generateTicks } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -730,6 +731,14 @@ export const SystemsOfEquationsLab = () => {
             </CartesianFrame>
           </div>
           <AxisRangePanel {...axis1} />
+          <div className="mt-3">
+            <LiveFormula
+              label="Sistema evaluado"
+              general={String.raw`\begin{cases} a_1 x + b_1 y = c_1 \\ a_2 x + b_2 y = c_2 \end{cases}`}
+              evaluated={`\\begin{cases} ${eqStr(a1, b1, c1).replace(/−/g, '-')} \\\\ ${eqStr(a2, b2, c2).replace(/−/g, '-')} \\end{cases}`}
+              raw
+            />
+          </div>
           <div className="mt-3 flex flex-wrap gap-5">
             {[
               { color: 'rgba(255,107,53,0.85)', label: `Ec.1: ${eqStr(a1, b1, c1)}` },

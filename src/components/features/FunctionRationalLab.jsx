@@ -1,16 +1,8 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
-
-const Fraction = ({ numerator, denominator }) => (
-  <span className="inline-flex align-middle">
-    <span className="inline-flex flex-col items-center leading-none">
-      <span className="border-b border-current px-1 pb-1">{numerator}</span>
-      <span className="px-1 pt-1">{denominator}</span>
-    </span>
-  </span>
-)
 
 const caseDefinitions = {
   single: {
@@ -25,11 +17,7 @@ const caseDefinitions = {
       { key: 'h', label: 'Asíntota vertical h', min: -2, max: 4, step: 0.1 },
       { key: 'c', label: 'Asíntota horizontal c', min: -4, max: 4, step: 0.1 },
     ],
-    generalModel: (
-      <>
-        f(x) = <Fraction numerator="a" denominator="x - h" /> + c
-      </>
-    ),
+    generalModel: String.raw`f(x) = \frac{a}{x - h} + c`,
     parameterSet: 'a, h, c ∈ R',
     conditions: 'x ≠ h',
     buildModel: (params) => ({
@@ -37,11 +25,7 @@ const caseDefinitions = {
       verticals: [params.h],
       horizontal: params.c,
       references: [`Asíntota vertical: x = ${format(params.h)}`, `Asíntota horizontal: y = ${format(params.c)}`],
-      formula: (
-        <>
-          f(x) = <Fraction numerator={format(params.a)} denominator={`x - ${format(params.h)}`} /> {params.c >= 0 ? '+' : '-'} {format(Math.abs(params.c))}
-        </>
-      ),
+      formula: `f(x) = \\frac{${format(params.a)}}{x - ${format(params.h)}} ${params.c >= 0 ? '+' : '-'} ${format(Math.abs(params.c))}`,
       reading: 'Mover a cambia la apertura de las ramas. Mover h traslada la discontinuidad; mover c desplaza la asíntota horizontal.',
     }),
   },
@@ -58,11 +42,7 @@ const caseDefinitions = {
       { key: 'r2', label: 'Asíntota r2', min: 0.5, max: 4, step: 0.1 },
       { key: 'c', label: 'Traslación c', min: -3, max: 3, step: 0.1 },
     ],
-    generalModel: (
-      <>
-        f(x) = <Fraction numerator="a" denominator="(x - r1)(x - r2)" /> + c
-      </>
-    ),
+    generalModel: String.raw`f(x) = \frac{a}{(x - r_1)(x - r_2)} + c`,
     parameterSet: 'a, r1, r2, c ∈ R',
     conditions: 'x ≠ r1, x ≠ r2',
     buildModel: (params) => {
@@ -74,11 +54,7 @@ const caseDefinitions = {
         verticals: [left, right],
         horizontal: params.c,
         references: [`Asíntotas verticales: x = ${format(left)}, x = ${format(right)}`, `Asíntota horizontal: y = ${format(params.c)}`],
-        formula: (
-          <>
-            f(x) = <Fraction numerator={format(params.a)} denominator={`(x - ${format(left)})(x - ${format(right)})`} /> {params.c >= 0 ? '+' : '-'} {format(Math.abs(params.c))}
-          </>
-        ),
+        formula: `f(x) = \\frac{${format(params.a)}}{(x - ${format(left)})(x - ${format(right)})} ${params.c >= 0 ? '+' : '-'} ${format(Math.abs(params.c))}`,
         reading: 'Mover r1 y r2 separa o acerca las discontinuidades. Mover a cambia la apertura y el signo de las ramas.',
       }
     },
@@ -96,11 +72,7 @@ const caseDefinitions = {
       { key: 'a', label: 'Escala a', min: -6, max: 6, step: 0.1 },
       { key: 'h', label: 'Asíntota vertical h', min: -2, max: 4, step: 0.1 },
     ],
-    generalModel: (
-      <>
-        f(x) = mx + b + <Fraction numerator="a" denominator="x - h" />
-      </>
-    ),
+    generalModel: String.raw`f(x) = mx + b + \frac{a}{x - h}`,
     parameterSet: 'm, b, a, h ∈ R',
     conditions: 'x ≠ h',
     buildModel: (params) => ({
@@ -108,11 +80,7 @@ const caseDefinitions = {
       verticals: [params.h],
       oblique: { m: params.m, b: params.b },
       references: [`Asíntota vertical: x = ${format(params.h)}`, `Asíntota oblicua: y = ${format(params.m)}x ${params.b >= 0 ? '+' : '-'} ${format(Math.abs(params.b))}`],
-      formula: (
-        <>
-          f(x) = {format(params.m)}x {params.b >= 0 ? '+' : '-'} {format(Math.abs(params.b))} + <Fraction numerator={format(params.a)} denominator={`x - ${format(params.h)}`} />
-        </>
-      ),
+      formula: `f(x) = ${format(params.m)}x ${params.b >= 0 ? '+' : '-'} ${format(Math.abs(params.b))} + \\frac{${format(params.a)}}{x - ${format(params.h)}}`,
       reading: 'La recta oblicua cambia con m y b. El término fraccionario controla cómo la curva se separa de esa recta cerca de la discontinuidad.',
     }),
   },
@@ -186,7 +154,6 @@ export const FunctionRationalLab = () => {
           <LabCard title="Parámetros del modelo">
             <div className="space-y-3">
               <ModelCard title="Modelo general" expression={config.generalModel} parameters={config.parameterSet} conditions={config.conditions} />
-              <ModelCard title="Modelo actual" expression={model.formula} />
             </div>
             <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-1">
               {config.controls.map((control) => (
@@ -250,6 +217,15 @@ export const FunctionRationalLab = () => {
 
             <AxisRangePanel {...axis} />
 
+            <div className="mt-3">
+              <LiveFormula
+                label="Modelo evaluado"
+                general={config.generalModel}
+                evaluated={model.formula}
+                raw
+              />
+            </div>
+
             <div className="mt-4 flex flex-wrap gap-3 text-sm text-paper/72">
               {model.references.map((reference) => (
                 <div key={reference} className="rounded-full border border-white/10 bg-white/6 px-3 py-2">
@@ -260,13 +236,8 @@ export const FunctionRationalLab = () => {
           </LabCard>
 
           <div className="grid gap-4 xl:grid-cols-2">
-            <LabCard title="Expresión">
-              <div className="overflow-x-auto rounded-[1.2rem] bg-paper px-4 py-4">
-                <div className="min-w-max whitespace-nowrap text-[1.12rem] font-semibold text-ink md:text-[1.18rem]">
-                  {model.formula}
-                </div>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-ink/68">{model.reading}</p>
+            <LabCard title="Lectura">
+              <p className="text-sm leading-6 text-ink/68">{model.reading}</p>
             </LabCard>
             <LabCard title="Descarga">
               <button

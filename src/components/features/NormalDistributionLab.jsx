@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField, ModelCard } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, sampleRange, linePath } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -172,6 +173,14 @@ export const NormalDistributionLab = () => {
               )}
             </CartesianFrame>
             <AxisRangePanel {...axis} />
+            <div className="mt-3">
+              <LiveFormula
+                label="Densidad normal evaluada"
+                general={String.raw`f(x) = \frac{1}{\sigma\sqrt{2\pi}} \cdot e^{-\frac{(x-\mu)^2}{2\sigma^2}}`}
+                evaluated={`f(x) = \\frac{1}{${format(sigma)}\\sqrt{2\\pi}} \\cdot e^{-\\frac{(x ${mu >= 0 ? '-' : '+'} ${format(Math.abs(mu))})^2}{2 \\cdot ${format(sigma)}^2}}`}
+                raw
+              />
+            </div>
           </LabCard>
 
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

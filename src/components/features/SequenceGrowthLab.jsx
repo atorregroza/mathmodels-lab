@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -207,6 +208,20 @@ export const SequenceGrowthLab = () => {
             </CartesianFrame>
           </div>
           <AxisRangePanel {...axis} />
+          <div className="mt-3">
+            <LiveFormula
+              label={view === 'sequence' ? 'Término general evaluado' : 'Suma parcial evaluada'}
+              general={
+                view === 'sequence'
+                  ? (type === 'arithmetic' ? 'a_n = a_1 + (n - 1) \\cdot d' : 'a_n = a_1 \\cdot r^{n-1}')
+                  : (type === 'arithmetic'
+                      ? 'S_n = \\frac{n}{2}(2a_1 + (n - 1)d)'
+                      : 'S_n = a_1 \\cdot \\frac{r^n - 1}{r - 1}')
+              }
+              evaluated={view === 'sequence' ? termFormula : sumFormula}
+              raw={false}
+            />
+          </div>
           <p className="mt-3 text-[0.72rem] leading-5 text-paper/45">
             {view === 'sequence'
               ? 'Cada punto es un término de la sucesión.'
