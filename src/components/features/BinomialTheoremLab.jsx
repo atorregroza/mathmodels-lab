@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { format } from './derivaLabUtils'
 
 // ── math helpers ──────────────────────────────────────────────────────────────
@@ -138,6 +139,14 @@ export const BinomialTheoremLab = () => {
         </span>
         <span className="text-sm text-ink/40">{totalTerms} términos en total</span>
       </div>
+
+      <LiveFormula
+        tone="dark"
+        label={`Término T(${cr + 1}) evaluado`}
+        general={String.raw`T(r+1) = \binom{n}{r} \cdot (px)^{n-r} \cdot q^{r}`}
+        evaluated={`T(${cr + 1}) = \\binom{${n}}{${cr}} \\cdot (${p}x)^{${n - cr}} \\cdot (${q})^{${cr}}`}
+        raw
+      />
 
       {/* ── pascal row + step-by-step ─────────────────────────────────────── */}
       <div className="grid gap-5 lg:grid-cols-[1fr_1.2fr]">

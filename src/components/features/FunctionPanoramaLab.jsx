@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, ModelCard, SliderField } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -164,12 +165,10 @@ export const FunctionPanoramaLab = () => {
             <LabCard dark className="overflow-hidden rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
               <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Comportamiento visible</p>
               <div className="mt-3">
-                <ModelCard
-                  dark
-                  title="Modelo general"
-                  expression={family.generalModel}
-                  parameters={family.parameterSet}
-                  conditions={family.conditions}
+                <LiveFormula
+                  label="Modelo evaluado"
+                  general={family.generalModel}
+                  evaluated={family.formula(params)}
                 />
               </div>
               <div className="mt-5 overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/6 p-4">

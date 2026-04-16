@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { CartesianFrame, LabCard, MetricCard, SliderField, ModelCard, AxisRangePanel } from './DerivaLabPrimitives'
+import { LiveFormula } from './LiveFormula'
 import { downloadCsv, format, sampleRange, linePath, generateTicks } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -158,6 +159,14 @@ export const BinomialDistributionLab = () => {
               }}
             </CartesianFrame>
             <AxisRangePanel {...axis} />
+            <div className="mt-3">
+              <LiveFormula
+                label="Probabilidad evaluada"
+                general={String.raw`P(X = k) = \binom{n}{k} \cdot p^{k} \cdot (1-p)^{n-k}`}
+                evaluated={`P(X = ${k}) = \\binom{${n}}{${k}} \\cdot ${format(p)}^{${k}} \\cdot ${format(1 - p)}^{${n - k}} = ${pK.toFixed(4)}`}
+                raw
+              />
+            </div>
             <div className="mt-2 flex items-center justify-center gap-4 text-xs">
               <span className="flex items-center gap-1.5">
                 <span className="inline-block h-2.5 w-2.5 rounded-sm bg-[#5096ff]" /> Binomial
