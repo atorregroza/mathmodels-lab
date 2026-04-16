@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, SliderField } from './DerivaLabPrimitives'
+import { Math as MathRender } from '../ui/Math'
 import { downloadCsv, format, generateTicks, linePath, sampleRange } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -148,13 +149,20 @@ export const LimitsApproximationLab = () => {
             <LabCard title="Expresiones del modelo">
               <div className="space-y-3">
                 <div className="overflow-x-auto rounded-[1.2rem] bg-paper px-4 py-4">
-                  <p className="min-w-max whitespace-nowrap font-mono text-[1rem] font-semibold text-ink md:text-[1.08rem]">{scenario.formula}</p>
+                  <p className="min-w-max whitespace-nowrap text-[1.1rem] font-semibold text-ink md:text-[1.18rem]">
+                    <MathRender>{scenario.formula}</MathRender>
+                  </p>
                 </div>
                 <div className="overflow-x-auto rounded-[1.2rem] bg-paper px-4 py-4">
-                  <p className="min-w-max whitespace-nowrap font-mono text-[1rem] font-semibold text-ink md:text-[1.08rem]">{`lim h→0 [f(${format(a)} + h) - f(${format(a)})] / h ≈ ${format(estimate)}`}</p>
+                  <div className="min-w-max whitespace-nowrap text-[1.1rem] font-semibold text-ink md:text-[1.18rem]">
+                    <MathRender raw>{`\\lim_{h \\to 0} \\frac{f(${format(a)} + h) - f(${format(a)})}{h} \\approx ${format(estimate)}`}</MathRender>
+                  </div>
                 </div>
                 <div className="overflow-x-auto rounded-[1.2rem] border border-ink/10 bg-white px-4 py-4">
-                  <p className="min-w-max whitespace-nowrap font-mono text-[1rem] font-semibold text-ink md:text-[1.08rem]">{`${scenario.derivativeFormula}; valor en a: ${format(exact)}`}</p>
+                  <div className="min-w-max whitespace-nowrap text-[1.1rem] font-semibold text-ink md:text-[1.18rem]">
+                    <MathRender>{scenario.derivativeFormula}</MathRender>
+                    <span className="font-display ml-3 text-ink/80">; valor en a: {format(exact)}</span>
+                  </div>
                 </div>
               </div>
             </LabCard>

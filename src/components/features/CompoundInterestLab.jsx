@@ -247,13 +247,13 @@ export const CompoundInterestLab = () => {
       <div className="grid gap-4 md:grid-cols-2">
         <ModelCard
           title="Interés simple — función lineal"
-          expression={`Aₙ = ${format(capital)} · (1 + ${format(r)} · n)`}
+          expression={`A_{n} = ${format(capital)} \\cdot (1 + ${format(r)} \\cdot n)`}
           parameters={`C₀ = ${format(capital)},  r = ${format(r)},  n = ${years} años`}
         />
         <ModelCard
           title="Interés compuesto — sucesión geométrica"
-          expression={`Aₙ = ${format(capital)} · (1 + ${format(r)})ⁿ`}
-          parameters={`C₀ = ${format(capital)},  razón = ${format(1 + r)},  Aₙ = ${format(compoundFinal)} $`}
+          expression={`A_{n} = ${format(capital)} \\cdot (1 + ${format(r)})^{n}`}
+          parameters={`C₀ = ${format(capital)},  razón = ${format(1 + r)},  A_{n} = ${format(compoundFinal)} $`}
         />
       </div>
 

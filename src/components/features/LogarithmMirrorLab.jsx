@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AxisRangePanel, CartesianFrame, LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
 import { LiveFormula } from './LiveFormula'
+import { Math as MathRender } from '../ui/Math'
 import { downloadCsv, format, generateTicks } from './derivaLabUtils'
 import { useAxisRange } from '../../hooks/useAxisRange'
 
@@ -22,6 +23,28 @@ const baseLabel = (a) => (Math.abs(a - Math.E) < 0.06 ? 'e' : format(a))
 // Unicode superscript digits for exponents
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹'
 const sup = (n) => String(Math.abs(n)).split('').map((d) => SUP[+d]).join('')
+
+// Unicode subscript digits for bases (e.g. '2' → '₂', '2.5' → '₂.₅')
+const SUB = '₀₁₂₃₄₅₆₇₈₉'
+const subDigits = (str) => String(str).replace(/\d/g, (d) => SUB[+d])
+
+// ── Log notation helpers ────────────────────────────────────────────────────
+// Render "log" with the base as a proper subscript. When base === 'e', use "ln".
+// Usage: <LogBase base={bl} />  → renders as "log₂" (JSX with <sub>)
+const LogBase = ({ base }) => {
+  if (base === 'e') return <span>ln</span>
+  return <>log<sub className="text-[0.72em]">{base}</sub></>
+}
+
+// Same but returns a plain string with Unicode subscript digits (for MetricCard labels, CSV, etc.)
+// e.g. 'logText(2)' → 'log₂'  /  'logText("e")' → 'ln'
+const logText = (base) => (base === 'e' ? 'ln' : 'log' + subDigits(base))
+
+// Inline power helper. Unicode ˣ / ʸ modifier letters are small and read as "ax"/"ay" —
+// render with KaTeX so the exponent is clearly a superscript (larger, elevated).
+const Pow = ({ base, exp }) => (
+  <MathRender raw>{`${base}^{${exp}}`}</MathRender>
+)
 
 export const LogarithmMirrorLab = () => {
   const [base, setBase] = useState(2)
@@ -107,7 +130,7 @@ export const LogarithmMirrorLab = () => {
 
       {/* ── graph + sliders ───────────────────────────────────────────────── */}
       <div className="grid gap-5 xl:grid-cols-[1fr_0.72fr]">
-        <LabCard dark title={`${bl}ˣ y log${bl}(x) — reflexión en y = x`} className="xl:sticky xl:top-4 xl:self-start">
+        <LabCard dark title={`Función exponencial y ${logText(bl)}(x) — reflexión en y = x`} className="xl:sticky xl:top-4 xl:self-start">
           <div className="mt-4">
             {/* Square SVG (500×500) = equal x/y scale → y=x is truly 45° */}
             <CartesianFrame
@@ -232,13 +255,13 @@ export const LogarithmMirrorLab = () => {
           {/* leyenda */}
           <div className="mt-3 flex flex-wrap gap-5">
             {[
-              { color: '#ff6b35', dash: false, label: `f(x) = ${bl}ˣ — exponencial` },
-              { color: 'rgba(120,180,255,0.9)', dash: false, label: `g(x) = log${bl}(x) — logaritmo` },
+              { key: 'exp', color: '#ff6b35', dash: false, label: <>f(x) = <Pow base={bl} exp="x" /> — exponencial</> },
+              { key: 'log', color: 'rgba(120,180,255,0.9)', dash: false, label: <>g(x) = <LogBase base={bl} />(x) — logaritmo</> },
               ...(showMirror
-                ? [{ color: 'rgba(255,255,255,0.30)', dash: true, label: 'y = x — eje de simetría' }]
+                ? [{ key: 'mirror', color: 'rgba(255,255,255,0.30)', dash: true, label: 'y = x — eje de simetría' }]
                 : []),
-            ].map(({ color, dash, label }) => (
-              <span key={label} className="flex items-center gap-2 text-[0.7rem] text-paper/80">
+            ].map(({ key, color, dash, label }) => (
+              <span key={key} className="flex items-center gap-2 text-sm text-paper/80">
                 <svg width="24" height="10" aria-hidden="true">
                   <line
                     x1="0" y1="5" x2="24" y2="5"
@@ -301,20 +324,22 @@ export const LogarithmMirrorLab = () => {
                     key={exp}
                     className="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3"
                   >
-                    <span className="font-mono text-sm text-ink/80">
-                      {bl}{sup(exp)} = {format(val)}
+                    <span className="text-sm text-ink/90">
+                      <Pow base={bl} exp={String(exp)} /> = {format(val)}
                     </span>
                     <span className="text-[0.8rem] text-ink/70">⟷</span>
-                    <span className="text-right font-mono text-sm text-ink/80">
-                      logₐ({format(val)}) = {exp}
+                    <span className="text-right text-sm text-ink/90">
+                      <LogBase base={bl} />({format(val)}) = {exp}
                     </span>
                   </div>
                 )
               })}
             </div>
 
-            <p className="mt-4 text-xs leading-5 text-ink/75">
-              logₐ(x) = y  ⟺  aʸ = x
+            <p className="mt-4 text-sm leading-6 text-ink/85 flex items-center gap-2 flex-wrap">
+              <span><LogBase base={bl} />(x) = y</span>
+              <span>⟺</span>
+              <Pow base={bl} exp="y" /> = x
             </p>
           </div>
 
@@ -332,14 +357,18 @@ export const LogarithmMirrorLab = () => {
       <div className="grid gap-4 md:grid-cols-2">
         <ModelCard
           title="Exponencial — función directa"
-          expression={`f(x) = ${bl}ˣ`}
+          expression={`f(x) = ${bl}^{x}`}
           parameters={`Base a = ${format(a)},  f(0) = 1,  f(1) = ${format(a)}`}
           conditions="Dominio: ℝ  →  Rango: (0, +∞)"
         />
         <ModelCard
           title="Logaritmo — función inversa"
-          expression={`g(x) = log${bl}(x)`}
-          parameters={`log${bl}(1) = 0,  log${bl}(${format(a)}) = 1`}
+          expression={bl === 'e' ? String.raw`g(x) = \ln(x)` : `g(x) = \\log_{${bl}}(x)`}
+          parameters={
+            bl === 'e'
+              ? `ln(1) = 0,  ln(e) = 1`
+              : `${logText(bl)}(1) = 0,  ${logText(bl)}(${format(a)}) = 1`
+          }
           conditions="Dominio: (0, +∞)  →  Rango: ℝ"
         />
       </div>
@@ -354,43 +383,43 @@ export const LogarithmMirrorLab = () => {
         />
         <MetricCard
           dark={false}
-          label={`f(${format(traceX)}) = ${bl}^x₀`}
+          label={`f(${format(traceX)})`}
           value={traceOnScreen ? format(traceY) : 'fuera de vista'}
           detail={`Punto (${format(traceX)}, ${format(traceY)}) en la exponencial`}
         />
         <MetricCard
           dark={false}
-          label={`g(${format(traceY)}) = log${bl}(x)`}
+          label={`g(${format(traceY)})`}
           value={mirrorOnScreen ? format(traceX) : '—'}
           detail={`Punto espejo (${format(traceY)}, ${format(traceX)}) en el logaritmo`}
         />
         <MetricCard
           dark={false}
           label="Verificación"
-          value={`log${bl}(${bl}ˣ) = x`}
-          detail={`log${bl}(${format(traceY)}) = ${format(traceX)} ✓`}
+          value="✓ coordenadas coinciden"
+          detail={`${logText(bl)}(${format(traceY)}) = ${format(traceX)}`}
         />
       </div>
 
       {/* ── lectura matemática ────────────────────────────────────────────── */}
       <LabCard dark title="Lectura matemática">
         <div className="mt-4 space-y-3">
-          <p className="text-sm leading-7 text-paper/80">
+          <p className="text-base leading-7 text-paper/90">
             Toda función con inversa tiene un <strong className="text-paper">espejo en y = x</strong>.
-            Si ({format(traceX)}, {format(traceY)}) pertenece a f(x) = {bl}ˣ, entonces
-            ({format(traceY)}, {format(traceX)}) pertenece a g(x) = log{bl}(x). Las coordenadas
+            Si ({format(traceX)}, {format(traceY)}) pertenece a f(x) = <Pow base={bl} exp="x" />, entonces
+            ({format(traceY)}, {format(traceX)}) pertenece a g(x) = <LogBase base={bl} />(x). Las coordenadas
             se intercambian porque la inversa deshace exactamente lo que la función hace.
           </p>
-          <p className="text-sm leading-7 text-paper/80">
+          <p className="text-base leading-7 text-paper/90">
             El logaritmo responde la pregunta que la exponencial no puede contestar directamente:{' '}
             <strong className="text-paper">¿a qué potencia hay que elevar {bl} para obtener x?</strong>{' '}
-            La equivalencia log{bl}(x) = y ⟺ {bl}ʸ = x es el núcleo de toda manipulación
+            La equivalencia <LogBase base={bl} />(x) = y ⟺ <Pow base={bl} exp="y" /> = x es el núcleo de toda manipulación
             logarítmica en el programa IB. Moviéndote entre ambas formas puedes despejar
             potencias, bases y exponentes en ecuaciones exponenciales.
           </p>
-          <p className="text-sm leading-7 text-paper/80">
+          <p className="text-base leading-7 text-paper/90">
             Nota que dominio y rango se intercambian: f acepta ℝ y produce (0, +∞);
-            g acepta (0, +∞) y produce ℝ. Por eso log{bl}(0) y log{bl}(x) con x &lt; 0{' '}
+            g acepta (0, +∞) y produce ℝ. Por eso <LogBase base={bl} />(0) y <LogBase base={bl} />(x) con x &lt; 0{' '}
             <strong className="text-paper">no existen</strong> — el logaritmo solo puede
             devolver valores del rango de la exponencial, que nunca toca el cero ni los negativos.
           </p>

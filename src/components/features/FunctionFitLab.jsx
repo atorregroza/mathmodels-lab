@@ -45,12 +45,12 @@ const models = {
   },
   exponential: {
     label: 'Exponencial',
-    generalModel: 'f(x) = a·eᵏˣ + c',
+    generalModel: String.raw`f(x) = a \cdot e^{kx} + c`,
     parameterSet: 'a, k, c ∈ ℝ',
     conditions: 'a ≠ 0',
     params: { a: 8.5, k: -0.2, c: 1.2 },
     fn: (x, p) => (p.a * Math.exp(p.k * x)) + p.c,
-    formula: (p) => `f(x) = ${format(p.a)}·e^(${format(p.k)}x) ${p.c >= 0 ? '+' : '-'} ${format(Math.abs(p.c))}`,
+    formula: (p) => `f(x) = ${format(p.a)} \\cdot e^{${format(p.k)}x} ${p.c >= 0 ? '+' : '-'} ${format(Math.abs(p.c))}`,
     controls: [{ key: 'a', label: 'Escala a', min: -12, max: 12, step: 0.05 }, { key: 'k', label: 'Tasa k', min: -1, max: 1, step: 0.02 }, { key: 'c', label: 'Traslación c', min: -4, max: 6, step: 0.05 }],
   },
 }
