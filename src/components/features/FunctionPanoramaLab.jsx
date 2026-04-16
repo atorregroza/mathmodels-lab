@@ -163,7 +163,7 @@ export const FunctionPanoramaLab = () => {
             </LabCard>
 
             <LabCard dark className="overflow-hidden rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Comportamiento visible</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Comportamiento visible</p>
               <div className="mt-3">
                 <LiveFormula
                   label="Modelo evaluado"

@@ -317,7 +317,7 @@ export const VolumeSurfaceLab = () => {
 
       {/* Constraint mode */}
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold text-ink/50">Modo:</span>
+        <span className="text-xs font-semibold text-ink/75">Modo:</span>
         {constraintModes.map((m) => (
           <button
             key={m.id}
@@ -329,7 +329,7 @@ export const VolumeSurfaceLab = () => {
           </button>
         ))}
         {constraint !== 'free' && (
-          <span className="ml-1 text-xs text-ink/50">
+          <span className="ml-1 text-xs text-ink/75">
             {constraint === 'fixV' ? '→ ¿Qué r minimiza el área?' : '→ ¿Qué r maximiza el volumen?'}
           </span>
         )}
@@ -368,7 +368,7 @@ export const VolumeSurfaceLab = () => {
             if (isConstrained) return (
               <div key={p.key} className="rounded-[1.3rem] border border-ink/10 bg-white/82 p-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-ink/50">{p.label} <span className="text-xs text-ink/35">(calculada)</span></span>
+                  <span className="text-sm font-semibold text-ink/75">{p.label} <span className="text-xs text-ink/75">(calculada)</span></span>
                   <span className="font-display tabular-nums text-2xl text-ink">{format(currentParams[p.key])}{` ${p.unit}`}</span>
                 </div>
               </div>
@@ -401,7 +401,7 @@ export const VolumeSurfaceLab = () => {
         {/* RIGHT: graph */}
         <div className="space-y-3">
           <div className="rounded-[1.4rem] border border-white/10 bg-ink p-4">
-            <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/45">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-paper/80">
               {constraint === 'fixV' ? `A(${sweepParam.key}) con V = ${fixedValue} cm³`
                 : constraint === 'fixA' ? `V(${sweepParam.key}) con A = ${fixedValue} cm²`
                 : `V y A vs ${sweepParam.key}`}

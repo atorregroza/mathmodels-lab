@@ -43,7 +43,7 @@ const FracStep = ({ num, den }) => (
 // ── step-by-step solution renderer ───────────────────────────────────────────
 const Step = ({ n, title, lines }) => (
   <div className="rounded-[1rem] border border-ink/8 bg-paper px-4 py-3">
-    <p className="text-[0.65rem] uppercase tracking-[0.22em] text-ink/40">Paso {n} — {title}</p>
+    <p className="text-xs uppercase tracking-[0.22em] text-ink/75">Paso {n} — {title}</p>
     <div className="mt-2 space-y-2">
       {lines.map((line, i) => (
         <p key={i} className={`font-mono text-base leading-8 ${line.highlight ? 'font-bold text-signal' : 'text-ink/75'}`}>
@@ -580,7 +580,7 @@ export const SystemsOfEquationsLab = () => {
       <div className="rounded-[1.6rem] border border-ink/10 bg-white px-6 py-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="max-w-xl">
-            <p className="text-[0.66rem] uppercase tracking-[0.24em] text-ink/44">Contexto del problema</p>
+            <p className="text-xs uppercase tracking-[0.24em] text-ink/75">Contexto del problema</p>
             <p className="mt-2 text-sm leading-7 text-ink/70">{scenario.context}</p>
             <p className="mt-2 text-[0.78rem] italic text-signal/80">{scenario.guideQuestion}</p>
           </div>
@@ -609,7 +609,7 @@ export const SystemsOfEquationsLab = () => {
           {scenarioId === 'mezcla'    && <MezclaScene V={V} p1={p1} p2={p2} pT={pT} sol={sol} />}
           {scenarioId === 'mercado'   && <MercadoScene mS={mS} bS={bS} mD={mD} bD={bD} sol={sol} />}
           {scenarioId === 'libre'     && (
-            <p className="py-6 text-center text-sm text-ink/40">
+            <p className="py-6 text-center text-sm text-ink/75">
               Ajusta los coeficientes en los sliders para explorar el sistema.
             </p>
           )}
@@ -643,23 +643,23 @@ export const SystemsOfEquationsLab = () => {
       {scenarioId === 'libre' && (
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="space-y-2 rounded-[1.3rem] border border-[rgba(255,107,53,0.25)] bg-[rgba(255,107,53,0.04)] p-4">
-            <p className="text-[0.64rem] uppercase tracking-[0.2em] text-[#ff6b35]/70">Ecuación 1</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-[#ff6b35]/70">Ecuación 1</p>
             <SliderField id="la1" label="a₁" value={la1} min={-5} max={5} step={0.5} onChange={setLA1} />
             <SliderField id="lb1" label="b₁" value={lb1} min={-5} max={5} step={0.5} onChange={setLB1} />
             <SliderField id="lc1" label="c₁" value={lc1} min={-10} max={10} step={0.5} onChange={setLC1} />
           </div>
           <div className="space-y-2 rounded-[1.3rem] border border-[rgba(120,180,255,0.30)] bg-[rgba(120,180,255,0.05)] p-4">
-            <p className="text-[0.64rem] uppercase tracking-[0.2em] text-[rgba(80,150,255,0.7)]">Ecuación 2</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-[rgba(80,150,255,0.7)]">Ecuación 2</p>
             <SliderField id="la2" label="a₂" value={la2} min={-5} max={5} step={0.5} onChange={setLA2} />
             <SliderField id="lb2" label="b₂" value={lb2} min={-5} max={5} step={0.5} onChange={setLB2} />
             <SliderField id="lc2" label="c₂" value={lc2} min={-10} max={10} step={0.5} onChange={setLC2} />
           </div>
           <div className="rounded-[1.3rem] border border-ink/10 bg-paper p-4">
-            <p className="text-[0.64rem] uppercase tracking-[0.2em] text-ink/44">Sistema actual</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-ink/75">Sistema actual</p>
             <div className="mt-4 space-y-3">
               <p className="font-mono text-sm text-[#ff6b35]">{eqStr(a1, b1, c1)}</p>
               <p className="font-mono text-sm text-[rgba(80,150,255,1)]">{eqStr(a2, b2, c2)}</p>
-              <p className="mt-2 font-mono text-xs text-ink/45">det = {fmt(det)}</p>
+              <p className="mt-2 font-mono text-xs text-ink/75">det = {fmt(det)}</p>
             </div>
           </div>
         </div>
@@ -679,7 +679,7 @@ export const SystemsOfEquationsLab = () => {
               <button
                 type="button"
                 onClick={() => axis1.resetRange()}
-                className="shrink-0 rounded-full bg-signal/15 px-3 py-1 text-[0.68rem] font-semibold text-signal transition-colors hover:bg-signal/25"
+                className="shrink-0 rounded-full bg-signal/15 px-3 py-1 text-xs font-semibold text-signal transition-colors hover:bg-signal/25"
               >
                 Ver ahora →
               </button>
@@ -744,7 +744,7 @@ export const SystemsOfEquationsLab = () => {
               { color: 'rgba(255,107,53,0.85)', label: `Ec.1: ${eqStr(a1, b1, c1)}` },
               { color: 'rgba(120,180,255,0.85)', label: `Ec.2: ${eqStr(a2, b2, c2)}`, dash: stype === 'indeterminado' },
             ].map(({ color, label, dash }) => (
-              <span key={label} className="flex items-center gap-2 text-[0.7rem] text-paper/55">
+              <span key={label} className="flex items-center gap-2 text-[0.7rem] text-paper/80">
                 <svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke={color} strokeWidth="2.5"
                   strokeDasharray={dash ? '8 4' : 'none'} /></svg>
                 {label}
@@ -766,7 +766,7 @@ export const SystemsOfEquationsLab = () => {
                 className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors ${
                   method === m.id
                     ? 'border border-signal/28 bg-signal/12 text-signal'
-                    : 'border border-ink/10 bg-paper text-ink/55 hover:text-ink/80'
+                    : 'border border-ink/10 bg-paper text-ink/75 hover:text-ink/80'
                 }`}>
                 {m.label}
               </button>
@@ -774,11 +774,11 @@ export const SystemsOfEquationsLab = () => {
           </div>
 
           <div className="rounded-[1.3rem] border border-ink/10 bg-paper p-4">
-            <p className="text-[0.64rem] uppercase tracking-[0.2em] text-ink/44">Sistema planteado</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-ink/75">Sistema planteado</p>
             <div className="mt-3 space-y-2">
               <p className="font-mono text-base text-[#ff6b35]">① {eqStr(a1, b1, c1)}</p>
               <p className="font-mono text-base text-[rgba(80,150,255,1)]">② {eqStr(a2, b2, c2)}</p>
-              <p className="text-[0.72rem] text-ink/40">{scenario.varX} · {scenario.varY}</p>
+              <p className="text-[0.72rem] text-ink/75">{scenario.varX} · {scenario.varY}</p>
             </div>
           </div>
 
@@ -809,7 +809,7 @@ export const SystemsOfEquationsLab = () => {
               <thead>
                 <tr className="border-b border-ink/10">
                   {['Ecuación', 'Sustitución', 'Resultado', 'Valor c', '¿OK?'].map((h) => (
-                    <th key={h} className="pb-2 text-left text-[0.64rem] uppercase tracking-[0.18em] text-ink/44 last:text-right">{h}</th>
+                    <th key={h} className="pb-2 text-left text-xs uppercase tracking-[0.18em] text-ink/75 last:text-right">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -821,7 +821,7 @@ export const SystemsOfEquationsLab = () => {
                   return (
                     <tr key={label} className="border-b border-ink/6 transition-colors hover:bg-ink/2">
                       <td className="py-2.5 font-mono text-ink/65">{label}</td>
-                      <td className="py-2.5 font-mono text-ink/50">
+                      <td className="py-2.5 font-mono text-ink/75">
                         ({fmt(a)})({fmt(sol.x)}) + ({fmt(b)})({fmt(sol.y)})
                       </td>
                       <td className="py-2.5 font-mono text-ink/80">{fmt(result)}</td>

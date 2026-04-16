@@ -152,7 +152,7 @@ export const FunctionTransformationsLab = () => {
               }`}
             >
               <p className="font-semibold">−f(x)</p>
-              <p className={`mt-0.5 text-xs ${flipVertical ? 'text-paper/65' : 'text-ink/50'}`}>
+              <p className={`mt-0.5 text-xs ${flipVertical ? 'text-paper/65' : 'text-ink/75'}`}>
                 Reflexión en eje x
               </p>
             </button>
@@ -166,7 +166,7 @@ export const FunctionTransformationsLab = () => {
               }`}
             >
               <p className="font-semibold">f(−x)</p>
-              <p className={`mt-0.5 text-xs ${flipHorizontal ? 'text-paper/65' : 'text-ink/50'}`}>
+              <p className={`mt-0.5 text-xs ${flipHorizontal ? 'text-paper/65' : 'text-ink/75'}`}>
                 Reflexión en eje y
               </p>
             </button>

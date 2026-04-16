@@ -184,7 +184,7 @@ export const ReactionTimeLab = () => {
         <div className="space-y-4">
           <LabCard title="Prueba de reacción">
             <ReactionTest onResult={addTime} />
-            <p className="mt-3 text-xs text-ink/45 text-center">
+            <p className="mt-3 text-xs text-ink/75 text-center">
               Espera a que cambie a verde y haz clic lo más rápido posible.
             </p>
           </LabCard>
@@ -194,7 +194,7 @@ export const ReactionTimeLab = () => {
               <div className="max-h-[150px] overflow-y-auto space-y-1">
                 {times.map((t, i) => (
                   <div key={i} className="flex items-center justify-between rounded bg-ink/5 px-3 py-1 text-sm">
-                    <span className="text-ink/40">#{i + 1}</span>
+                    <span className="text-ink/75">#{i + 1}</span>
                     <span className="font-mono font-semibold text-ink/70">{t} ms</span>
                   </div>
                 ))}
@@ -241,7 +241,7 @@ export const ReactionTimeLab = () => {
 
           {s && (
             <button onClick={handleExport}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/50 transition-colors hover:bg-ink/10 hover:text-ink/70">
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/75 transition-colors hover:bg-ink/10 hover:text-ink/70">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
               </svg>
@@ -250,7 +250,7 @@ export const ReactionTimeLab = () => {
           )}
 
           {!s && (
-            <div className="flex h-28 items-center justify-center rounded-xl bg-ink/5 text-sm text-ink/30">
+            <div className="flex h-28 items-center justify-center rounded-xl bg-ink/5 text-sm text-ink/75">
               Haz la prueba de reacción para recolectar datos
             </div>
           )}

@@ -138,14 +138,14 @@ export const RegressionContextLab = () => {
                 <button
                   key={d.id}
                   onClick={() => selectDataset(d.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${datasetId === d.id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/45 hover:bg-ink/10'}`}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${datasetId === d.id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'}`}
                 >
                   {d.label}
                 </button>
               ))}
             </div>
             <p className="text-sm text-ink/60 leading-relaxed">{dataset.context}</p>
-            <p className="mt-2 text-xs text-ink/40">{dataset.points.length} puntos de datos</p>
+            <p className="mt-2 text-xs text-ink/75">{dataset.points.length} puntos de datos</p>
           </LabCard>
 
           <LabCard title="Ajusta tu recta">
@@ -168,7 +168,7 @@ export const RegressionContextLab = () => {
               </button>
               <button
                 onClick={() => { setShowBest(false); setUserA(0); setUserB(1) }}
-                className="rounded-xl bg-ink/5 px-4 py-2.5 text-sm font-medium text-ink/40 hover:bg-ink/10"
+                className="rounded-xl bg-ink/5 px-4 py-2.5 text-sm font-medium text-ink/75 hover:bg-ink/10"
               >
                 Reset
               </button>
@@ -239,7 +239,7 @@ export const RegressionContextLab = () => {
 
           <button
             onClick={handleExport}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/50 transition-colors hover:bg-ink/10 hover:text-ink/70"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/75 transition-colors hover:bg-ink/10 hover:text-ink/70"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />

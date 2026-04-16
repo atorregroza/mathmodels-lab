@@ -273,17 +273,17 @@ export const NewtonCoolingLab = () => {
 
       {/* ── Selector de ciudades ── */}
       <LabCard title="Ciudades colombianas">
-        <p className="text-xs text-ink/40 mb-3 mt-1">Selecciona una o dos ciudades para comparar el enfriamiento</p>
+        <p className="text-xs text-ink/75 mb-3 mt-1">Selecciona una o dos ciudades para comparar el enfriamiento</p>
         <div className="space-y-3">
           <div>
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Ciudad principal</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/75 mb-2">Ciudad principal</p>
             <div className="flex flex-wrap gap-2">
               {CITIES.map((c) => (
                 <button key={c.id} onClick={() => { setCity1Id(c.id); if (city2Id === c.id) setCity2Id(null); curvesAxis.resetRange(); residAxis.resetRange() }}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                     city1Id === c.id
                       ? 'text-white shadow-md scale-105'
-                      : 'bg-ink/5 text-ink/50 hover:bg-ink/10'
+                      : 'bg-ink/5 text-ink/75 hover:bg-ink/10'
                   }`}
                   style={city1Id === c.id ? { backgroundColor: c.color } : undefined}
                 >
@@ -293,17 +293,17 @@ export const NewtonCoolingLab = () => {
             </div>
           </div>
           <div>
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Comparar con <span className="text-ink/25">(opcional)</span></p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/75 mb-2">Comparar con <span className="text-ink/70">(opcional)</span></p>
             <div className="flex flex-wrap gap-2">
               <button onClick={() => { setCity2Id(null); curvesAxis.resetRange(); residAxis.resetRange() }}
-                className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${!city2Id ? 'bg-ink text-paper' : 'bg-ink/5 text-ink/40 hover:bg-ink/10'}`}
+                className={`rounded-full px-4 py-2 text-xs font-semibold transition-colors ${!city2Id ? 'bg-ink text-paper' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'}`}
               >Ninguna</button>
               {CITIES.filter((c) => c.id !== city1Id).map((c) => (
                 <button key={c.id} onClick={() => { setCity2Id(c.id); curvesAxis.resetRange(); residAxis.resetRange() }}
                   className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                     city2Id === c.id
                       ? 'text-white shadow-md scale-105'
-                      : 'bg-ink/5 text-ink/50 hover:bg-ink/10'
+                      : 'bg-ink/5 text-ink/75 hover:bg-ink/10'
                   }`}
                   style={city2Id === c.id ? { backgroundColor: c.color } : undefined}
                 >{c.name} · {c.Ts}°C</button>
@@ -316,15 +316,15 @@ export const NewtonCoolingLab = () => {
       {/* ── Contexto narrativo ── */}
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl border border-ink/8 p-4" style={{ borderLeftWidth: 4, borderLeftColor: city1.color }}>
-          <p className="text-xs font-semibold text-ink/40 uppercase tracking-wide">{city1.name} — {city1.floor} ({city1.alt} m)</p>
+          <p className="text-xs font-semibold text-ink/75 uppercase tracking-wide">{city1.name} — {city1.floor} ({city1.alt} m)</p>
           <p className="text-sm text-ink/60 mt-1">{city1.ctx}</p>
-          <p className="text-xs text-ink/35 mt-2 font-mono">T_amb = {city1.Ts}°C · T₀ = {T0_1}°C · ΔT = {T0_1 - city1.Ts}°C · Hum = {city1.hum}%</p>
+          <p className="text-xs text-ink/75 mt-2 font-mono">T_amb = {city1.Ts}°C · T₀ = {T0_1}°C · ΔT = {T0_1 - city1.Ts}°C · Hum = {city1.hum}%</p>
         </div>
         {cityB && (
           <div className="rounded-2xl border border-ink/8 p-4" style={{ borderLeftWidth: 4, borderLeftColor: cityB.city.color }}>
-            <p className="text-xs font-semibold text-ink/40 uppercase tracking-wide">{cityB.city.name} — {cityB.city.floor} ({cityB.city.alt} m)</p>
+            <p className="text-xs font-semibold text-ink/75 uppercase tracking-wide">{cityB.city.name} — {cityB.city.floor} ({cityB.city.alt} m)</p>
             <p className="text-sm text-ink/60 mt-1">{cityB.city.ctx}</p>
-            <p className="text-xs text-ink/35 mt-2 font-mono">T_amb = {cityB.city.Ts}°C · T₀ = {T0_2}°C · ΔT = {T0_2 - cityB.city.Ts}°C · Hum = {cityB.city.hum}%</p>
+            <p className="text-xs text-ink/75 mt-2 font-mono">T_amb = {cityB.city.Ts}°C · T₀ = {T0_2}°C · ΔT = {T0_2 - cityB.city.Ts}°C · Hum = {cityB.city.hum}%</p>
           </div>
         )}
       </div>
@@ -332,12 +332,12 @@ export const NewtonCoolingLab = () => {
       {/* ── Recipiente + viento + toggle ── */}
       <div className="flex flex-wrap items-end gap-5">
         <div>
-          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Recipiente</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/75 mb-2">Recipiente</p>
           <div className="flex gap-2">
             {CONTAINERS.map((c) => (
               <button key={c.id} onClick={() => { setContainerId(c.id); curvesAxis.resetRange(); residAxis.resetRange() }}
                 className={`rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
-                  containerId === c.id ? 'bg-ink text-paper shadow-md' : 'border border-ink/10 bg-white text-ink/50 hover:bg-ink/5'
+                  containerId === c.id ? 'bg-ink text-paper shadow-md' : 'border border-ink/10 bg-white text-ink/75 hover:bg-ink/5'
                 }`}
               >{c.emoji} {c.name}</button>
             ))}
@@ -362,7 +362,7 @@ export const NewtonCoolingLab = () => {
       {/* ── Toggles de modelos ── */}
       {view === 'curves' && (
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-xs text-ink/35 font-semibold uppercase tracking-wide">Agregar modelo:</span>
+          <span className="text-xs text-ink/75 font-semibold uppercase tracking-wide">Agregar modelo:</span>
           {[
             { on: showM1, set: setShowM1, label: 'Newton simple', color: modelColors[0] },
             { on: showM2, set: setShowM2, label: 'Dos exponenciales', color: modelColors[1] },
@@ -372,7 +372,7 @@ export const NewtonCoolingLab = () => {
               className={`rounded-full px-4 py-2 text-xs font-semibold transition-all border ${
                 m.on
                   ? 'text-white shadow-md scale-105 border-transparent'
-                  : 'border-ink/12 bg-white text-ink/40 hover:bg-ink/5'
+                  : 'border-ink/12 bg-white text-ink/75 hover:bg-ink/5'
               }`}
               style={m.on ? { backgroundColor: m.color } : undefined}
             >
@@ -526,9 +526,9 @@ export const NewtonCoolingLab = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-ink/10">
-                  <th className="pb-2 text-left text-[0.66rem] uppercase text-ink/44">Métrica</th>
+                  <th className="pb-2 text-left text-xs uppercase text-ink/75">Métrica</th>
                   {modelNames.map((n, i) => (
-                    <th key={i} className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: modelColors[i] }}>{n}</th>
+                    <th key={i} className="pb-2 text-right text-xs uppercase" style={{ color: modelColors[i] }}>{n}</th>
                   ))}
                 </tr>
               </thead>
@@ -545,9 +545,9 @@ export const NewtonCoolingLab = () => {
                       : row.vals.indexOf(row.vals.reduce((a, b) => Math.abs(a - 2) < Math.abs(b - 2) ? a : b))
                   return (
                     <tr key={row.label} className="border-b border-ink/6">
-                      <td className="py-2.5 text-ink/55 font-medium">{row.label}</td>
+                      <td className="py-2.5 text-ink/75 font-medium">{row.label}</td>
                       {row.vals.map((v, i) => (
-                        <td key={i} className={`py-2.5 text-right font-mono text-xs ${i === bestIdx ? 'font-bold text-graph' : 'text-ink/50'}`}>
+                        <td key={i} className={`py-2.5 text-right font-mono text-xs ${i === bestIdx ? 'font-bold text-graph' : 'text-ink/75'}`}>
                           {row.fmt(v)} {i === bestIdx && '✓'}
                         </td>
                       ))}
@@ -555,15 +555,15 @@ export const NewtonCoolingLab = () => {
                   )
                 })}
                 <tr className="border-b border-ink/6">
-                  <td className="py-2.5 text-ink/55 font-medium">Parámetros</td>
-                  <td className="py-2.5 text-right font-mono text-xs text-ink/50">1 (k)</td>
-                  <td className="py-2.5 text-right font-mono text-xs text-ink/50">1 (k, fracciones fijas)</td>
-                  <td className="py-2.5 text-right font-mono text-xs text-ink/50">4 (a₀,a₁,a₂,a₃)</td>
+                  <td className="py-2.5 text-ink/75 font-medium">Parámetros</td>
+                  <td className="py-2.5 text-right font-mono text-xs text-ink/75">1 (k)</td>
+                  <td className="py-2.5 text-right font-mono text-xs text-ink/75">1 (k, fracciones fijas)</td>
+                  <td className="py-2.5 text-right font-mono text-xs text-ink/75">4 (a₀,a₁,a₂,a₃)</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p className="mt-4 text-xs text-ink/35 leading-relaxed">
+          <p className="mt-4 text-xs text-ink/75 leading-relaxed">
             R² mide bondad de ajuste (más alto = mejor). AIC penaliza complejidad (más bajo = mejor balance ajuste/simplicidad).
             Durbin-Watson detecta autocorrelación en residuales (ideal ≈ 2.0; {'<'}1.5 indica patrón sistemático).
           </p>
@@ -631,11 +631,11 @@ export const NewtonCoolingLab = () => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-ink/10">
-                <th className="pb-2 text-left text-[0.66rem] uppercase text-ink/44">t (min)</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase text-ink/44">T obs</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: modelColors[0] }}>Newton</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: modelColors[1] }}>Dos exp.</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: modelColors[2] }}>Polinomio</th>
+                <th className="pb-2 text-left text-xs uppercase text-ink/75">t (min)</th>
+                <th className="pb-2 text-right text-xs uppercase text-ink/75">T obs</th>
+                <th className="pb-2 text-right text-xs uppercase" style={{ color: modelColors[0] }}>Newton</th>
+                <th className="pb-2 text-right text-xs uppercase" style={{ color: modelColors[1] }}>Dos exp.</th>
+                <th className="pb-2 text-right text-xs uppercase" style={{ color: modelColors[2] }}>Polinomio</th>
               </tr>
             </thead>
             <tbody>
@@ -643,9 +643,9 @@ export const NewtonCoolingLab = () => {
                 <tr key={d.t} className="border-b border-ink/6 hover:bg-ink/3">
                   <td className="py-2 text-ink/65">{d.t}</td>
                   <td className="py-2 text-right font-semibold text-ink/70">{d.T.toFixed(1)}°</td>
-                  <td className="py-2 text-right text-ink/50">{a.fn1(d.t).toFixed(1)}°</td>
-                  <td className="py-2 text-right text-ink/50">{a.fn2(d.t).toFixed(1)}°</td>
-                  <td className="py-2 text-right text-ink/50">{a.fn3(d.t).toFixed(1)}°</td>
+                  <td className="py-2 text-right text-ink/75">{a.fn1(d.t).toFixed(1)}°</td>
+                  <td className="py-2 text-right text-ink/75">{a.fn2(d.t).toFixed(1)}°</td>
+                  <td className="py-2 text-right text-ink/75">{a.fn3(d.t).toFixed(1)}°</td>
                 </tr>
               ))}
             </tbody>
@@ -663,8 +663,8 @@ export const NewtonCoolingLab = () => {
 
       {/* ── Nota pedagógica ── */}
       <div className="rounded-2xl border border-ink/8 bg-ink/3 p-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Para tu monografía</p>
-        <p className="text-sm text-ink/55 leading-relaxed">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/75 mb-2">Para tu monografía</p>
+        <p className="text-sm text-ink/75 leading-relaxed">
           Observa los residuales del modelo de Newton: ¿muestran un patrón sistemático o son aleatorios?
           Si hay patrón, el modelo tiene una limitación estructural — y esa limitación es tu hallazgo para el Criterio D.
           Compara el AIC de los tres modelos: ¿cuál logra el mejor balance entre ajuste y simplicidad?

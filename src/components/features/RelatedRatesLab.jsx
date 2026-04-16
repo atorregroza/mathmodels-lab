@@ -66,7 +66,7 @@ const LadderScene = ({ time, dxdt, ladderL }) => {
     <>
       {/* Animated scene */}
       <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-        <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Escena</p>
+        <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Escena</p>
         <h3 className="mt-2 font-display text-2xl">Escalera deslizándose</h3>
         <div className="mt-4 flex justify-center rounded-[1.3rem] border border-white/10 bg-white/6 p-4">
           <svg viewBox="0 0 300 280" className="h-auto w-full max-w-[380px]">
@@ -100,7 +100,7 @@ const LadderScene = ({ time, dxdt, ladderL }) => {
 
       {/* Rate graph */}
       <LabCard dark className="rounded-[1.9rem]">
-        <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa desconocida</p>
+        <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Tasa desconocida</p>
         <h3 className="mt-2 font-display text-xl">dy/dt a lo largo del tiempo</h3>
         <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
           <CartesianFrame xMin={axis1.xMin} xMax={axis1.xMax} yMin={axis1.yMin} yMax={axis1.yMax} xTicks={generateTicks(axis1.xMin, axis1.xMax)} yTicks={generateTicks(axis1.yMin, axis1.yMax)}>
@@ -158,7 +158,7 @@ const ConeScene = ({ time, dvdt, coneR, coneH }) => {
   return (
     <>
       <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-        <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Escena</p>
+        <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Escena</p>
         <h3 className="mt-2 font-display text-2xl">Cono llenándose</h3>
         <div className="mt-4 flex justify-center rounded-[1.3rem] border border-white/10 bg-white/6 p-4">
           <svg viewBox="0 0 300 300" className="h-auto w-full max-w-[380px]">
@@ -223,7 +223,7 @@ const ConeScene = ({ time, dvdt, coneR, coneH }) => {
       </LabCard>
 
       <LabCard dark className="rounded-[1.9rem]">
-        <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa desconocida</p>
+        <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Tasa desconocida</p>
         <h3 className="mt-2 font-display text-xl">dh/dt a lo largo del tiempo</h3>
         <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
           <CartesianFrame xMin={axis1.xMin} xMax={axis1.xMax} yMin={axis1.yMin} yMax={axis1.yMax} xTicks={generateTicks(axis1.xMin, axis1.xMax)} yTicks={generateTicks(axis1.yMin, axis1.yMax)}>
@@ -275,7 +275,7 @@ const LighthouseScene = ({ time, dtheta, dist }) => {
   return (
     <>
       <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-        <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Escena</p>
+        <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Escena</p>
         <h3 className="mt-2 font-display text-2xl">Faro giratorio</h3>
         <div className="mt-4 flex justify-center rounded-[1.3rem] border border-white/10 bg-white/6 p-4">
           <svg viewBox="0 0 300 280" className="h-auto w-full max-w-[380px]">
@@ -330,7 +330,7 @@ const LighthouseScene = ({ time, dtheta, dist }) => {
       </LabCard>
 
       <LabCard dark className="rounded-[1.9rem]">
-        <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa desconocida</p>
+        <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Tasa desconocida</p>
         <h3 className="mt-2 font-display text-xl">dx/dt a lo largo del tiempo</h3>
         <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
           <CartesianFrame xMin={axis1.xMin} xMax={axis1.xMax} yMin={axis1.yMin} yMax={axis1.yMax} xTicks={generateTicks(axis1.xMin, axis1.xMax)} yTicks={generateTicks(axis1.yMin, axis1.yMax)}>

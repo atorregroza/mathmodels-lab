@@ -509,7 +509,7 @@ export const HipoGrowthLab = () => {
 
       {/* ── Selector de caso (siempre visible) ── */}
       <LabCard title="Cinco invasiones biológicas">
-        <p className="text-xs text-ink/40 mb-3 mt-1">
+        <p className="text-xs text-ink/75 mb-3 mt-1">
           El mismo modelo matemático — distinto desenlace. ¿Qué determina el final?
         </p>
         <div className="flex flex-wrap gap-2">
@@ -520,7 +520,7 @@ export const HipoGrowthLab = () => {
               className={`rounded-2xl px-4 py-2.5 text-sm font-semibold transition-all flex items-center gap-2 ${
                 caseId === c.id
                   ? 'text-white shadow-md scale-105'
-                  : 'border border-ink/12 bg-white text-ink/55 hover:bg-ink/5'
+                  : 'border border-ink/12 bg-white text-ink/75 hover:bg-ink/5'
               }`}
               style={caseId === c.id ? { backgroundColor: c.color } : undefined}
             >
@@ -601,8 +601,8 @@ export const HipoGrowthLab = () => {
                   <li key={c.id} className="flex items-start gap-3 rounded-xl bg-ink/[0.03] p-3">
                     <span className="text-lg leading-none mt-0.5">{c.emoji}</span>
                     <div>
-                      <p className="font-semibold text-ink">{c.name} · <span className="font-normal text-ink/55">{c.year0}–{c.yearEnd}</span></p>
-                      <p className="text-xs text-ink/55 mt-0.5">{c.ctx}</p>
+                      <p className="font-semibold text-ink">{c.name} · <span className="font-normal text-ink/75">{c.year0}–{c.yearEnd}</span></p>
+                      <p className="text-xs text-ink/75 mt-0.5">{c.ctx}</p>
                       <p className="text-xs font-semibold mt-1" style={{ color: c.color }}>Desenlace: {c.desenlace}</p>
                     </div>
                   </li>
@@ -630,7 +630,7 @@ export const HipoGrowthLab = () => {
                   población crece 10 % cada año: 100 individuos hoy → 110 mañana, 1 000 → 1 100. La regla es la misma,
                   pero el efecto parece chico al principio (10 → 11) y enorme cuando hay muchos (10 000 → 11 000).
                 </p>
-                <p className="text-ink/55 italic">
+                <p className="text-ink/75 italic">
                   Esto es el modelo <strong>Exponencial</strong> (rojo): predice un crecimiento que se dispara
                   como cohete. Bueno para la fase inicial, absurdo a largo plazo (un cohete no se detiene jamás).
                 </p>
@@ -643,7 +643,7 @@ export const HipoGrowthLab = () => {
                   reproducción). Cuando la población se acerca a K, los individuos no se mueren de golpe — pero
                   dejan de reproducirse tanto porque están escasos de recursos. La curva se aplana en forma de S.
                 </p>
-                <p className="text-ink/55 italic">
+                <p className="text-ink/75 italic">
                   Esto es el modelo <strong>Logístico</strong> (azul): incorpora el techo K. Describe la trayectoria
                   natural completa hasta la saturación.
                 </p>
@@ -656,7 +656,7 @@ export const HipoGrowthLab = () => {
                   la tasa efectiva de reproducción). Es el único parámetro que la <strong>política pública</strong>{' '}
                   controla. La biología te da r y K; el humano elige H.
                 </p>
-                <p className="text-ink/55 italic">
+                <p className="text-ink/75 italic">
                   Esto es el modelo <strong>Logístico con cosecha</strong> (verde): es el único que captura la
                   intervención. Como no tiene solución cerrada, se integra numéricamente (Runge-Kutta 4).
                 </p>
@@ -681,7 +681,7 @@ export const HipoGrowthLab = () => {
                   P₋ (efecto Allee). La cosecha solo reduce la plaga; nunca la elimina (caso Australia con
                   mixomatosis tras la resistencia evolutiva).
                 </p>
-                <p className="text-ink/55 text-xs pt-1 border-t border-ink/10 mt-3">
+                <p className="text-ink/75 text-xs pt-1 border-t border-ink/10 mt-3">
                   En la jerga: cruzar el umbral H = rK/4 produce una <em>bifurcación silla-nodo</em> — un cambio
                   cualitativo en la dinámica. Esto, derivado y discutido, vale puntos altos en Criterio B.
                 </p>
@@ -704,11 +704,11 @@ export const HipoGrowthLab = () => {
       {view !== 'problem' && view !== 'biblio' && (
         <>
           <div className="rounded-2xl border border-ink/8 p-4" style={{ borderLeftWidth: 4, borderLeftColor: activeCase.color }}>
-            <p className="text-xs font-semibold text-ink/40 uppercase tracking-wide">
+            <p className="text-xs font-semibold text-ink/75 uppercase tracking-wide">
               {activeCase.emoji} {activeCase.name} — {activeCase.lugar}
             </p>
             <p className="text-sm text-ink/65 mt-1 leading-relaxed">{activeCase.ctx}</p>
-            <p className="text-xs text-ink/40 mt-2 font-mono">
+            <p className="text-xs text-ink/75 mt-2 font-mono">
               t₀ = {activeCase.year0} · P₀ = {format(activeCase.P0)} · r = {r.toFixed(3)}/año · K = {format(K)} · H_crítico = {format(analysis.Hc)}
             </p>
           </div>
@@ -778,7 +778,7 @@ export const HipoGrowthLab = () => {
 
           {/* Toggles de modelos */}
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-xs text-ink/35 font-semibold uppercase tracking-wide">Modelos activos:</span>
+            <span className="text-xs text-ink/75 font-semibold uppercase tracking-wide">Modelos activos:</span>
             {[
               { on: showExp, set: setShowExp, label: 'Exponencial', key: 'exp' },
               { on: showLog, set: setShowLog, label: 'Logístico', key: 'log' },
@@ -790,7 +790,7 @@ export const HipoGrowthLab = () => {
                 className={`rounded-full px-4 py-2 text-xs font-semibold transition-all border ${
                   m.on
                     ? 'text-white shadow-md scale-105 border-transparent'
-                    : 'border-ink/12 bg-white text-ink/40 hover:bg-ink/5'
+                    : 'border-ink/12 bg-white text-ink/75 hover:bg-ink/5'
                 }`}
                 style={m.on ? { backgroundColor: MODEL_COLORS[m.key] } : undefined}
               >
@@ -801,7 +801,7 @@ export const HipoGrowthLab = () => {
 
           {/* Recordatorio compacto de los parámetros */}
           <details className="rounded-2xl border border-ink/10 bg-white/70 px-4 py-3 group">
-            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-ink/55 hover:text-ink list-none flex items-center gap-2">
+            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-ink/75 hover:text-ink list-none flex items-center gap-2">
               <span className="transition-transform group-open:rotate-90">▶</span>
               💡 ¿Qué significa cada parámetro? (recordatorio rápido)
             </summary>
@@ -832,7 +832,7 @@ export const HipoGrowthLab = () => {
         <LabCard dark title={`Población P(t) — ${activeCase.name}`}>
           {/* Toggle escala y */}
           <div className="mt-3 flex items-center gap-3">
-            <span className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-paper/50">Escala Y:</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-paper/80">Escala Y:</span>
             <div className="inline-flex rounded-full border border-white/15 overflow-hidden">
               <button
                 onClick={() => setYScale('linear')}
@@ -852,7 +852,7 @@ export const HipoGrowthLab = () => {
               </button>
             </div>
             {yScale === 'log' && (
-              <span className="text-[0.68rem] text-paper/50 italic">
+              <span className="text-xs text-paper/80 italic">
                 Exponencial se ve como recta · pendiente = r
               </span>
             )}
@@ -968,7 +968,7 @@ export const HipoGrowthLab = () => {
       {/* ══════════════════ VISTA: PLANO FASE dP/dt vs P ══════════════════ */}
       {view === 'phase' && (
         <LabCard dark title="Plano fase — dP/dt vs P">
-          <p className="text-[0.72rem] mt-2 text-paper/50 leading-relaxed">
+          <p className="text-[0.72rem] mt-2 text-paper/80 leading-relaxed">
             Eje x: población P · Eje y: rapidez de cambio dP/dt. Los ceros de la curva son los{' '}
             <strong>puntos fijos</strong>. Si H &gt; rK/4 = {format(analysis.Hc)}, la curva no toca el cero y P → 0.
           </p>
@@ -1055,7 +1055,7 @@ export const HipoGrowthLab = () => {
       {/* ══════════════════ VISTA: RESIDUALES ══════════════════ */}
       {view === 'residuals' && (
         <LabCard dark title="Residuales: P_observado − P_modelo">
-          <p className="text-[0.72rem] mt-2 text-paper/50 leading-relaxed">
+          <p className="text-[0.72rem] mt-2 text-paper/80 leading-relaxed">
             Si los residuales oscilan alrededor de cero <em>sin patrón</em>, el modelo captura la dinámica.
             Patrones sistemáticos (curva, tendencia) indican limitación estructural del modelo.
           </p>
@@ -1145,7 +1145,7 @@ export const HipoGrowthLab = () => {
       {/* ══════════════════ VISTA: VENTANA DE CONTROL ══════════════════ */}
       {view === 'window' && (
         <LabCard dark title="Ventana de control: H mínimo para frenar el crecimiento">
-          <p className="text-[0.72rem] mt-2 text-paper/50 leading-relaxed">
+          <p className="text-[0.72rem] mt-2 text-paper/80 leading-relaxed">
             Si se interviene en el año τ, la cosecha mínima que <em>justo</em> detiene el crecimiento es
             <strong> H_min(τ) = rP(τ)(1 − P(τ)/K)</strong>. Esta curva muestra cómo se dispara con el tiempo y
             se cruza con la línea H_crítico = rK/4 justo en la inflexión (P = K/2).
@@ -1275,10 +1275,10 @@ export const HipoGrowthLab = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-ink/10">
-                    <th className="pb-2 text-left text-[0.66rem] uppercase text-ink/44">Métrica</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: MODEL_COLORS.exp }}>Exp</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: MODEL_COLORS.log }}>Logístico</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: MODEL_COLORS.logH }}>Logístico+H</th>
+                    <th className="pb-2 text-left text-xs uppercase text-ink/75">Métrica</th>
+                    <th className="pb-2 text-right text-xs uppercase" style={{ color: MODEL_COLORS.exp }}>Exp</th>
+                    <th className="pb-2 text-right text-xs uppercase" style={{ color: MODEL_COLORS.log }}>Logístico</th>
+                    <th className="pb-2 text-right text-xs uppercase" style={{ color: MODEL_COLORS.logH }}>Logístico+H</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1295,11 +1295,11 @@ export const HipoGrowthLab = () => {
                           : row.vals.indexOf(row.vals.reduce((a, b) => (Math.abs(a - 2) < Math.abs(b - 2) ? a : b)))
                     return (
                       <tr key={row.label} className="border-b border-ink/6">
-                        <td className="py-2.5 text-ink/55 font-medium">{row.label}</td>
+                        <td className="py-2.5 text-ink/75 font-medium">{row.label}</td>
                         {row.vals.map((v, i) => (
                           <td
                             key={i}
-                            className={`py-2.5 text-right font-mono ${i === bestIdx ? 'text-ink font-bold' : 'text-ink/55'}`}
+                            className={`py-2.5 text-right font-mono ${i === bestIdx ? 'text-ink font-bold' : 'text-ink/75'}`}
                           >
                             {row.fmt(v)}{i === bestIdx ? ' ★' : ''}
                           </td>
@@ -1310,7 +1310,7 @@ export const HipoGrowthLab = () => {
                 </tbody>
               </table>
             </div>
-            <p className="mt-3 text-[0.72rem] text-ink/45">
+            <p className="mt-3 text-[0.72rem] text-ink/75">
               R² alto por sí solo no garantiza buen modelo. AIC equilibra ajuste vs complejidad (menor es mejor).
               Durbin-Watson cerca de 2 ⇒ residuales sin autocorrelación.
             </p>
@@ -1322,11 +1322,11 @@ export const HipoGrowthLab = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-ink/10">
-                    <th className="pb-2 text-left text-[0.66rem] uppercase text-ink/44">Año</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase text-ink/44">Observado</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: MODEL_COLORS.exp }}>Exp</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: MODEL_COLORS.log }}>Logístico</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase" style={{ color: MODEL_COLORS.logH }}>Logístico+H</th>
+                    <th className="pb-2 text-left text-xs uppercase text-ink/75">Año</th>
+                    <th className="pb-2 text-right text-xs uppercase text-ink/75">Observado</th>
+                    <th className="pb-2 text-right text-xs uppercase" style={{ color: MODEL_COLORS.exp }}>Exp</th>
+                    <th className="pb-2 text-right text-xs uppercase" style={{ color: MODEL_COLORS.log }}>Logístico</th>
+                    <th className="pb-2 text-right text-xs uppercase" style={{ color: MODEL_COLORS.logH }}>Logístico+H</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1334,9 +1334,9 @@ export const HipoGrowthLab = () => {
                     <tr key={d.year} className="border-b border-ink/6">
                       <td className="py-2 text-ink/65 font-medium">{d.year}</td>
                       <td className="py-2 text-right font-mono text-ink/75">{format(d.P)}</td>
-                      <td className="py-2 text-right font-mono text-ink/55">{format(analysis.fnExp(d.t))}</td>
-                      <td className="py-2 text-right font-mono text-ink/55">{format(analysis.fnLog(d.t))}</td>
-                      <td className="py-2 text-right font-mono text-ink/55">{format(analysis.fnLogH(d.t))}</td>
+                      <td className="py-2 text-right font-mono text-ink/75">{format(analysis.fnExp(d.t))}</td>
+                      <td className="py-2 text-right font-mono text-ink/75">{format(analysis.fnLog(d.t))}</td>
+                      <td className="py-2 text-right font-mono text-ink/75">{format(analysis.fnLogH(d.t))}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1358,20 +1358,20 @@ export const HipoGrowthLab = () => {
       {view === 'biblio' && (
         <div className="space-y-4">
           <LabCard title="Bibliografía para la monografía">
-            <p className="text-xs text-ink/45 mt-1 mb-4">
+            <p className="text-xs text-ink/75 mt-1 mb-4">
               Referencias usadas para construir esta simulación. Formato Harvard adaptado — lístas para copiar al RPPF
               o apéndice. Todas las fuentes están verificadas y son citables académicamente.
             </p>
 
             <div className="space-y-5 text-sm">
               <section>
-                <p className="text-[0.66rem] font-bold uppercase tracking-widest text-ink/40 mb-2">Caso central: hipopótamos en Colombia</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-ink/75 mb-2">Caso central: hipopótamos en Colombia</p>
                 <ul className="space-y-2 text-ink/70 leading-relaxed">
                   <li>
                     Shurin, J. B., Aranguren-Riaño, N., Duque Negro, D., Echeverri Lopez, D., Jones, N. T., Laverde-R., O.,
                     Neu, A. &amp; Pedroza Ramos, A. (2023). <em>Rapid population growth and high management costs have
                     created a narrow window for control of introduced hippos in Colombia</em>. Scientific Reports, 13,
-                    6193. <a href="https://doi.org/10.1038/s41598-023-33028-y" className="underline text-ink/55">https://doi.org/10.1038/s41598-023-33028-y</a>
+                    6193. <a href="https://doi.org/10.1038/s41598-023-33028-y" className="underline text-ink/75">https://doi.org/10.1038/s41598-023-33028-y</a>
                   </li>
                   <li>
                     Castelblanco-Martínez, D. N., Moreno-Arias, R. A., Velasco, J. A., Moreno-Bejarano, L. M.,
@@ -1391,7 +1391,7 @@ export const HipoGrowthLab = () => {
               </section>
 
               <section>
-                <p className="text-[0.66rem] font-bold uppercase tracking-widest text-ink/40 mb-2">Casos comparativos (fuentes primarias)</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-ink/75 mb-2">Casos comparativos (fuentes primarias)</p>
                 <ul className="space-y-2 text-ink/70 leading-relaxed">
                   <li>
                     <strong className="text-ink/80">[Conejos]</strong> Rolls, E. C. (1969). <em>They All Ran Wild: The Story of Pests on the Land in Australia</em>.
@@ -1450,7 +1450,7 @@ export const HipoGrowthLab = () => {
               </section>
 
               <section>
-                <p className="text-[0.66rem] font-bold uppercase tracking-widest text-ink/40 mb-2">Fundamento matemático</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-ink/75 mb-2">Fundamento matemático</p>
                 <ul className="space-y-2 text-ink/70 leading-relaxed">
                   <li>
                     Verhulst, P. F. (1838). <em>Notice sur la loi que la population suit dans son accroissement</em>.
@@ -1476,7 +1476,7 @@ export const HipoGrowthLab = () => {
               </section>
 
               <section>
-                <p className="text-[0.66rem] font-bold uppercase tracking-widest text-ink/40 mb-2">Para la monografía (criterio B y D)</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-ink/75 mb-2">Para la monografía (criterio B y D)</p>
                 <ul className="space-y-2 text-ink/70 leading-relaxed">
                   <li>
                     Edwards, C. H. &amp; Penney, D. E. (2008). <em>Ecuaciones diferenciales y problemas con valores
@@ -1495,13 +1495,13 @@ export const HipoGrowthLab = () => {
               </section>
 
               <section className="rounded-xl bg-ink/[0.04] p-4 border border-ink/10">
-                <p className="text-[0.66rem] font-bold uppercase tracking-widest text-ink/50 mb-2">Cita esta simulación</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-ink/75 mb-2">Cita esta simulación</p>
                 <p className="text-ink/70 leading-relaxed font-mono text-[0.82rem]">
                   MathModels Lab (2026). <em>Crecimiento poblacional de invasiones biológicas: hipopótamos en Colombia
                   y casos comparativos</em> [software interactivo]. Disponible en:{' '}
                   <span className="text-ink/90">mathmodels-lab/monografias/hipos-invasion</span>
                 </p>
-                <p className="text-[0.72rem] text-ink/45 mt-2">
+                <p className="text-[0.72rem] text-ink/75 mt-2">
                   Para honestidad académica IB: describe QUÉ calculó esta simulación (RK4, AIC, H_crítico) y POR QUÉ
                   confías en los resultados. Verifica al menos un valor manualmente (la linealización ln(P) vs t es
                   ideal para eso). No trates la herramienta como caja negra.

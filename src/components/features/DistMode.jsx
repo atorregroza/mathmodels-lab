@@ -166,7 +166,7 @@ function BinomialChart({ n, p, highlightK, mode }) {
 function ParamSlider({ label, value, onChange, min, max, step, suffix }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="w-7 shrink-0 text-right text-[0.6rem] font-semibold text-paper/50">{label}</span>
+      <span className="w-7 shrink-0 text-right text-xs font-semibold text-paper/80">{label}</span>
       <input
         type="range" min={min} max={max} step={step} value={value}
         onChange={e => onChange(Number(e.target.value))}
@@ -180,7 +180,7 @@ function ParamSlider({ label, value, onChange, min, max, step, suffix }) {
         }}
         className="w-16 rounded-md bg-white/8 px-2 py-1 text-right font-mono text-xs text-paper outline-none focus:ring-1 focus:ring-aqua/40"
       />
-      {suffix && <span className="text-[0.55rem] text-paper/35">{suffix}</span>}
+      {suffix && <span className="text-[0.55rem] text-paper/75">{suffix}</span>}
     </div>
   )
 }
@@ -190,7 +190,7 @@ function ParamSlider({ label, value, onChange, min, max, step, suffix }) {
 function StatCell({ label, value, accent }) {
   return (
     <div className={`flex flex-col rounded-lg px-2.5 py-1.5 ${accent ? 'bg-signal/10' : 'bg-white/5'}`}>
-      <span className="text-[0.55rem] uppercase tracking-wider text-paper/40">{label}</span>
+      <span className="text-[0.55rem] uppercase tracking-wider text-paper/80">{label}</span>
       <span className={`font-display text-[0.9rem] font-semibold ${accent ? 'text-signal' : 'text-paper'}`}>{value}</span>
     </div>
   )
@@ -269,7 +269,7 @@ export function DistMode() {
   const distBtn = (m, label) => (
     <button
       onClick={() => setDist(m)}
-      className={`flex-1 rounded-full py-1 text-[0.6rem] font-semibold uppercase tracking-wider transition-colors ${dist === m ? 'bg-aqua/20 text-aqua' : 'text-paper/40 hover:text-paper/60'}`}
+      className={`flex-1 rounded-full py-1 text-xs font-semibold uppercase tracking-wider transition-colors ${dist === m ? 'bg-aqua/20 text-aqua' : 'text-paper/80 hover:text-paper/60'}`}
     >
       {label}
     </button>
@@ -278,7 +278,7 @@ export function DistMode() {
   const modeBtn = (val, label, setter, current) => (
     <button
       onClick={() => setter(val)}
-      className={`rounded-full px-2.5 py-1 text-[0.55rem] font-semibold transition-colors ${current === val ? 'bg-signal/20 text-signal' : 'bg-white/6 text-paper/40 hover:text-paper/60'}`}
+      className={`rounded-full px-2.5 py-1 text-[0.55rem] font-semibold transition-colors ${current === val ? 'bg-signal/20 text-signal' : 'bg-white/6 text-paper/80 hover:text-paper/60'}`}
     >
       {label}
     </button>
@@ -332,7 +332,7 @@ export function DistMode() {
           {normalResult && (
             <div className="flex flex-col gap-1.5">
               <div className="rounded-lg bg-signal/10 px-3 py-2.5 text-center">
-                <span className="block text-[0.55rem] uppercase tracking-wider text-paper/40 mb-1">
+                <span className="block text-[0.55rem] uppercase tracking-wider text-paper/80 mb-1">
                   {normalResult.label}
                 </span>
                 <span className="font-display text-lg font-bold text-signal">
@@ -356,8 +356,8 @@ export function DistMode() {
           )}
 
           {/* reference info */}
-          <div className="rounded-lg bg-white/4 px-3 py-2 text-[0.6rem] text-paper/35 leading-relaxed">
-            <span className="font-semibold text-paper/50">X ~ N({format(mu)}, {format(sigma)}²)</span>
+          <div className="rounded-lg bg-white/4 px-3 py-2 text-xs text-paper/75 leading-relaxed">
+            <span className="font-semibold text-paper/80">X ~ N({format(mu)}, {format(sigma)}²)</span>
             <span className="mx-1.5">·</span>
             E(X) = {format(mu)}
             <span className="mx-1.5">·</span>
@@ -389,7 +389,7 @@ export function DistMode() {
           {binomResult && (
             <div className="flex flex-col gap-1.5">
               <div className="rounded-lg bg-signal/10 px-3 py-2.5 text-center">
-                <span className="block text-[0.55rem] uppercase tracking-wider text-paper/40 mb-1">
+                <span className="block text-[0.55rem] uppercase tracking-wider text-paper/80 mb-1">
                   {binomResult.label}
                 </span>
                 <span className="font-display text-lg font-bold text-signal">
@@ -404,8 +404,8 @@ export function DistMode() {
           )}
 
           {/* reference info */}
-          <div className="rounded-lg bg-white/4 px-3 py-2 text-[0.6rem] text-paper/35 leading-relaxed">
-            <span className="font-semibold text-paper/50">X ~ Bin({bN}, {format(bP)})</span>
+          <div className="rounded-lg bg-white/4 px-3 py-2 text-xs text-paper/75 leading-relaxed">
+            <span className="font-semibold text-paper/80">X ~ Bin({bN}, {format(bP)})</span>
             <span className="mx-1.5">·</span>
             E(X) = {format(bN * bP)}
             <span className="mx-1.5">·</span>
