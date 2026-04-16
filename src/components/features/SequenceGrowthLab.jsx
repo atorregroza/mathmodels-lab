@@ -52,18 +52,18 @@ export const SequenceGrowthLab = () => {
     yMax,
   })
 
-  // ── labels ───────────────────────────────────────────────────────────────
+  // ── labels (LaTeX para que KaTeX renderice subíndices, fracciones y exponentes)
   const termFormula =
     type === 'arithmetic'
-      ? `aₙ = ${format(a1)} + (n − 1) · ${format(d)}`
-      : `aₙ = ${format(a1)} · ${format(r)}^(n−1)`
+      ? `a_{n} = ${format(a1)} + (n - 1) \\cdot ${format(d)}`
+      : `a_{n} = ${format(a1)} \\cdot (${format(r)})^{n-1}`
 
   const sumFormula =
     type === 'arithmetic'
-      ? `Sₙ = frac(n,2) · (2·${format(a1)} + (n−1)·${format(d)})`
+      ? `S_{n} = \\frac{n}{2} \\cdot (2 \\cdot ${format(a1)} + (n-1) \\cdot ${format(d)})`
       : Math.abs(r - 1) > 0.01
-        ? `Sₙ = ${format(a1)} · frac(r^n − 1, r − 1)`
-        : `Sₙ = n · ${format(a1)}`
+        ? `S_{n} = ${format(a1)} \\cdot \\frac{(${format(r)})^{n} - 1}{${format(r)} - 1}`
+        : `S_{n} = n \\cdot ${format(a1)}`
 
   const growthLabel =
     type === 'arithmetic'

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { LabCard, MetricCard, ModelCard, SliderField } from './DerivaLabPrimitives'
 import { LiveFormula } from './LiveFormula'
+import { Math as MathRender } from '../ui/Math'
 import { format } from './derivaLabUtils'
 
 // ── math helpers ──────────────────────────────────────────────────────────────
@@ -305,7 +306,7 @@ export const BinomialTheoremLab = () => {
       </div>
 
       {/* ── coefficient finder ────────────────────────────────────────────── */}
-      <LabCard dark title="Buscador — ¿cuál es el coeficiente de xᵏ?">
+      <LabCard dark title="Buscador — ¿cuál es el coeficiente del término x^k?">
         <div className="mt-4 grid gap-5 md:grid-cols-2">
           <div>
             <SliderField
@@ -315,15 +316,18 @@ export const BinomialTheoremLab = () => {
             />
             <div className="mt-3 rounded-xl border border-paper/20 bg-paper/12 px-4 py-3.5">
               <p className="text-xs uppercase tracking-[0.16em] font-semibold text-paper/80">Estrategia</p>
-              <p className="mt-2 font-mono text-base text-paper">
-                xᵏ en T(r+1) cuando n−r = k  →  r = {n}−{kClamped} = {rForK}
+              <p className="mt-2 text-base text-paper flex items-center gap-2 flex-wrap">
+                <MathRender raw>{`x^{k}`}</MathRender>
+                <span>en T(r+1) cuando n − r = k → r = {n} − {kClamped} = {rForK}</span>
               </p>
             </div>
           </div>
           <div className="space-y-2.5">
             <div className="rounded-xl border border-signal/40 bg-signal/18 px-4 py-3.5">
-              <p className="text-xs uppercase tracking-[0.16em] font-semibold text-signal">
-                Coeficiente de x{toSup(kClamped)} en {expr}
+              <p className="text-xs uppercase tracking-[0.16em] font-semibold text-signal flex items-center gap-1.5 flex-wrap">
+                <span>Coeficiente de</span>
+                <MathRender raw>{`x^{${kClamped}}`}</MathRender>
+                <span>en {expr}</span>
               </p>
               <p className="mt-2 font-mono text-2xl font-bold text-paper">
                 {format(findTerm.coef)}
@@ -382,9 +386,9 @@ export const BinomialTheoremLab = () => {
           <p className="text-base leading-7 text-paper/90">
             Para encontrar un término específico de {expr} sin expandir, usamos el{' '}
             <strong className="text-paper">término general</strong>:{' '}
-            T(r+1) = C(n,r)·(px)<sup className="text-[0.9em]">n−r</sup>·q<sup className="text-[0.9em]">r</sup>. El exponente de x en T(r+1) es siempre{' '}
-            <strong className="text-paper">n−r</strong>. Para el coeficiente de xᵏ despejamos
-            r = n−k = {n}−{kClamped} = {rForK}, y lo aplicamos directamente en la fórmula —
+            <MathRender raw>{`T(r+1) = \\binom{n}{r}(px)^{n-r} q^{r}`}</MathRender>. El exponente de x en T(r+1) es siempre{' '}
+            <strong className="text-paper">n − r</strong>. Para el coeficiente de <MathRender raw>{`x^{k}`}</MathRender> despejamos
+            r = n − k = {n} − {kClamped} = {rForK}, y lo aplicamos directamente en la fórmula —
             sin escribir ningún término anterior.
           </p>
           <p className="text-base leading-7 text-paper/90">

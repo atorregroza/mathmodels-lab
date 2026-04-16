@@ -1222,19 +1222,19 @@ export const HipoGrowthLab = () => {
           <div className="grid gap-4 lg:grid-cols-3">
             <ModelCard
               title="Modelo 1 — Exponencial (Malthus)"
-              expression={'dP/dt = rP ⟹ P(t) = P₀·e^(rt)'}
+              expression={String.raw`\frac{dP}{dt} = rP \;\Longrightarrow\; P(t) = P_{0} \cdot e^{rt}`}
               parameters={`P₀ = ${format(activeCase.P0)} individuos · r = ${r.toFixed(3)}/año`}
               conditions="Reproducción sin límites. Diverge; sólo válido cuando P ≪ K."
             />
             <ModelCard
               title="Modelo 2 — Logístico (Verhulst)"
-              expression={'dP/dt = rP(1 − P/K)'}
+              expression={String.raw`\frac{dP}{dt} = rP\left(1 - \frac{P}{K}\right)`}
               parameters={`r = ${r.toFixed(3)}/año · K = ${format(K)} indiv.`}
-              conditions={'Saturación por recursos. P(t) = K / (1 + ((K−P₀)/P₀)·e^(−rt)).'}
+              conditions={String.raw`Saturación por recursos. $P(t) = \dfrac{K}{1 + \frac{K-P_0}{P_0} e^{-rt}}$.`}
             />
             <ModelCard
               title="Modelo 3 — Logístico con cosecha"
-              expression={'dP/dt = rP(1 − P/K) − H(t)'}
+              expression={String.raw`\frac{dP}{dt} = rP\left(1 - \frac{P}{K}\right) - H(t)`}
               parameters={`H = ${format(H)}/año · H_crít = ${format(analysis.Hc)} (rK/4) · t_interv = ${tInterv}`}
               conditions="Integrado por Runge-Kutta 4. Bifurcación silla-nodo cuando H = rK/4."
             />
