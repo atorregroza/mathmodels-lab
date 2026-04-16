@@ -92,9 +92,9 @@ export const DerivaHomePage = () => {
           </div>
           <div className="hidden overflow-hidden rounded-[2rem] shadow-[0_24px_60px_rgba(18,23,35,0.15)] xl:block">
             <img
-              src="/images/hero-students.png"
+              src="/images/estudiantes.jpg"
               alt="Estudiantes trabajando con laptops en un laboratorio de matemáticas"
-              className="aspect-[3/4] w-full object-cover object-top"
+              className="aspect-[3/4] w-full object-cover object-center"
               loading="eager"
             />
           </div>
