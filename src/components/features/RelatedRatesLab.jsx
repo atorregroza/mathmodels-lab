@@ -10,22 +10,22 @@ const scenarios = [
     id: 'ladder',
     label: 'Escalera deslizante',
     context: 'Una escalera se desliza por una pared: la base se aleja y la cima baja.',
-    equation: 'x² + y² = L²',
-    relation: 'dy/dt = −(x/y)·(dx/dt)',
+    equation: String.raw`x^{2} + y^{2} = L^{2}`,
+    relation: String.raw`\dfrac{dy}{dt} = -\dfrac{x}{y} \cdot \dfrac{dx}{dt}`,
   },
   {
     id: 'cone',
     label: 'Cono llenándose',
     context: 'Agua entra en un cono invertido a tasa constante. ¿Qué tan rápido sube el nivel?',
-    equation: 'V = ⅓·π·(R/H)²·h³',
-    relation: 'dh/dt = (dV/dt) / [π·(R/H)²·h²]',
+    equation: String.raw`V = \tfrac{1}{3}\, \pi\, \left(\tfrac{R}{H}\right)^{2}\, h^{3}`,
+    relation: String.raw`\dfrac{dh}{dt} = \dfrac{\frac{dV}{dt}}{\pi\,(R/H)^{2}\, h^{2}}`,
   },
   {
     id: 'lighthouse',
     label: 'Faro giratorio',
     context: 'Un faro gira y su haz barre una costa recta. La velocidad del punto de luz se dispara.',
-    equation: 'x = d·tan θ',
-    relation: 'dx/dt = d·sec²θ·(dθ/dt)',
+    equation: String.raw`x = d \cdot \tan\theta`,
+    relation: String.raw`\dfrac{dx}{dt} = d \cdot \sec^{2}\theta \cdot \dfrac{d\theta}{dt}`,
   },
 ]
 
