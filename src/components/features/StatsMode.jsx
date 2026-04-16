@@ -187,7 +187,7 @@ function MiniScatter({ xs, ys, regression }) {
 function StatCell({ label, value }) {
   return (
     <div className="flex flex-col rounded-lg bg-white/5 px-2.5 py-1.5">
-      <span className="text-[0.55rem] uppercase tracking-wider text-paper/40">{label}</span>
+      <span className="text-[0.55rem] uppercase tracking-wider text-paper/80">{label}</span>
       <span className="font-display text-[0.9rem] font-semibold text-paper">{value}</span>
     </div>
   )
@@ -257,7 +257,7 @@ export function StatsMode() {
   const tabBtn = (m, label) => (
     <button
       onClick={() => setTab(m)}
-      className={`flex-1 rounded-full py-1 text-[0.6rem] font-semibold uppercase tracking-wider transition-colors ${tab === m ? 'bg-aqua/20 text-aqua' : 'text-paper/40 hover:text-paper/60'}`}
+      className={`flex-1 rounded-full py-1 text-xs font-semibold uppercase tracking-wider transition-colors ${tab === m ? 'bg-aqua/20 text-aqua' : 'text-paper/80 hover:text-paper/60'}`}
     >
       {label}
     </button>
@@ -285,20 +285,20 @@ export function StatsMode() {
             className={textareaClass}
           />
           <div className="flex items-center justify-between">
-            <span className="text-[0.6rem] text-paper/40">
+            <span className="text-xs text-paper/80">
               {uniData.length ? `n = ${uniData.length} valores` : 'Ingresa datos separados por comas'}
             </span>
             <div className="flex gap-1.5">
               <button
                 onClick={() => setUniInput(SAMPLE_UNI)}
-                className="rounded-full bg-white/6 px-2 py-0.5 text-[0.6rem] text-paper/45 hover:bg-white/10 hover:text-paper/65"
+                className="rounded-full bg-white/6 px-2 py-0.5 text-xs text-paper/80 hover:bg-white/10 hover:text-paper/65"
               >
                 Ejemplo
               </button>
               {uniInput && (
                 <button
                   onClick={() => setUniInput('')}
-                  className="rounded-full bg-white/6 px-2 py-0.5 text-[0.6rem] text-signal/70 hover:bg-signal/15"
+                  className="rounded-full bg-white/6 px-2 py-0.5 text-xs text-signal/70 hover:bg-signal/15"
                 >
                   Borrar
                 </button>
@@ -335,7 +335,7 @@ export function StatsMode() {
           {/* export */}
           {uniStats && (
             <button onClick={exportUni}
-              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-white/6 py-2 text-xs text-paper/40 transition-colors hover:bg-white/10 hover:text-paper/60">
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-white/6 py-2 text-xs text-paper/80 transition-colors hover:bg-white/10 hover:text-paper/60">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
               </svg>
@@ -356,7 +356,7 @@ export function StatsMode() {
           {/* dual inputs */}
           <div className="flex gap-2">
             <div className="flex-1">
-              <span className="mb-1 block text-[0.55rem] uppercase tracking-wider text-paper/40">x</span>
+              <span className="mb-1 block text-[0.55rem] uppercase tracking-wider text-paper/80">x</span>
               <textarea
                 rows={3}
                 value={xInput}
@@ -366,7 +366,7 @@ export function StatsMode() {
               />
             </div>
             <div className="flex-1">
-              <span className="mb-1 block text-[0.55rem] uppercase tracking-wider text-paper/40">y</span>
+              <span className="mb-1 block text-[0.55rem] uppercase tracking-wider text-paper/80">y</span>
               <textarea
                 rows={3}
                 value={yInput}
@@ -378,7 +378,7 @@ export function StatsMode() {
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-[0.6rem] text-paper/40">
+            <span className="text-xs text-paper/80">
               {biData.error
                 ? <span className="text-signal">{biData.error}</span>
                 : biData.xs.length
@@ -388,14 +388,14 @@ export function StatsMode() {
             <div className="flex gap-1.5">
               <button
                 onClick={() => { setXInput(SAMPLE_X); setYInput(SAMPLE_Y) }}
-                className="rounded-full bg-white/6 px-2 py-0.5 text-[0.6rem] text-paper/45 hover:bg-white/10 hover:text-paper/65"
+                className="rounded-full bg-white/6 px-2 py-0.5 text-xs text-paper/80 hover:bg-white/10 hover:text-paper/65"
               >
                 Ejemplo
               </button>
               {(xInput || yInput) && (
                 <button
                   onClick={() => { setXInput(''); setYInput('') }}
-                  className="rounded-full bg-white/6 px-2 py-0.5 text-[0.6rem] text-signal/70 hover:bg-signal/15"
+                  className="rounded-full bg-white/6 px-2 py-0.5 text-xs text-signal/70 hover:bg-signal/15"
                 >
                   Borrar
                 </button>
@@ -413,7 +413,7 @@ export function StatsMode() {
             <div className="flex flex-col gap-1.5">
               {/* equation */}
               <div className="rounded-lg bg-white/5 px-3 py-2.5 text-center">
-                <span className="text-[0.55rem] uppercase tracking-wider text-paper/40 block mb-1">Recta de regresión</span>
+                <span className="text-[0.55rem] uppercase tracking-wider text-paper/80 block mb-1">Recta de regresión</span>
                 <span className="font-mono text-sm text-signal font-semibold">
                   ŷ = {format(biStats.a)} {biStats.b >= 0 ? '+' : '−'} {format(Math.abs(biStats.b))}x
                 </span>
@@ -427,7 +427,7 @@ export function StatsMode() {
 
               {/* interpretation */}
               <div className="rounded-lg bg-white/5 px-3 py-2 text-center">
-                <span className="text-[0.6rem] text-paper/50">
+                <span className="text-xs text-paper/80">
                   {Math.abs(biStats.r) >= 0.9 ? 'Correlación muy fuerte' :
                    Math.abs(biStats.r) >= 0.7 ? 'Correlación fuerte' :
                    Math.abs(biStats.r) >= 0.5 ? 'Correlación moderada' :
@@ -441,7 +441,7 @@ export function StatsMode() {
           {/* export */}
           {biStats && (
             <button onClick={exportBi}
-              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-white/6 py-2 text-xs text-paper/40 transition-colors hover:bg-white/10 hover:text-paper/60">
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-white/6 py-2 text-xs text-paper/80 transition-colors hover:bg-white/10 hover:text-paper/60">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
               </svg>

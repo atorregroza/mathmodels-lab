@@ -222,7 +222,7 @@ export const SequenceGrowthLab = () => {
               raw={false}
             />
           </div>
-          <p className="mt-3 text-[0.72rem] leading-5 text-paper/45">
+          <p className="mt-3 text-[0.72rem] leading-5 text-paper/80">
             {view === 'sequence'
               ? 'Cada punto es un término de la sucesión.'
               : 'Cada punto es la suma acumulada hasta ese n.'}
@@ -346,12 +346,12 @@ export const SequenceGrowthLab = () => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-ink/10">
-                <th className="pb-2 text-left text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">n</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">aₙ</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">
+                <th className="pb-2 text-left text-xs uppercase tracking-[0.18em] text-ink/75">n</th>
+                <th className="pb-2 text-right text-xs uppercase tracking-[0.18em] text-ink/75">aₙ</th>
+                <th className="pb-2 text-right text-xs uppercase tracking-[0.18em] text-ink/75">
                   {type === 'arithmetic' ? 'Diferencia' : 'Razón'}
                 </th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase tracking-[0.18em] text-signal/70">Sₙ</th>
+                <th className="pb-2 text-right text-xs uppercase tracking-[0.18em] text-signal/70">Sₙ</th>
               </tr>
             </thead>
             <tbody>
@@ -374,7 +374,7 @@ export const SequenceGrowthLab = () => {
                   >
                     <td className="py-2 font-semibold text-ink/65">{term.n}</td>
                     <td className="py-2 text-right text-ink/80">{fmtVal(term.value)}</td>
-                    <td className="py-2 text-right text-ink/50">
+                    <td className="py-2 text-right text-ink/75">
                       {diff !== null ? fmtVal(diff) : '—'}
                     </td>
                     <td className="py-2 text-right font-semibold text-signal/85">

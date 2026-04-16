@@ -202,7 +202,7 @@ export const TrigModelingLab = () => {
         <div className="space-y-5">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <div className="max-w-3xl">
-              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">{ctx.label}</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-paper/80">{ctx.label}</p>
               <h3 className="mt-3 font-display text-[clamp(2rem,3.6vw,3.2rem)] leading-[0.98] tracking-[-0.04em]">
                 {ctx.yLabel} vs. {ctx.xLabel}
               </h3>
@@ -281,15 +281,15 @@ export const TrigModelingLab = () => {
           <LabCard title="Bondad del ajuste">
             <div className="mt-3 grid gap-4 md:grid-cols-3">
               <div className="rounded-[1.2rem] border border-ink/10 bg-paper px-4 py-4">
-                <p className="text-[0.66rem] uppercase tracking-[0.2em] text-ink/45">RMSE</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/75">RMSE</p>
                 <p className="mt-2 font-display text-2xl font-semibold">{format(rmse)}</p>
               </div>
               <div className="rounded-[1.2rem] border border-ink/10 bg-paper px-4 py-4">
-                <p className="text-[0.66rem] uppercase tracking-[0.2em] text-ink/45">SSR</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/75">SSR</p>
                 <p className="mt-2 font-display text-2xl font-semibold">{format(ssr)}</p>
               </div>
               <div className="rounded-[1.2rem] border border-ink/10 bg-paper px-4 py-4">
-                <p className="text-[0.66rem] uppercase tracking-[0.2em] text-ink/45">Calidad</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/75">Calidad</p>
                 <div className="mt-2 flex items-center gap-2">
                   <span className={`inline-block h-3 w-3 rounded-full ${qualityColor}`} />
                   <p className="font-display text-lg font-semibold capitalize">{quality}</p>

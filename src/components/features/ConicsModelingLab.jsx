@@ -616,9 +616,9 @@ export const ConicsModelingLab = () => {
 
               <LabCard title="Datos orbitales reales" dark>
                 <div className="mt-2 space-y-1 text-sm leading-6 text-paper/70">
-                  <p><span className="text-paper/45">Semieje mayor:</span> <span className="tabular-nums font-semibold text-paper">{format(ARTEMIS.semiMajor)} km</span></p>
-                  <p><span className="text-paper/45">Excentricidad:</span> <span className="tabular-nums font-semibold text-paper">{ARTEMIS.eccentricity.toFixed(4)}</span></p>
-                  <p><span className="text-paper/45">Semieje menor:</span> <span className="tabular-nums font-semibold text-paper">{format(ARTEMIS.semiMinor)} km</span></p>
+                  <p><span className="text-paper/80">Semieje mayor:</span> <span className="tabular-nums font-semibold text-paper">{format(ARTEMIS.semiMajor)} km</span></p>
+                  <p><span className="text-paper/80">Excentricidad:</span> <span className="tabular-nums font-semibold text-paper">{ARTEMIS.eccentricity.toFixed(4)}</span></p>
+                  <p><span className="text-paper/80">Semieje menor:</span> <span className="tabular-nums font-semibold text-paper">{format(ARTEMIS.semiMinor)} km</span></p>
                 </div>
               </LabCard>
 

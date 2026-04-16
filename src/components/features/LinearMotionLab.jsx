@@ -284,7 +284,7 @@ export const LinearMotionLab = () => {
 
           {/* Number line */}
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Recta numérica</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Recta numérica</p>
             <h3 className="mt-2 font-display text-2xl">Posición del móvil en t = {format(time)} s</h3>
             <div className="mt-4 rounded-[1.3rem] border border-white/10 bg-white/6 px-4 py-6">
               <svg viewBox="0 0 620 80" className="w-full">
@@ -334,7 +334,7 @@ export const LinearMotionLab = () => {
 
           {/* s(t) graph */}
           <LabCard dark className="rounded-[1.9rem]">
-            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Posición</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Posición</p>
             <h3 className="mt-2 font-display text-xl">{sc.sLabel}</h3>
             <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
               <CartesianFrame xMin={posAxis.xMin} xMax={posAxis.xMax} yMin={posAxis.yMin} yMax={posAxis.yMax} xTicks={generateTicks(posAxis.xMin, posAxis.xMax)} yTicks={generateTicks(posAxis.yMin, posAxis.yMax)} xLabel="t (s)" yLabel="s(t) (m)">
@@ -352,7 +352,7 @@ export const LinearMotionLab = () => {
 
           {/* v(t) graph with shaded areas */}
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Velocidad e integrales</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Velocidad e integrales</p>
             <h3 className="mt-2 font-display text-xl">{sc.vLabel} — intervalo [{format(left)}, {format(right)}]</h3>
             <div className="mt-3 rounded-[1.3rem] border border-white/10 bg-white/6 p-3">
               <CartesianFrame xMin={velAxis.xMin} xMax={velAxis.xMax} yMin={velAxis.yMin} yMax={velAxis.yMax} xTicks={generateTicks(velAxis.xMin, velAxis.xMax)} yTicks={generateTicks(velAxis.yMin, velAxis.yMax)} xLabel="t (s)" yLabel="v(t) (m/s)">

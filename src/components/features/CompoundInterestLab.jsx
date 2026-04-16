@@ -189,7 +189,7 @@ export const CompoundInterestLab = () => {
             {/* leyenda — solo muestra las curvas activas */}
             <div className="mt-3 flex flex-wrap gap-5">
               {(view === 'both' || view === 'compound') && (
-                <span className="flex items-center gap-2 text-[0.7rem] text-paper/55">
+                <span className="flex items-center gap-2 text-[0.7rem] text-paper/80">
                   <svg width="24" height="10" aria-hidden="true">
                     <line x1="0" y1="5" x2="24" y2="5" stroke="#ff6b35" strokeWidth="2.5" />
                   </svg>
@@ -197,7 +197,7 @@ export const CompoundInterestLab = () => {
                 </span>
               )}
               {(view === 'both' || view === 'simple') && (
-                <span className="flex items-center gap-2 text-[0.7rem] text-paper/55">
+                <span className="flex items-center gap-2 text-[0.7rem] text-paper/80">
                   <svg width="24" height="10" aria-hidden="true">
                     <line x1="0" y1="5" x2="24" y2="5" stroke="rgba(120,180,255,0.85)" strokeWidth="2" strokeDasharray="5 3" />
                   </svg>
@@ -291,10 +291,10 @@ export const CompoundInterestLab = () => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-ink/10">
-                <th className="pb-2 text-left text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">n (años)</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">Simple Aₙ</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase tracking-[0.18em] text-signal/70">Compuesto Aₙ</th>
-                <th className="pb-2 text-right text-[0.66rem] uppercase tracking-[0.18em] text-ink/44">Diferencia</th>
+                <th className="pb-2 text-left text-xs uppercase tracking-[0.18em] text-ink/75">n (años)</th>
+                <th className="pb-2 text-right text-xs uppercase tracking-[0.18em] text-ink/75">Simple Aₙ</th>
+                <th className="pb-2 text-right text-xs uppercase tracking-[0.18em] text-signal/70">Compuesto Aₙ</th>
+                <th className="pb-2 text-right text-xs uppercase tracking-[0.18em] text-ink/75">Diferencia</th>
               </tr>
             </thead>
             <tbody>
@@ -303,7 +303,7 @@ export const CompoundInterestLab = () => {
                   <td className="py-2 font-semibold text-ink/65">{row.n}</td>
                   <td className="py-2 text-right text-ink/70">$ {format(row.simple)}</td>
                   <td className="py-2 text-right font-semibold text-signal/85">$ {format(row.compound)}</td>
-                  <td className="py-2 text-right text-ink/50">
+                  <td className="py-2 text-right text-ink/75">
                     {row.n === 0 ? '—' : `+$ ${format(row.compound - row.simple)}`}
                   </td>
                 </tr>

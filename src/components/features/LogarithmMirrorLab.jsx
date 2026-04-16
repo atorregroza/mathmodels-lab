@@ -238,7 +238,7 @@ export const LogarithmMirrorLab = () => {
                 ? [{ color: 'rgba(255,255,255,0.30)', dash: true, label: 'y = x — eje de simetría' }]
                 : []),
             ].map(({ color, dash, label }) => (
-              <span key={label} className="flex items-center gap-2 text-[0.7rem] text-paper/55">
+              <span key={label} className="flex items-center gap-2 text-[0.7rem] text-paper/80">
                 <svg width="24" height="10" aria-hidden="true">
                   <line
                     x1="0" y1="5" x2="24" y2="5"
@@ -277,17 +277,17 @@ export const LogarithmMirrorLab = () => {
 
           {/* tabla de valores clave */}
           <div className="rounded-[1.3rem] border border-ink/10 bg-white/82 p-5">
-            <p className="text-[0.66rem] uppercase tracking-[0.24em] text-ink/44">
+            <p className="text-xs uppercase tracking-[0.24em] text-ink/75">
               Valores clave — base {bl}
             </p>
 
             {/* encabezados */}
             <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-x-3 border-b border-ink/8 pb-2">
-              <span className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#ff6b35]/70">
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ff6b35]/70">
                 Exponencial
               </span>
               <span />
-              <span className="text-right text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[rgba(120,180,255,0.8)]">
+              <span className="text-right text-xs font-semibold uppercase tracking-[0.18em] text-[rgba(120,180,255,0.8)]">
                 Logaritmo
               </span>
             </div>
@@ -304,7 +304,7 @@ export const LogarithmMirrorLab = () => {
                     <span className="font-mono text-sm text-ink/80">
                       {bl}{sup(exp)} = {format(val)}
                     </span>
-                    <span className="text-[0.8rem] text-ink/22">⟷</span>
+                    <span className="text-[0.8rem] text-ink/70">⟷</span>
                     <span className="text-right font-mono text-sm text-ink/80">
                       logₐ({format(val)}) = {exp}
                     </span>
@@ -313,7 +313,7 @@ export const LogarithmMirrorLab = () => {
               })}
             </div>
 
-            <p className="mt-4 text-[0.68rem] leading-5 text-ink/40">
+            <p className="mt-4 text-xs leading-5 text-ink/75">
               logₐ(x) = y  ⟺  aʸ = x
             </p>
           </div>

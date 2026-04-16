@@ -75,7 +75,7 @@ export const ExportPDFModal = ({ onCancel, onSubmit, labTitle, exporting = false
       >
         <div className="sticky top-0 bg-white z-10 flex items-center justify-between border-b border-ink/8 px-6 py-4">
           <div>
-            <p className="text-[0.65rem] uppercase tracking-[0.2em] font-semibold text-ink/50">
+            <p className="text-xs uppercase tracking-[0.2em] font-semibold text-ink/75">
               Exportar informe PDF
             </p>
             <h2 className="font-display text-xl text-ink mt-0.5 leading-tight">
@@ -86,7 +86,7 @@ export const ExportPDFModal = ({ onCancel, onSubmit, labTitle, exporting = false
             type="button"
             onClick={onCancel}
             disabled={exporting}
-            className="rounded-full p-2 text-ink/40 hover:text-ink hover:bg-ink/5 transition-colors disabled:opacity-30"
+            className="rounded-full p-2 text-ink/75 hover:text-ink hover:bg-ink/5 transition-colors disabled:opacity-30"
             aria-label="Cerrar"
           >
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -98,7 +98,7 @@ export const ExportPDFModal = ({ onCancel, onSubmit, labTitle, exporting = false
         <div className="px-6 py-5 space-y-6">
           {/* Sección 1 — datos del estudiante */}
           <section>
-            <p className="text-[0.7rem] uppercase tracking-[0.18em] font-semibold text-ink/50 mb-3">
+            <p className="text-[0.7rem] uppercase tracking-[0.18em] font-semibold text-ink/75 mb-3">
               👤 Datos del estudiante
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -152,10 +152,10 @@ export const ExportPDFModal = ({ onCancel, onSubmit, labTitle, exporting = false
           {/* Sección 2 — reflexiones */}
           <section>
             <div className="flex items-baseline justify-between mb-3">
-              <p className="text-[0.7rem] uppercase tracking-[0.18em] font-semibold text-ink/50">
-                💭 Reflexiones <span className="normal-case text-ink/35 font-normal">(opcional)</span>
+              <p className="text-[0.7rem] uppercase tracking-[0.18em] font-semibold text-ink/75">
+                💭 Reflexiones <span className="normal-case text-ink/75 font-normal">(opcional)</span>
               </p>
-              <p className="text-[0.65rem] text-ink/40">
+              <p className="text-xs text-ink/75">
                 Si las dejas en blanco, el PDF tendrá líneas para escribir a mano.
               </p>
             </div>
@@ -178,7 +178,7 @@ export const ExportPDFModal = ({ onCancel, onSubmit, labTitle, exporting = false
         </div>
 
         <div className="sticky bottom-0 bg-white border-t border-ink/8 px-6 py-4 flex items-center justify-between gap-3">
-          <p className="text-[0.7rem] text-ink/40">
+          <p className="text-[0.7rem] text-ink/75">
             El PDF incluirá datos, modelos, gráficos y tu análisis del laboratorio.
           </p>
           <div className="flex items-center gap-2">

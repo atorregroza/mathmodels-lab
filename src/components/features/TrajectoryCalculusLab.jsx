@@ -83,7 +83,7 @@ export const TrajectoryCalculusLab = () => {
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Escena sincronizada</p>
+                <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Escena sincronizada</p>
                 <h3 className="mt-3 font-display text-3xl">Movimiento, gráfica y lectura matemática a la vez</h3>
               </div>
               <span className="rounded-full border border-graph/30 bg-graph/12 px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-graph">

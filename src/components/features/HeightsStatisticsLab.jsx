@@ -176,7 +176,7 @@ export const HeightsStatisticsLab = () => {
             <div className="flex flex-wrap gap-2">
               {groups.map((g) => (
                 <button key={g.id} onClick={() => setGroupId(g.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${groupId === g.id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/45 hover:bg-ink/10'}`}>
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${groupId === g.id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'}`}>
                   {g.label}
                 </button>
               ))}
@@ -188,7 +188,7 @@ export const HeightsStatisticsLab = () => {
             <div className="grid grid-cols-5 gap-1.5 text-center">
               {[['Mín', s.min], ['Q1', format(s.q1)], ['Med', format(s.median)], ['Q3', format(s.q3)], ['Máx', s.max]].map(([label, val]) => (
                 <div key={label} className="rounded-lg bg-ink/5 py-2">
-                  <span className="block text-[0.5rem] uppercase tracking-wider text-ink/40">{label}</span>
+                  <span className="block text-[0.5rem] uppercase tracking-wider text-ink/75">{label}</span>
                   <span className="font-display text-sm font-semibold text-ink">{val}</span>
                 </div>
               ))}
@@ -233,7 +233,7 @@ export const HeightsStatisticsLab = () => {
           </div>
 
           <button onClick={handleExport}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/50 transition-colors hover:bg-ink/10 hover:text-ink/70">
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/75 transition-colors hover:bg-ink/10 hover:text-ink/70">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
             </svg>

@@ -53,8 +53,8 @@ export const LiveFormula = ({
       } ${className}`}
     >
       <div className={`flex items-center justify-between gap-3 ${alignClass === 'text-center' ? 'mb-1.5' : 'mb-2'}`}>
-        <p className={`text-[0.68rem] uppercase tracking-[0.22em] font-semibold ${
-          isDark ? 'text-paper/55' : 'text-ink/55'
+        <p className={`text-xs uppercase tracking-[0.22em] font-semibold ${
+          isDark ? 'text-paper/80' : 'text-ink/75'
         }`}>
           {label}
         </p>
@@ -70,7 +70,7 @@ export const LiveFormula = ({
       </div>
 
       {general && (
-        <div className={`${alignClass} text-[0.85rem] leading-6 ${isDark ? 'text-paper/48' : 'text-ink/48'}`}>
+        <div className={`${alignClass} text-[0.85rem] leading-6 ${isDark ? 'text-paper/80' : 'text-ink/75'}`}>
           <MathRender raw={raw}>{general}</MathRender>
         </div>
       )}

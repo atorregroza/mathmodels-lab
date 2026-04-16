@@ -94,7 +94,7 @@ export const AreaAccumulationLab = () => {
 
         <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-            <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Tasa y acumulación</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Tasa y acumulación</p>
             <h3 className="mt-3 font-display text-3xl">Lo que entra por unidad de tiempo y lo que se acumula después</h3>
             <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
               <CartesianFrame xMin={axis.xMin} xMax={axis.xMax} yMin={axis.yMin} yMax={axis.yMax} xTicks={generateTicks(axis.xMin, axis.xMax)} yTicks={generateTicks(axis.yMin, axis.yMax)} xLabel="t" yLabel={scenario.rateLabel}>

@@ -193,7 +193,7 @@ export const FunctionTrigonometricLab = () => {
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)] xl:sticky xl:top-4 xl:self-start">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="max-w-3xl">
-                <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Lectura gráfica</p>
+                <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Lectura gráfica</p>
                 <h3 className="mt-3 font-display text-[clamp(2rem,3.6vw,3.2rem)] leading-[0.98] tracking-[-0.04em]">Plano trigonométrico fijo</h3>
                 <p className="mt-3 text-sm leading-6 text-paper/72">La curva cambia dentro del mismo sistema de referencia para que amplitud, período, fase y línea media se comparen sin mover los ejes.</p>
               </div>
@@ -228,7 +228,7 @@ export const FunctionTrigonometricLab = () => {
 
             <div className="mt-5 grid gap-4 xl:grid-cols-[1.04fr_0.96fr]">
               <div className="rounded-[1.6rem] border border-white/10 bg-white/6 p-4">
-                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-paper/45">Modelo y controles</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-paper/80">Modelo y controles</p>
                 <div className="mt-3 space-y-3">
                   <ModelCard title="Función base" expression={family.baseFormula} dark />
                   <LiveFormula

@@ -266,16 +266,16 @@ export const ThermalInsulationLab = () => {
           {CITIES.map(c => (
             <button key={c.id} onClick={() => { setCityId(c.id); setPresetA(c.traditionalWall); setPresetB(c.modernWall) }}
               className={`rounded-full px-4 py-2.5 text-sm font-semibold transition-all ${
-                cityId === c.id ? 'text-white shadow-md scale-105' : 'bg-ink/5 text-ink/50 hover:bg-ink/10'
+                cityId === c.id ? 'text-white shadow-md scale-105' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'
               }`}
               style={cityId === c.id ? { backgroundColor: c.color } : undefined}
             >{c.name} · {c.Ts}°C</button>
           ))}
         </div>
         <div className="mt-3 rounded-2xl border border-ink/8 p-4" style={{ borderLeftWidth: 4, borderLeftColor: city.color }}>
-          <p className="text-xs font-semibold text-ink/40 uppercase tracking-wide">{city.name} — {city.floor} ({city.alt} m)</p>
+          <p className="text-xs font-semibold text-ink/75 uppercase tracking-wide">{city.name} — {city.floor} ({city.alt} m)</p>
           <p className="text-sm text-ink/60 mt-1">{city.ctx}</p>
-          <p className="text-xs text-ink/35 mt-2 font-mono">T_exterior = {city.Ts}°C · T_interior = {Tinterior}°C · ΔT = {Math.abs(Tin - Tout)}°C</p>
+          <p className="text-xs text-ink/75 mt-2 font-mono">T_exterior = {city.Ts}°C · T_interior = {Tinterior}°C · ΔT = {Math.abs(Tin - Tout)}°C</p>
         </div>
       </LabCard>
 
@@ -286,7 +286,7 @@ export const ThermalInsulationLab = () => {
 
       {/* ── Configuración de muros ── */}
       <LabCard title="¿Cómo se construye el muro?">
-        <p className="mt-1 text-xs text-ink/45 leading-relaxed">
+        <p className="mt-1 text-xs text-ink/75 leading-relaxed">
           Un muro real tiene varias capas de materiales. Elige una configuración para ver el perfil térmico, o compara dos en la vista "Comparar muros".
           {city.traditionalWall !== city.modernWall && (
             <span className="font-semibold text-ink/60"> En {city.name}, la construcción tradicional usa {WALL_PRESETS.find(w => w.id === city.traditionalWall)?.name?.toLowerCase()}, mientras que la moderna usa {WALL_PRESETS.find(w => w.id === city.modernWall)?.name?.toLowerCase()}.</span>
@@ -294,17 +294,17 @@ export const ThermalInsulationLab = () => {
         </p>
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Material para el muro (perfil)</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/75 mb-2">Material para el muro (perfil)</p>
             <div className="flex flex-wrap gap-2">
               {WALL_PRESETS.map(w => (
                 <button key={w.id} onClick={() => setPresetA(w.id)}
                   className={`rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
-                    presetA === w.id ? 'bg-ink text-paper shadow-md' : 'border border-ink/10 bg-white text-ink/50 hover:bg-ink/5'
+                    presetA === w.id ? 'bg-ink text-paper shadow-md' : 'border border-ink/10 bg-white text-ink/75 hover:bg-ink/5'
                   }`}
                 >{w.name}</button>
               ))}
             </div>
-            <p className="mt-2 text-[0.6rem] text-ink/35 uppercase tracking-wide">Capas (interior → exterior):</p>
+            <p className="mt-2 text-xs text-ink/75 uppercase tracking-wide">Capas (interior → exterior):</p>
             <div className="mt-1 flex flex-wrap gap-1">
               {wallA.layers.map((l, i) => {
                 const mat = MATERIALS.find(m => m.id === l.matId)
@@ -317,17 +317,17 @@ export const ThermalInsulationLab = () => {
             </div>
           </div>
           <div>
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35 mb-2">Material para el muro (comparación)</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/75 mb-2">Material para el muro (comparación)</p>
             <div className="flex flex-wrap gap-2">
               {WALL_PRESETS.map(w => (
                 <button key={w.id} onClick={() => setPresetB(w.id)}
                   className={`rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
-                    presetB === w.id ? 'bg-ink text-paper shadow-md' : 'border border-ink/10 bg-white text-ink/50 hover:bg-ink/5'
+                    presetB === w.id ? 'bg-ink text-paper shadow-md' : 'border border-ink/10 bg-white text-ink/75 hover:bg-ink/5'
                   }`}
                 >{w.name}</button>
               ))}
             </div>
-            <p className="mt-2 text-[0.6rem] text-ink/35 uppercase tracking-wide">Capas (interior → exterior):</p>
+            <p className="mt-2 text-xs text-ink/75 uppercase tracking-wide">Capas (interior → exterior):</p>
             <div className="mt-1 flex flex-wrap gap-1">
               {wallB.layers.map((l, i) => {
                 const mat = MATERIALS.find(m => m.id === l.matId)
@@ -360,12 +360,12 @@ export const ThermalInsulationLab = () => {
             {/* Summary line — always visible */}
             <div className="flex flex-wrap items-center gap-3 rounded-[1.2rem] border border-ink/10 bg-paper px-4 py-3">
               <span className="text-sm font-semibold text-ink/70">q = {format(m.q)} W/m²</span>
-              <span className="text-xs text-ink/40">·</span>
+              <span className="text-xs text-ink/75">·</span>
               <span className="text-sm font-semibold text-ink/70">R = {format(m.Rtotal)} m²K/W</span>
-              <span className="text-xs text-ink/40">·</span>
-              <span className="text-xs text-ink/50">{wallA.name} · {city.name} · ΔT = {Math.abs(Tin - Tout)}°C</span>
+              <span className="text-xs text-ink/75">·</span>
+              <span className="text-xs text-ink/75">{wallA.name} · {city.name} · ΔT = {Math.abs(Tin - Tout)}°C</span>
               <button onClick={() => setShowModelDetail(v => !v)}
-                className="ml-auto flex items-center gap-1 rounded-full bg-ink/5 px-3 py-1.5 text-xs font-semibold text-ink/50 hover:bg-ink/10 transition-colors">
+                className="ml-auto flex items-center gap-1 rounded-full bg-ink/5 px-3 py-1.5 text-xs font-semibold text-ink/75 hover:bg-ink/10 transition-colors">
                 {showModelDetail ? 'Ocultar detalle' : 'Ver detalle'}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
                   style={{ transform: showModelDetail ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>
@@ -396,7 +396,7 @@ export const ThermalInsulationLab = () => {
                 <div className="overflow-x-auto rounded-[1.2rem] border border-ink/10 bg-paper">
                   <table className="w-full text-xs text-ink/70">
                     <thead>
-                      <tr className="border-b border-ink/8 text-left text-ink/40">
+                      <tr className="border-b border-ink/8 text-left text-ink/75">
                         <th className="py-2 px-3">Capa</th>
                         <th className="py-2 px-3">Material</th>
                         <th className="py-2 px-3">L (cm)</th>
@@ -409,7 +409,7 @@ export const ThermalInsulationLab = () => {
                         const mat = MATERIALS.find(x => x.id === l.matId)
                         return (
                           <tr key={i} className="border-b border-ink/5">
-                            <td className="py-1.5 px-3 font-mono text-ink/40">{i + 1}</td>
+                            <td className="py-1.5 px-3 font-mono text-ink/75">{i + 1}</td>
                             <td className="py-1.5 px-3 font-semibold">
                               <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: mat.color }} />
                               {mat.name}
@@ -585,15 +585,15 @@ export const ThermalInsulationLab = () => {
               return (
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-[1.3rem] border border-white/10 bg-ink p-4">
-                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-paper/40">{wallA.name}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-paper/80">{wallA.name}</p>
                     <p className="mt-2 text-lg font-display font-bold text-paper">{retainsA.toFixed(1)}°C retenidos</p>
-                    <p className="text-xs text-paper/50">de {totalDiff.toFixed(0)}°C de diferencia · {isHeating ? 'retiene calor' : 'bloquea calor'}</p>
+                    <p className="text-xs text-paper/80">de {totalDiff.toFixed(0)}°C de diferencia · {isHeating ? 'retiene calor' : 'bloquea calor'}</p>
                   </div>
                   {wallA.id !== wallB.id && (
                     <div className="rounded-[1.3rem] border border-white/10 bg-ink p-4">
-                      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-paper/40">{wallB.name}</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-paper/80">{wallB.name}</p>
                       <p className="mt-2 text-lg font-display font-bold text-paper">{retainsB.toFixed(1)}°C retenidos</p>
-                      <p className="text-xs text-paper/50">de {totalDiff.toFixed(0)}°C de diferencia · {retainsA > retainsB ? 'aísla menos' : 'aísla más'}</p>
+                      <p className="text-xs text-paper/80">de {totalDiff.toFixed(0)}°C de diferencia · {retainsA > retainsB ? 'aísla menos' : 'aísla más'}</p>
                     </div>
                   )}
                 </div>
@@ -605,7 +605,7 @@ export const ThermalInsulationLab = () => {
             <div className="mt-3 overflow-x-auto">
               <table className="w-full text-xs text-paper/80">
                 <thead>
-                  <tr className="border-b border-white/10 text-left text-paper/50">
+                  <tr className="border-b border-white/10 text-left text-paper/80">
                     <th className="py-2 pr-3">Material</th>
                     <th className="py-2 pr-3">L (cm)</th>
                     <th className="py-2 pr-3">k (W/m·K)</th>
@@ -670,7 +670,7 @@ export const ThermalInsulationLab = () => {
                     Diferencia anual por m² de muro:{' '}
                     <span className="font-bold text-ink">${Math.round(savingsPerYear).toLocaleString('es-CO')} COP</span>
                   </p>
-                  <p className="text-xs text-ink/45 mt-1">
+                  <p className="text-xs text-ink/75 mt-1">
                     Sensibilidad: cambiar ΔT en ±5°C cambia el costo en ±{format(Math.abs(dataA.conv.q * 5 / Math.abs(Tin - Tout || 1)) * 24 * COP_PER_KWH / 1000)} COP/día/m²
                   </p>
                 </div>
@@ -719,7 +719,7 @@ export const ThermalInsulationLab = () => {
             </CartesianFrame>
             <AxisRangePanel {...rAxis} />
           </div>
-          <p className="mt-3 text-xs text-paper/50">
+          <p className="mt-3 text-xs text-paper/80">
             Mayor R = mejor aislante. Aire quieto (k=0.026) y poliuretano (k=0.025) lideran.
             El acero (k=47.6) es prácticamente transparente al calor.
           </p>
@@ -745,14 +745,14 @@ export const ThermalInsulationLab = () => {
       </button>
 
       {/* ── Limitations ── */}
-      <div className="rounded-[1.2rem] border border-ink/8 bg-ink/3 p-4 text-xs text-ink/45 leading-relaxed space-y-1">
-        <p className="font-semibold text-ink/55">Limitaciones del modelo</p>
+      <div className="rounded-[1.2rem] border border-ink/8 bg-ink/3 p-4 text-xs text-ink/75 leading-relaxed space-y-1">
+        <p className="font-semibold text-ink/75">Limitaciones del modelo</p>
         <p>Este modelo considera solo conducción estacionaria 1D a través del muro. En climas tropicales, la ventilación natural y la ganancia solar por techos y ventanas son factores dominantes que no se incluyen. En Medellín (ΔT ≈ 0) el aislamiento tiene poco efecto práctico. En Tunja/Bogotá la calefacción eléctrica es rara — las familias usan abrigo, no energía. El costo en zonas cálidas usa COP=3.0 (AC típico colombiano).</p>
         <p>El adobe no cumple NSR-10 como sistema sismo-resistente sin refuerzo. El bahareque encementado sí cumple (Título E). La selección de materiales debe considerar resistencia sísmica, no solo térmica.</p>
       </div>
 
       {/* ── Reference ── */}
-      <p className="text-xs text-ink/30 leading-relaxed">
+      <p className="text-xs text-ink/75 leading-relaxed">
         MathModels Lab v1.0 — Aislamiento térmico en paredes compuestas [software interactivo].
         Datos de conductividad: Engineering ToolBox, SciELO Colombia, ScienceDirect.
         Temperaturas: Climate-Data.org. Tarifa eléctrica: MinEnergía Colombia 2025 (884 COP/kWh).

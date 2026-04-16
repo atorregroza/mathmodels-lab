@@ -839,7 +839,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
   const modeBtn = (m, label) => (
     <button
       onClick={() => setMode(m)}
-      className={`flex-1 rounded-full px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-wider transition-colors ${mode === m ? 'bg-aqua/20 text-aqua' : 'text-paper/45 hover:text-paper/65'}`}
+      className={`flex-1 rounded-full px-3 py-2 text-[0.7rem] font-semibold uppercase tracking-wider transition-colors ${mode === m ? 'bg-aqua/20 text-aqua' : 'text-paper/80 hover:text-paper/65'}`}
     >
       {label}
     </button>
@@ -875,7 +875,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
               {mode === 'calc' && (
                 <button
                   onClick={() => setShowSci(v => !v)}
-                  className={`rounded-full px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wider transition-colors ${showSci ? 'bg-aqua/20 text-aqua' : 'bg-white/8 text-paper/45'}`}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider transition-colors ${showSci ? 'bg-aqua/20 text-aqua' : 'bg-white/8 text-paper/80'}`}
                 >
                   SCI
                 </button>
@@ -887,7 +887,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                 {/* display */}
                 <div className="border-b border-white/8 px-5 py-4">
                   {history && (
-                    <p className="mb-1 truncate text-right text-xs text-paper/35">{history}</p>
+                    <p className="mb-1 truncate text-right text-xs text-paper/75">{history}</p>
                   )}
                   <p className={`truncate text-right font-display font-bold tracking-tight text-paper ${standalone ? 'min-h-[2.5rem] text-3xl' : 'min-h-[2rem] text-2xl'}`}>
                     {expr || '0'}
@@ -953,7 +953,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                   {validGraphFns.length > 0 ? (
                     <MiniGraph functions={validGraphFns} xRange={xRange} yRangeOverride={yRangeManual} analysisPoints={analysisData.points} shadedIntegral={shadedIntegral} />
                   ) : (
-                    <div className="flex h-[200px] items-center justify-center rounded-xl bg-[#0e1219] text-sm text-paper/30">
+                    <div className="flex h-[200px] items-center justify-center rounded-xl bg-[#0e1219] text-sm text-paper/75">
                       Escribe una función para graficar
                     </div>
                   )}
@@ -966,7 +966,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                     { label: 'y', range: yRangeManual, setRange: setYRangeManual, manual: yRangeManual, autoVal: true },
                   ].map(({ label, range, setRange, manual, autoVal }) => (
                     <div key={label} className="flex items-center gap-2">
-                      <span className="w-14 text-[0.6rem] uppercase tracking-wider text-paper/40">Ventana {label}</span>
+                      <span className="w-14 text-xs uppercase tracking-wider text-paper/80">Ventana {label}</span>
                       <input
                         type="text"
                         placeholder="min"
@@ -978,9 +978,9 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                           const n = Number(v)
                           if (!isNaN(n)) setRange([n, range ? range[1] : 10])
                         }}
-                        className="w-14 rounded bg-white/8 px-1.5 py-1 font-mono text-[0.65rem] text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40"
+                        className="w-14 rounded bg-white/8 px-1.5 py-1 font-mono text-xs text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40"
                       />
-                      <span className="text-paper/30">→</span>
+                      <span className="text-paper/75">→</span>
                       <input
                         type="text"
                         placeholder="max"
@@ -992,12 +992,12 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                           const n = Number(v)
                           if (!isNaN(n)) setRange([range ? range[0] : -10, n])
                         }}
-                        className="w-14 rounded bg-white/8 px-1.5 py-1 font-mono text-[0.65rem] text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40"
+                        className="w-14 rounded bg-white/8 px-1.5 py-1 font-mono text-xs text-paper text-center outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40"
                       />
                       {autoVal && (
                         <button
                           onClick={() => setRange(null)}
-                          className={`ml-auto rounded px-2 py-0.5 text-[0.6rem] font-semibold transition-colors ${!range ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/40 hover:bg-white/10'}`}
+                          className={`ml-auto rounded px-2 py-0.5 text-xs font-semibold transition-colors ${!range ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/80 hover:bg-white/10'}`}
                         >Auto</button>
                       )}
                     </div>
@@ -1012,7 +1012,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                         className="h-3 w-3 shrink-0 rounded-full"
                         style={{ backgroundColor: fn.color }}
                       />
-                      <span className="text-xs text-paper/50">f{i > 0 ? i + 1 : ''}(x) =</span>
+                      <span className="text-xs text-paper/80">f{i > 0 ? i + 1 : ''}(x) =</span>
                       <input
                         ref={el => graphInputRefs.current[i] = el}
                         type="text"
@@ -1024,7 +1024,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                       {graphFns.length > 1 && (
                         <button
                           onClick={() => removeGraphFn(i)}
-                          className="shrink-0 text-paper/30 hover:text-signal"
+                          className="shrink-0 text-paper/75 hover:text-signal"
                         >
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
                         </button>
@@ -1034,7 +1034,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                   {graphFns.length < 5 && (
                     <button
                       onClick={addGraphFn}
-                      className="flex w-full items-center justify-center gap-1 rounded-lg bg-white/6 py-2 text-xs text-paper/40 transition-colors hover:bg-white/10 hover:text-paper/60"
+                      className="flex w-full items-center justify-center gap-1 rounded-lg bg-white/6 py-2 text-xs text-paper/80 transition-colors hover:bg-white/10 hover:text-paper/60"
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14"/></svg>
                       Agregar función
@@ -1046,7 +1046,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                 <div className="border-t border-white/8 px-3 py-2">
                   <button
                     onClick={() => setShowAnalysis(v => !v)}
-                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${showAnalysis ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/50 hover:bg-white/10 hover:text-paper/70'}`}
+                    className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${showAnalysis ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/80 hover:bg-white/10 hover:text-paper/70'}`}
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                     Análisis
@@ -1056,7 +1056,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                   {showAnalysis && analysisData.perFn.length > 0 && (() => {
                     const fmt = v => { const s = v.toFixed(3); return s === '-0.000' ? '0.000' : s }
                     return (
-                    <div className="mt-2 space-y-2 text-[0.65rem]">
+                    <div className="mt-2 space-y-2 text-xs">
                       {analysisData.perFn.map((fn, i) => (
                         <div key={i} className="space-y-1 rounded-lg bg-white/4 px-3 py-2">
                           <div className="flex items-center gap-2">
@@ -1064,20 +1064,20 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                             <span className="font-mono text-paper/60">{fn.expr}</span>
                           </div>
                           {fn.yIntercept && (
-                            <p className="text-paper/50">
-                              <span className="text-paper/35">Corte Y:</span>{' '}
+                            <p className="text-paper/80">
+                              <span className="text-paper/75">Corte Y:</span>{' '}
                               (0, {fmt(fn.yIntercept.y)})
                             </p>
                           )}
                           {fn.zeros.length > 0 && (
-                            <p className="text-paper/50">
-                              <span className="text-paper/35">Ceros:</span>{' '}
+                            <p className="text-paper/80">
+                              <span className="text-paper/75">Ceros:</span>{' '}
                               {fn.zeros.map(z => `x = ${fmt(z)}`).join(', ')}
                             </p>
                           )}
                           {fn.extrema.length > 0 && (
-                            <p className="text-paper/50">
-                              <span className="text-paper/35">Extremos:</span>{' '}
+                            <p className="text-paper/80">
+                              <span className="text-paper/75">Extremos:</span>{' '}
                               {fn.extrema.map(e => `${e.type === 'max' ? 'Máx' : e.type === 'min' ? 'Mín' : 'Infl'} (${fmt(e.x)}, ${fmt(e.y)})`).join(', ')}
                             </p>
                           )}
@@ -1085,9 +1085,9 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                       ))}
                       {analysisData.intersections.length > 0 && (
                         <div className="rounded-lg bg-white/4 px-3 py-2">
-                          <p className="mb-1 font-semibold text-paper/45">Intersecciones</p>
+                          <p className="mb-1 font-semibold text-paper/80">Intersecciones</p>
                           {analysisData.intersections.map((inter, k) => (
-                            <p key={k} className="text-paper/50">
+                            <p key={k} className="text-paper/80">
                               <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: inter.color1 }} />{' '}
                               <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: inter.color2 }} />{' '}
                               {inter.pts.map(p => `(${fmt(p.x)}, ${fmt(p.y)})`).join(', ')}
@@ -1104,21 +1104,21 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                 {validGraphFns.length > 0 && (
                   <div className="space-y-3 border-t border-white/8 px-3 py-3">
                     <div>
-                      <p className="text-[0.6rem] uppercase tracking-wider text-paper/40">Herramientas de análisis</p>
-                      <p className="mt-0.5 text-[0.58rem] italic text-paper/35">acepta π, e y expresiones. Si no tienes π en el teclado, escribe <span className="font-mono not-italic text-paper/55">pi</span> (ej: pi/4, 2pi, -pi/2)</p>
+                      <p className="text-xs uppercase tracking-wider text-paper/80">Herramientas de análisis</p>
+                      <p className="mt-0.5 text-[0.72rem] italic text-paper/75">acepta π, e y expresiones. Si no tienes π en el teclado, escribe <span className="font-mono not-italic text-paper/80">pi</span> (ej: pi/4, 2pi, -pi/2)</p>
                     </div>
 
                     {/* integral */}
                     <div className="space-y-1.5">
-                      <p className="flex items-baseline gap-1.5 text-[0.62rem]">
+                      <p className="flex items-baseline gap-1.5 text-xs">
                         <span className="font-semibold text-paper/75">Integral definida</span>
-                        <span className="text-paper/40">área entre la curva y el eje x</span>
+                        <span className="text-paper/80">área entre la curva y el eje x</span>
                       </p>
-                      <div className="flex items-center gap-1.5 text-[0.65rem]">
-                        <span className="font-serif text-base italic text-paper/55">∫</span>
-                        <input type="text" value={integralBounds.a} onChange={e => { setIntegralBounds(p => ({ ...p, a: e.target.value })); setShadedIntegral(null) }} placeholder="desde" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
-                        <span className="text-paper/40">→</span>
-                        <input type="text" value={integralBounds.b} onChange={e => { setIntegralBounds(p => ({ ...p, b: e.target.value })); setShadedIntegral(null) }} placeholder="hasta" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
+                      <div className="flex items-center gap-1.5 text-xs">
+                        <span className="font-serif text-base italic text-paper/80">∫</span>
+                        <input type="text" value={integralBounds.a} onChange={e => { setIntegralBounds(p => ({ ...p, a: e.target.value })); setShadedIntegral(null) }} placeholder="desde" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/75 focus:ring-1 focus:ring-aqua/40" />
+                        <span className="text-paper/80">→</span>
+                        <input type="text" value={integralBounds.b} onChange={e => { setIntegralBounds(p => ({ ...p, b: e.target.value })); setShadedIntegral(null) }} placeholder="hasta" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/75 focus:ring-1 focus:ring-aqua/40" />
                         <button
                           onClick={() => {
                             const a = evalForGraph(integralBounds.a, 0)
@@ -1138,13 +1138,13 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
 
                     {/* derivative */}
                     <div className="space-y-1.5">
-                      <p className="flex items-baseline gap-1.5 text-[0.62rem]">
+                      <p className="flex items-baseline gap-1.5 text-xs">
                         <span className="font-semibold text-paper/75">Derivada en un punto</span>
-                        <span className="text-paper/40">pendiente de la curva</span>
+                        <span className="text-paper/80">pendiente de la curva</span>
                       </p>
-                      <div className="flex items-center gap-1.5 text-[0.65rem]">
-                        <span className="italic text-paper/55">f'(x₀)  en x₀ =</span>
-                        <input type="text" value={derivPoint} onChange={e => setDerivPoint(e.target.value)} placeholder="0" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
+                      <div className="flex items-center gap-1.5 text-xs">
+                        <span className="italic text-paper/80">f'(x₀)  en x₀ =</span>
+                        <input type="text" value={derivPoint} onChange={e => setDerivPoint(e.target.value)} placeholder="0" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/75 focus:ring-1 focus:ring-aqua/40" />
                         <button
                           onClick={() => {
                             const x0 = evalForGraph(derivPoint, 0)
@@ -1162,13 +1162,13 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
 
                     {/* solver */}
                     <div className="space-y-1.5">
-                      <p className="flex items-baseline gap-1.5 text-[0.62rem]">
+                      <p className="flex items-baseline gap-1.5 text-xs">
                         <span className="font-semibold text-paper/75">Raíz de f(x) = 0</span>
-                        <span className="text-paper/40">dónde la curva cruza el eje x</span>
+                        <span className="text-paper/80">dónde la curva cruza el eje x</span>
                       </p>
-                      <div className="flex items-center gap-1.5 text-[0.65rem]">
-                        <span className="italic text-paper/55">estimación inicial</span>
-                        <input type="text" value={solverGuess} onChange={e => setSolverGuess(e.target.value)} placeholder="≈" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/30 focus:ring-1 focus:ring-aqua/40" />
+                      <div className="flex items-center gap-1.5 text-xs">
+                        <span className="italic text-paper/80">estimación inicial</span>
+                        <input type="text" value={solverGuess} onChange={e => setSolverGuess(e.target.value)} placeholder="≈" className="w-14 rounded bg-white/8 px-2 py-1 font-mono text-paper text-center outline-none placeholder:text-paper/75 focus:ring-1 focus:ring-aqua/40" />
                         <button
                           onClick={() => {
                             const x0 = evalForGraph(solverGuess, 0)
@@ -1196,14 +1196,14 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => setShowTable(v => !v)}
-                        className={`flex items-center gap-1.5 rounded px-2 py-1 text-[0.65rem] font-semibold transition-colors ${showTable ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/50 hover:bg-white/10'}`}
+                        className={`flex items-center gap-1.5 rounded px-2 py-1 text-xs font-semibold transition-colors ${showTable ? 'bg-aqua/15 text-aqua' : 'bg-white/6 text-paper/80 hover:bg-white/10'}`}
                       >
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
                         Tabla
                       </button>
                       {showTable && (
-                        <div className="flex items-center gap-1 text-[0.6rem]">
-                          <span className="text-paper/35">Paso:</span>
+                        <div className="flex items-center gap-1 text-xs">
+                          <span className="text-paper/75">Paso:</span>
                           <input type="text" value={tableStep} onChange={e => setTableStep(e.target.value)} className="w-10 rounded bg-white/8 px-1.5 py-0.5 font-mono text-paper text-center outline-none focus:ring-1 focus:ring-aqua/40" />
                         </div>
                       )}
@@ -1213,15 +1213,15 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                       const rows = generateTable(validGraphFns[0].expr, xRange[0], xRange[1], step)
                       return (
                         <div className="max-h-40 overflow-y-auto rounded-lg bg-white/4">
-                          <table className="w-full text-[0.6rem]">
+                          <table className="w-full text-xs">
                             <thead><tr className="border-b border-white/8">
-                              <th className="px-3 py-1 text-left font-semibold text-paper/40">x</th>
-                              <th className="px-3 py-1 text-left font-semibold text-paper/40">f(x)</th>
+                              <th className="px-3 py-1 text-left font-semibold text-paper/80">x</th>
+                              <th className="px-3 py-1 text-left font-semibold text-paper/80">f(x)</th>
                             </tr></thead>
                             <tbody>{rows.map((r, i) => (
                               <tr key={i} className="border-b border-white/4">
-                                <td className="px-3 py-0.5 font-mono text-paper/55">{r.x}</td>
-                                <td className="px-3 py-0.5 font-mono text-paper/55">{r.y !== null ? parseFloat(r.y.toPrecision(6)) : '—'}</td>
+                                <td className="px-3 py-0.5 font-mono text-paper/80">{r.x}</td>
+                                <td className="px-3 py-0.5 font-mono text-paper/80">{r.y !== null ? parseFloat(r.y.toPrecision(6)) : '—'}</td>
                               </tr>
                             ))}</tbody>
                           </table>
@@ -1241,7 +1241,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                         if (emptyIdx >= 0) updateGraphFn(emptyIdx, ex)
                         else if (graphFns.length < 5) setGraphFns(prev => [...prev, { expr: ex, color: GRAPH_COLORS[prev.length % GRAPH_COLORS.length] }])
                       }}
-                      className="rounded-full bg-white/6 px-2.5 py-1 font-mono text-[0.65rem] text-paper/50 transition-colors hover:bg-white/12 hover:text-paper/70"
+                      className="rounded-full bg-white/6 px-2.5 py-1 font-mono text-xs text-paper/80 transition-colors hover:bg-white/12 hover:text-paper/70"
                     >
                       {ex}
                     </button>
@@ -1255,11 +1255,11 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
               <div className="flex flex-col space-y-3 p-3">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[0.6rem] uppercase tracking-wider text-paper/35">Matriz A</label>
+                    <label className="text-xs uppercase tracking-wider text-paper/75">Matriz A</label>
                     <textarea value={matA} onChange={e => setMatA(e.target.value)} rows={3} className="mt-1 w-full rounded-lg bg-white/8 px-3 py-2 font-mono text-xs text-paper outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" placeholder="1 2&#10;3 4" />
                   </div>
                   <div>
-                    <label className="text-[0.6rem] uppercase tracking-wider text-paper/35">Matriz B</label>
+                    <label className="text-xs uppercase tracking-wider text-paper/75">Matriz B</label>
                     <textarea value={matB} onChange={e => setMatB(e.target.value)} rows={3} className="mt-1 w-full rounded-lg bg-white/8 px-3 py-2 font-mono text-xs text-paper outline-none placeholder:text-paper/25 focus:ring-1 focus:ring-aqua/40" placeholder="1 0&#10;0 1" />
                   </div>
                 </div>
@@ -1286,7 +1286,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
                           setMatResult(res ? formatMatrix(res) : 'Error: dimensiones incompatibles o matriz singular')
                         } catch { setMatResult('Error') }
                       }}
-                      className={`rounded-full px-2.5 py-1 text-[0.65rem] font-semibold transition-colors ${matOp === op ? 'bg-aqua/20 text-aqua' : 'bg-white/6 text-paper/50 hover:bg-white/12'}`}
+                      className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-colors ${matOp === op ? 'bg-aqua/20 text-aqua' : 'bg-white/6 text-paper/80 hover:bg-white/12'}`}
                     >
                       {label}
                     </button>
@@ -1295,7 +1295,7 @@ export function ScientificCalculator({ open, onToggle, standalone = false }) {
 
                 {matResult && (
                   <div className="rounded-lg bg-white/4 p-3">
-                    <p className="mb-1 text-[0.6rem] uppercase tracking-wider text-paper/35">Resultado</p>
+                    <p className="mb-1 text-xs uppercase tracking-wider text-paper/75">Resultado</p>
                     <pre className="whitespace-pre font-mono text-xs leading-5 text-paper/70">{matResult}</pre>
                   </div>
                 )}

@@ -236,7 +236,7 @@ export const TrigTransformationsLab = () => {
         <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <div className="max-w-3xl">
-              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Lectura gr&aacute;fica</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Lectura gr&aacute;fica</p>
               <h3 className="mt-3 font-display text-[clamp(2rem,3.6vw,3.2rem)] leading-[0.98] tracking-[-0.04em]">
                 {mode === 'explore' ? 'Exploraci\u00f3n libre' : 'Modo desaf\u00edo'}
               </h3>

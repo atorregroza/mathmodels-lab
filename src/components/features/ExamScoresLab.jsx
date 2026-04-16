@@ -159,7 +159,7 @@ function PercentileCalc({ sorted, label }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3">
-        <label className="text-xs text-ink/50 shrink-0">Calificación:</label>
+        <label className="text-xs text-ink/75 shrink-0">Calificación:</label>
         <input type="range" min={0} max={100} step={1} value={score}
           onChange={(e) => setScore(Number(e.target.value))}
           className="flex-1 h-1.5 accent-aqua cursor-pointer" />
@@ -206,7 +206,7 @@ export const ExamScoresLab = () => {
             <div className="flex flex-wrap gap-2">
               {exams.map((e) => (
                 <button key={e.id} onClick={() => setExamId(e.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${examId === e.id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/45 hover:bg-ink/10'}`}>
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${examId === e.id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'}`}>
                   {e.label}
                 </button>
               ))}
@@ -283,7 +283,7 @@ export const ExamScoresLab = () => {
           </div>
 
           <button onClick={handleExport}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/50 transition-colors hover:bg-ink/10 hover:text-ink/70">
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/75 transition-colors hover:bg-ink/10 hover:text-ink/70">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
             </svg>

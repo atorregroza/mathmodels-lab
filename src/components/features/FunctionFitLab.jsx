@@ -103,7 +103,7 @@ export const FunctionFitLab = () => {
         <div className="space-y-5 xl:sticky xl:top-4 xl:self-start">
           <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
             <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
-              <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Comparación modelo vs. datos</p>
+              <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Comparación modelo vs. datos</p>
               <h3 className="mt-3 font-display text-3xl">La curva de ajuste sobre las observaciones</h3>
               <div className="mt-5 rounded-[1.7rem] border border-white/10 bg-white/6 p-4">
                 <CartesianFrame

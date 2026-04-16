@@ -261,7 +261,7 @@ function ResidualPlot({ xs, ys, predictFn }) {
 
   return (
     <div>
-      <p className="mb-1 text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Residuales</p>
+      <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-ink/75">Residuales</p>
       <CartesianFrame
         width={620} height={200}
         xMin={xMin} xMax={xMax} yMin={-rMax} yMax={rMax}
@@ -285,7 +285,7 @@ function ResidualPlot({ xs, ys, predictFn }) {
           </>
         )}
       </CartesianFrame>
-      <p className="mt-1 text-[0.6rem] text-ink/40 leading-relaxed">
+      <p className="mt-1 text-xs text-ink/75 leading-relaxed">
         Si los puntos se distribuyen aleatoriamente arriba y abajo de la línea, el modelo captura bien la estructura.
         Si forman un patrón (curva, tendencia), falta algo.
       </p>
@@ -309,9 +309,9 @@ function PredictionTool({ model, xs, xName, yName }) {
 
   return (
     <div className="rounded-xl border border-ink/10 bg-white p-4 space-y-2">
-      <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">Predicción</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-ink/75">Predicción</p>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs text-ink/50">Si {xName || 'x'} =</span>
+        <span className="text-xs text-ink/75">Si {xName || 'x'} =</span>
         <input
           type="number"
           value={predX}
@@ -321,7 +321,7 @@ function PredictionTool({ model, xs, xName, yName }) {
         />
         {isValid && predY != null && isFinite(predY) && (
           <>
-            <span className="text-xs text-ink/50">→ {yName || 'y'} ≈</span>
+            <span className="text-xs text-ink/75">→ {yName || 'y'} ≈</span>
             <span className="font-mono font-bold text-signal text-lg">{format(predY)}</span>
           </>
         )}
@@ -344,7 +344,7 @@ function PredictionTool({ model, xs, xName, yName }) {
       )}
 
       {isValid && !isExtrapolating && predY != null && (
-        <p className="text-xs text-ink/40">
+        <p className="text-xs text-ink/75">
           Interpolación: el valor está dentro del rango de los datos — la predicción es razonablemente confiable.
         </p>
       )}
@@ -449,7 +449,7 @@ function ManualSliders({ model, xs, ys, onParamsChange, onRevealBest, onVerify, 
       )}
 
       <div className="flex items-center justify-between">
-        <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">
+        <p className="text-xs font-semibold uppercase tracking-widest text-ink/75">
           {showBest ? 'Mejor ajuste' : 'Ajusta la curva a los datos'}
         </p>
       </div>
@@ -468,7 +468,7 @@ function ManualSliders({ model, xs, ys, onParamsChange, onRevealBest, onVerify, 
               disabled={showBest}
               className="h-1.5 flex-1 cursor-pointer accent-signal disabled:opacity-50"
             />
-            <span className="w-16 shrink-0 text-right font-mono text-xs text-ink/55">{format(value)}</span>
+            <span className="w-16 shrink-0 text-right font-mono text-xs text-ink/75">{format(value)}</span>
           </div>
         )
       })}
@@ -478,7 +478,7 @@ function ManualSliders({ model, xs, ys, onParamsChange, onRevealBest, onVerify, 
         <div className="flex gap-2">
           <button
             onClick={handleReset}
-            className="flex-1 rounded-lg border border-ink/12 py-2 text-xs font-medium text-ink/50 transition hover:bg-ink/5"
+            className="flex-1 rounded-lg border border-ink/12 py-2 text-xs font-medium text-ink/75 transition hover:bg-ink/5"
           >
             Reiniciar
           </button>
@@ -505,7 +505,7 @@ function ManualSliders({ model, xs, ys, onParamsChange, onRevealBest, onVerify, 
           <div className="flex gap-2">
             <button
               onClick={() => { setVerified(false); handleReset() }}
-              className="flex-1 rounded-lg border border-ink/12 py-2 text-xs font-medium text-ink/50 transition hover:bg-ink/5"
+              className="flex-1 rounded-lg border border-ink/12 py-2 text-xs font-medium text-ink/75 transition hover:bg-ink/5"
             >
               Intentar de nuevo
             </button>
@@ -543,7 +543,7 @@ function ParameterInterpretation({ model, xName, yName }) {
   const x = xName || 'x', y = yName || 'y'
   return (
     <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-2">
-      <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">¿Qué significan los parámetros?</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-ink/75">¿Qué significan los parámetros?</p>
       {model.id === 'linear' && (
         <div className="space-y-1 text-sm text-ink/65 leading-relaxed">
           <p><strong className="text-ink">b = {format(model.params.b)}</strong> — por cada unidad de {x}, {y} {model.params.b > 0 ? 'aumenta' : 'disminuye'} en {format(Math.abs(model.params.b))}.</p>
@@ -592,49 +592,49 @@ function DiagnosticPanel({ model, xs, xName, yName }) {
       {/* Metrics with explanations */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">R²</p>
+          <p className="text-xs uppercase tracking-widest text-ink/75 mb-1 font-semibold">R²</p>
           <p className={`font-display text-2xl font-bold ${model.r2 < 0 ? 'text-rose' : 'text-ink'}`}>{(model.r2 * 100).toFixed(1)}%</p>
-          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">% de variación explicada por el modelo</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/75">% de variación explicada por el modelo</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">R² ajustado</p>
+          <p className="text-xs uppercase tracking-widest text-ink/75 mb-1 font-semibold">R² ajustado</p>
           <p className={`font-display text-2xl font-bold ${d.adjR2 < model.r2 - 0.05 ? 'text-signal' : 'text-ink'}`}>{(d.adjR2 * 100).toFixed(1)}%</p>
-          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">{d.adjR2 < model.r2 - 0.05 ? 'Baja: modelo muy complejo' : 'Similar a R²: complejidad adecuada'}</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/75">{d.adjR2 < model.r2 - 0.05 ? 'Baja: modelo muy complejo' : 'Similar a R²: complejidad adecuada'}</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">AIC</p>
+          <p className="text-xs uppercase tracking-widest text-ink/75 mb-1 font-semibold">AIC</p>
           <p className="font-display text-2xl font-bold text-ink">{format(d.aic)}</p>
-          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">Menor = mejor balance entre precisión y simplicidad</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/75">Menor = mejor balance entre precisión y simplicidad</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">Error medio</p>
+          <p className="text-xs uppercase tracking-widest text-ink/75 mb-1 font-semibold">Error medio</p>
           <p className="font-display text-2xl font-bold text-ink">{format(model.mae)}</p>
-          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">Distancia promedio entre dato real y predicción</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/75">Distancia promedio entre dato real y predicción</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">Parámetros</p>
+          <p className="text-xs uppercase tracking-widest text-ink/75 mb-1 font-semibold">Parámetros</p>
           <p className="font-display text-2xl font-bold text-ink">{model.numParams}</p>
-          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">Números ajustables en la ecuación</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/75">Números ajustables en la ecuación</p>
         </div>
         <div className="rounded-xl border border-ink/8 bg-paper px-4 py-3">
-          <p className="text-[0.65rem] uppercase tracking-widest text-ink/55 mb-1 font-semibold">Sobreajuste</p>
+          <p className="text-xs uppercase tracking-widest text-ink/75 mb-1 font-semibold">Sobreajuste</p>
           <p className={`font-display text-2xl font-bold ${d.overfitRisk === 'alto' ? 'text-rose' : d.overfitRisk === 'moderado' ? 'text-signal' : 'text-graph'}`}>
             {d.overfitRisk === 'alto' ? 'Alto' : d.overfitRisk === 'moderado' ? 'Medio' : 'Bajo'}
           </p>
-          <p className="mt-1 text-[0.7rem] leading-snug text-ink/50">{d.overfitRisk === 'alto' ? 'Pocos datos para tantos parámetros' : d.overfitRisk === 'moderado' ? 'Más datos darían más confianza' : 'Datos suficientes para el modelo'}</p>
+          <p className="mt-1 text-[0.7rem] leading-snug text-ink/75">{d.overfitRisk === 'alto' ? 'Pocos datos para tantos parámetros' : d.overfitRisk === 'moderado' ? 'Más datos darían más confianza' : 'Datos suficientes para el modelo'}</p>
         </div>
       </div>
 
       {/* Interpretation — compact */}
       <div className="rounded-xl border border-aqua/15 bg-aqua/5 px-4 py-3">
-        <p className="text-[0.6rem] font-semibold uppercase tracking-widest text-aqua/70 mb-1">Interpretación</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-aqua/70 mb-1">Interpretación</p>
         <p className="text-sm text-ink/60 leading-relaxed">{interpretation[0]}</p>
       </div>
 
       {/* Warnings */}
       {d.warnings.length > 0 && (
         <div className="rounded-xl border border-rose/20 bg-rose/5 px-4 py-3 space-y-1.5">
-          <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-rose/70">Alertas</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-rose/70">Alertas</p>
           {d.warnings.map((w, i) => (
             <p key={i} className="flex items-start gap-2 text-sm text-ink/60 leading-relaxed">
               <span className="mt-0.5 shrink-0 text-rose">⚠</span> {w}
@@ -676,17 +676,17 @@ function RankingBars({ models, selectedId, onSelect }) {
               }}
             />
             <span className="shrink-0 text-sm font-semibold text-ink/80">{model.label}</span>
-            <span className="shrink-0 font-mono text-[0.65rem] text-ink/45">
+            <span className="shrink-0 font-mono text-xs text-ink/75">
               R²={format(model.r2)}{model.filteredCount > 0 ? ` (n=${model.usedCount})` : ''}
             </span>
             {model.filteredCount > 0 && (
-              <span className="shrink-0 text-[0.6rem] text-amber-600" title={`Se excluyeron ${model.filteredCount} datos incompatibles`}>⚠️</span>
+              <span className="shrink-0 text-xs text-amber-600" title={`Se excluyeron ${model.filteredCount} datos incompatibles`}>⚠️</span>
             )}
-            <span className="ml-auto shrink-0 font-mono text-[0.65rem] text-ink/40">
+            <span className="ml-auto shrink-0 font-mono text-xs text-ink/75">
               AIC={format(model.diagnostics?.aic)}
             </span>
             {idx === 0 && (
-              <span className="rounded-full bg-signal/20 px-2 py-0.5 text-[0.6rem] font-bold text-signal">
+              <span className="rounded-full bg-signal/20 px-2 py-0.5 text-xs font-bold text-signal">
                 MEJOR
               </span>
             )}
@@ -723,23 +723,23 @@ function DataInput({ xInput, yInput, setXInput, setYInput, xName, yName, setXNam
       {/* Variable descriptions */}
       <div className="grid gap-3 md:grid-cols-2">
         <div>
-          <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">¿Qué mide x?</label>
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-ink/75">¿Qué mide x?</label>
           <input
             type="text"
             value={xName}
             onChange={e => setXName(e.target.value)}
             placeholder="Ej: Horas de estudio, Temperatura, Tiempo..."
-            className="w-full rounded-xl border border-ink/12 bg-white px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
+            className="w-full rounded-xl border border-ink/12 bg-white px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-signal/30"
           />
         </div>
         <div>
-          <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">¿Qué mide y?</label>
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-ink/75">¿Qué mide y?</label>
           <input
             type="text"
             value={yName}
             onChange={e => setYName(e.target.value)}
             placeholder="Ej: Nota del examen, Ventas, Altura..."
-            className="w-full rounded-xl border border-ink/12 bg-white px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
+            className="w-full rounded-xl border border-ink/12 bg-white px-4 py-2.5 text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-signal/30"
           />
         </div>
       </div>
@@ -747,23 +747,23 @@ function DataInput({ xInput, yInput, setXInput, setYInput, xName, yName, setXNam
       {/* Data values */}
       <div className="flex gap-3">
         <div className="flex-1">
-          <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">Valores de x</label>
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-ink/75">Valores de x</label>
           <textarea
             rows={3}
             value={xInput}
             onChange={e => setXInput(e.target.value)}
             placeholder="1, 2, 3, 4, 5..."
-            className="w-full resize-none rounded-xl border border-ink/12 bg-white px-3 py-2 font-mono text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
+            className="w-full resize-none rounded-xl border border-ink/12 bg-white px-3 py-2 font-mono text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-signal/30"
           />
         </div>
         <div className="flex-1">
-          <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/50">Valores de y</label>
+          <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-ink/75">Valores de y</label>
           <textarea
             rows={3}
             value={yInput}
             onChange={e => setYInput(e.target.value)}
             placeholder="2.1, 4.0, 5.8..."
-            className="w-full resize-none rounded-xl border border-ink/12 bg-white px-3 py-2 font-mono text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30"
+            className="w-full resize-none rounded-xl border border-ink/12 bg-white px-3 py-2 font-mono text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-signal/30"
           />
         </div>
       </div>
@@ -782,7 +782,7 @@ function DataInput({ xInput, yInput, setXInput, setYInput, xName, yName, setXNam
           <button
             key={ds.id}
             onClick={() => onLoadSample(ds)}
-            className="rounded-full bg-ink/5 px-2.5 py-1 text-[0.65rem] font-medium text-ink/50 transition hover:bg-ink/10 hover:text-ink/70"
+            className="rounded-full bg-ink/5 px-2.5 py-1 text-xs font-medium text-ink/75 transition hover:bg-ink/10 hover:text-ink/70"
           >
             {ds.label}
           </button>
@@ -803,7 +803,7 @@ function DataTable({ xs, ys }) {
     <div className="max-h-48 overflow-y-auto rounded-xl border border-ink/10">
       <table className="w-full text-sm">
         <thead>
-          <tr className="bg-ink/5 text-[0.65rem] uppercase tracking-widest text-ink/50">
+          <tr className="bg-ink/5 text-xs uppercase tracking-widest text-ink/75">
             <th className="px-3 py-1.5 text-center">#</th>
             <th className="px-3 py-1.5 text-right">x</th>
             <th className="px-3 py-1.5 text-right">y</th>
@@ -812,14 +812,14 @@ function DataTable({ xs, ys }) {
         <tbody>
           {xs.slice(0, maxShow).map((x, i) => (
             <tr key={i} className="border-t border-ink/6">
-              <td className="px-3 py-1 text-center text-ink/35 text-xs">{i + 1}</td>
+              <td className="px-3 py-1 text-center text-ink/75 text-xs">{i + 1}</td>
               <td className="px-3 py-1 text-right font-mono text-ink/70">{format(x)}</td>
               <td className="px-3 py-1 text-right font-mono text-ink/70">{format(ys[i])}</td>
             </tr>
           ))}
           {truncated && (
             <tr className="border-t border-ink/6">
-              <td colSpan={3} className="px-3 py-1 text-center text-xs text-ink/40">
+              <td colSpan={3} className="px-3 py-1 text-center text-xs text-ink/75">
                 ... y {xs.length - maxShow} más
               </td>
             </tr>
@@ -865,10 +865,10 @@ function FamilyCard({ family, isLikely, isUnlikely, isSelected, onToggle }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-sm text-ink">{family.label}</span>
-            <span className="font-mono text-[0.65rem] text-ink/40">{family.equation}</span>
+            <span className="font-mono text-xs text-ink/75">{family.equation}</span>
           </div>
-          <p className="mt-0.5 text-xs text-ink/55 leading-relaxed">{family.description}</p>
-          <p className="mt-0.5 text-[0.65rem] text-ink/40 italic">{family.when}</p>
+          <p className="mt-0.5 text-xs text-ink/75 leading-relaxed">{family.description}</p>
+          <p className="mt-0.5 text-xs text-ink/75 italic">{family.when}</p>
         </div>
       </button>
       {feedbackText && (
@@ -1227,7 +1227,7 @@ export function ModelingSpace() {
 
   // ── Render helpers ──
   const sectionKicker = (text) => (
-    <p className="mb-2 flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-ink/55">
+    <p className="mb-2 flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-ink/75">
       <span className="h-2 w-2 rounded-full bg-signal" />
       {text}
     </p>
@@ -1247,12 +1247,12 @@ export function ModelingSpace() {
               onClick={() => i < step && setStep(i)}
               disabled={i >= step}
               className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors ${
-                i < step ? 'bg-graph text-white cursor-pointer hover:bg-graph/80' : i === step ? 'bg-signal text-white' : 'bg-ink/10 text-ink/40'
+                i < step ? 'bg-graph text-white cursor-pointer hover:bg-graph/80' : i === step ? 'bg-signal text-white' : 'bg-ink/10 text-ink/75'
               }`}
             >
               {i < step ? '✓' : i + 1}
             </button>
-            <span className={`hidden text-xs font-medium md:block ${i === step ? 'text-signal' : i < step ? 'text-graph cursor-pointer' : 'text-ink/40'}`}>
+            <span className={`hidden text-xs font-medium md:block ${i === step ? 'text-signal' : i < step ? 'text-graph cursor-pointer' : 'text-ink/75'}`}>
               {label}
             </span>
             {i < totalSteps - 1 && <div className={`mx-1 h-0.5 flex-1 rounded ${i < step ? 'bg-graph' : 'bg-ink/10'}`} />}
@@ -1273,7 +1273,7 @@ export function ModelingSpace() {
             <div className="space-y-4">
               {sectionKicker('Fase 1 — Observar')}
               <p className="text-base font-semibold text-ink/80">¿Qué fenómeno quieres estudiar?</p>
-              <p className="text-sm text-ink/55 leading-relaxed">
+              <p className="text-sm text-ink/75 leading-relaxed">
                 Carga tus datos y observa la nube de puntos. Antes de buscar una fórmula, describe con tus palabras qué patrón ves.
               </p>
               <DataInput xInput={xInput} yInput={yInput}
@@ -1385,12 +1385,12 @@ export function ModelingSpace() {
             <div className="space-y-4">
               {sectionKicker('Fase 2 — Conjeturar')}
               <p className="text-base font-semibold text-ink/80">¿Qué familias de funciones podrían describir este fenómeno?</p>
-              <p className="text-sm text-ink/55 leading-relaxed">
+              <p className="text-sm text-ink/75 leading-relaxed">
                 {pattern
                   ? `Observaste que tus datos "${PATTERN_OPTIONS.find(p => p.id === pattern)?.label?.toLowerCase() || ''}". Ahora elige las familias que crees que podrían ajustarse — y descarta las que no tienen sentido para esta forma.`
                   : 'Selecciona las familias de funciones que quieres probar con tus datos.'}
               </p>
-              <p className="text-xs text-ink/40">Haz clic en cada familia para seleccionarla o descartarla. Recibirás retroalimentación sobre tu elección.</p>
+              <p className="text-xs text-ink/75">Haz clic en cada familia para seleccionarla o descartarla. Recibirás retroalimentación sobre tu elección.</p>
               <div className="grid gap-2 md:grid-cols-2">
                 {MODEL_FAMILIES.map(family => (
                   <FamilyCard
@@ -1404,7 +1404,7 @@ export function ModelingSpace() {
                 ))}
               </div>
               {selectedFamilies.length > 0 && (
-                <p className="text-xs text-ink/45">{selectedFamilies.length} familia{selectedFamilies.length > 1 ? 's' : ''} seleccionada{selectedFamilies.length > 1 ? 's' : ''} para comparar.</p>
+                <p className="text-xs text-ink/75">{selectedFamilies.length} familia{selectedFamilies.length > 1 ? 's' : ''} seleccionada{selectedFamilies.length > 1 ? 's' : ''} para comparar.</p>
               )}
             </div>
           )}
@@ -1414,11 +1414,11 @@ export function ModelingSpace() {
             <div className="space-y-4">
               {sectionKicker('Fase 3 — Ajustar')}
               <p className="text-base font-semibold text-ink/80">Ajusta cada modelo a los datos moviendo los parámetros</p>
-              <p className="text-sm text-ink/55 leading-relaxed">
+              <p className="text-sm text-ink/75 leading-relaxed">
                 Para cada familia que elegiste, mueve los deslizadores hasta que la curva se acerque lo más posible a los puntos. Cuando creas que es tu mejor intento, verifica tu ajuste.
               </p>
               {fittedModels.length === 0 ? (
-                <p className="text-sm text-ink/50">No se pudieron ajustar modelos. Vuelve al paso anterior y selecciona más familias.</p>
+                <p className="text-sm text-ink/75">No se pudieron ajustar modelos. Vuelve al paso anterior y selecciona más familias.</p>
               ) : (
                 <>
                   {/* Model selector tabs — no R² shown */}
@@ -1440,7 +1440,7 @@ export function ModelingSpace() {
                     <div className="space-y-3">
                       {/* Show equation template */}
                       <div className="rounded-xl border border-signal/20 bg-signal/5 px-4 py-3 text-center">
-                        <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-1">Ecuación general</p>
+                        <p className="text-xs uppercase tracking-widest text-ink/75 mb-1">Ecuación general</p>
                         <p className="font-mono text-base font-semibold text-signal">{activeModel.equation}</p>
                       </div>
 
@@ -1476,7 +1476,7 @@ export function ModelingSpace() {
             <div className="space-y-4">
               {sectionKicker('Fase 4 — Evaluar')}
               <p className="text-base font-semibold text-ink/80">¿Qué tan bien describe el modelo tus datos?</p>
-              <p className="text-sm text-ink/55 leading-relaxed">
+              <p className="text-sm text-ink/75 leading-relaxed">
                 {useStudentCurve
                   ? 'Estás evaluando la curva que ajustaste manualmente. Un buen modelo no solo pasa cerca de los puntos — también predice bien donde no hay datos.'
                   : 'Un buen modelo no solo pasa cerca de los puntos — también predice bien donde no hay datos y sus residuales no forman patrones.'}
@@ -1508,25 +1508,25 @@ export function ModelingSpace() {
             <div className="space-y-4">
               {sectionKicker('Fase 5 — Justificar y cerrar')}
               <p className="text-base font-semibold text-ink/80">Cierre de tu proceso de modelación</p>
-              <p className="text-sm text-ink/55 leading-relaxed">
+              <p className="text-sm text-ink/75 leading-relaxed">
                 En matemáticas, elegir un modelo no basta — hay que argumentar la decisión y reconocer sus limitaciones. Esto es lo que evalúa el criterio E de la Exploración IB.
               </p>
               {activeModel && (
                 <>
                   {/* ── Resumen del proceso ── */}
                   <div className="rounded-xl border border-ink/8 bg-paper p-4 space-y-3">
-                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Resumen de tu proceso</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-ink/75">Resumen de tu proceso</p>
                     <div className="grid gap-2 md:grid-cols-3">
                       <div className="rounded-lg bg-white border border-ink/8 px-3 py-2">
-                        <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Observaste</p>
+                        <p className="text-xs uppercase tracking-widest text-ink/75">Observaste</p>
                         <p className="mt-1 text-sm font-semibold text-ink">{PATTERN_OPTIONS.find(p => p.id === pattern)?.label || '—'}{shape === 'accelerating' ? ', acelerando' : shape === 'decelerating' ? ', desacelerando' : shape === 'constant' ? ', a ritmo constante' : ''}</p>
                       </div>
                       <div className="rounded-lg bg-white border border-ink/8 px-3 py-2">
-                        <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Probaste</p>
+                        <p className="text-xs uppercase tracking-widest text-ink/75">Probaste</p>
                         <p className="mt-1 text-sm font-semibold text-ink">{selectedFamilies.length} familia{selectedFamilies.length > 1 ? 's' : ''}</p>
                       </div>
                       <div className="rounded-lg bg-white border border-ink/8 px-3 py-2">
-                        <p className="text-[0.6rem] uppercase tracking-widest text-ink/40">Elegiste</p>
+                        <p className="text-xs uppercase tracking-widest text-ink/75">Elegiste</p>
                         <p className="mt-1 text-sm font-semibold text-signal">{activeModel.label}</p>
                       </div>
                     </div>
@@ -1534,9 +1534,9 @@ export function ModelingSpace() {
 
                   {/* ── Modelo final con gráfica ── */}
                   <div className="rounded-xl border border-graph/20 bg-graph/5 px-4 py-4">
-                    <p className="text-[0.65rem] uppercase tracking-widest text-ink/45 mb-2">Tu modelo</p>
+                    <p className="text-xs uppercase tracking-widest text-ink/75 mb-2">Tu modelo</p>
                     <p className="font-mono text-lg font-bold text-signal">{activeModel.formula}</p>
-                    <p className="mt-1 text-sm text-ink/55">{activeModel.label} — R² = {format(activeModel.r2)} ({interpretR2(activeModel.r2).toLowerCase()})</p>
+                    <p className="mt-1 text-sm text-ink/75">{activeModel.label} — R² = {format(activeModel.r2)} ({interpretR2(activeModel.r2).toLowerCase()})</p>
                   </div>
 
                   <DataChart xs={xs} ys={ys} fittedModels={[activeModel]} selectedModelId={activeModelId} xLabel={xName} yLabel={yName} dark={false} />
@@ -1545,18 +1545,18 @@ export function ModelingSpace() {
 
                   {/* ── Identificación del estudiante ── */}
                   <div className="rounded-xl border border-ink/8 bg-white p-4 space-y-3">
-                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Identificación</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-ink/75">Identificación</p>
                     <div className="grid gap-3 md:grid-cols-3">
                       <div>
-                        <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/40">Nombre</label>
+                        <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-ink/75">Nombre</label>
                         <input type="text" value={studentName} onChange={e => setStudentName(e.target.value)} placeholder="Tu nombre completo" className="w-full rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30" />
                       </div>
                       <div>
-                        <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/40">Curso</label>
+                        <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-ink/75">Curso</label>
                         <input type="text" value={studentCourse} onChange={e => setStudentCourse(e.target.value)} placeholder="Ej: 11° IB" className="w-full rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30" />
                       </div>
                       <div>
-                        <label className="mb-1 block text-[0.65rem] font-semibold uppercase tracking-widest text-ink/40">Colegio</label>
+                        <label className="mb-1 block text-xs font-semibold uppercase tracking-widest text-ink/75">Colegio</label>
                         <input type="text" value={studentSchool} onChange={e => setStudentSchool(e.target.value)} placeholder="Nombre del colegio" className="w-full rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none focus:ring-2 focus:ring-signal/30" />
                       </div>
                     </div>
@@ -1564,15 +1564,15 @@ export function ModelingSpace() {
 
                   {/* ── Contexto del problema ── */}
                   <div className="rounded-xl border border-ink/8 bg-white p-4 space-y-2">
-                    <p className="text-[0.65rem] font-semibold uppercase tracking-widest text-ink/45">Contexto del problema</p>
-                    <p className="text-xs text-ink/45">Describe brevemente el fenómeno que estás modelando: ¿de dónde vienen los datos? ¿Qué se quiere entender o predecir?</p>
-                    <textarea rows={3} value={problemContext} onChange={e => setProblemContext(e.target.value)} placeholder="Ej: Se midió la población de bacterias en un cultivo cada hora durante 10 horas para determinar su tasa de crecimiento..." className="w-full resize-none rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-signal/30" />
+                    <p className="text-xs font-semibold uppercase tracking-widest text-ink/75">Contexto del problema</p>
+                    <p className="text-xs text-ink/75">Describe brevemente el fenómeno que estás modelando: ¿de dónde vienen los datos? ¿Qué se quiere entender o predecir?</p>
+                    <textarea rows={3} value={problemContext} onChange={e => setProblemContext(e.target.value)} placeholder="Ej: Se midió la población de bacterias en un cultivo cada hora durante 10 horas para determinar su tasa de crecimiento..." className="w-full resize-none rounded-lg border border-ink/12 bg-ink/3 px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-signal/30" />
                   </div>
 
                   {/* ── Justificación del estudiante ── */}
                   <div className="rounded-xl border border-aqua/20 bg-aqua/5 p-4 space-y-3">
                     <p className="text-sm font-semibold text-ink/70">Escribe tu justificación:</p>
-                    <p className="text-xs text-ink/45 leading-relaxed">
+                    <p className="text-xs text-ink/75 leading-relaxed">
                       Responde: ¿Por qué esta familia y no las otras? ¿Qué dice el R²? ¿Los residuales muestran algún patrón? ¿El modelo tiene sentido en el contexto del fenómeno? ¿Qué limitaciones tiene?
                     </p>
                     <textarea
@@ -1580,7 +1580,7 @@ export function ModelingSpace() {
                       value={conclusion}
                       onChange={e => setConclusion(e.target.value)}
                       placeholder="Elegí el modelo... porque..."
-                      className="w-full resize-none rounded-xl border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-aqua/30"
+                      className="w-full resize-none rounded-xl border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-aqua/30"
                     />
                   </div>
 
@@ -1589,16 +1589,16 @@ export function ModelingSpace() {
                     <p className="text-sm font-semibold text-ink/70">Reflexión final</p>
                     <div className="space-y-4">
                       <div>
-                        <p className="text-xs text-ink/50 mb-1">¿Tu modelo sirve para predecir valores <strong>fuera</strong> del rango de datos? ¿Hasta dónde?</p>
-                        <textarea rows={2} value={reflection1} onChange={e => setReflection1(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-violet/30" />
+                        <p className="text-xs text-ink/75 mb-1">¿Tu modelo sirve para predecir valores <strong>fuera</strong> del rango de datos? ¿Hasta dónde?</p>
+                        <textarea rows={2} value={reflection1} onChange={e => setReflection1(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-violet/30" />
                       </div>
                       <div>
-                        <p className="text-xs text-ink/50 mb-1">¿Hay algún dato que no se ajusta bien? ¿Por qué podría ser?</p>
-                        <textarea rows={2} value={reflection2} onChange={e => setReflection2(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-violet/30" />
+                        <p className="text-xs text-ink/75 mb-1">¿Hay algún dato que no se ajusta bien? ¿Por qué podría ser?</p>
+                        <textarea rows={2} value={reflection2} onChange={e => setReflection2(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-violet/30" />
                       </div>
                       <div>
-                        <p className="text-xs text-ink/50 mb-1">¿Qué variable no estás considerando que podría mejorar la predicción?</p>
-                        <textarea rows={2} value={reflection3} onChange={e => setReflection3(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/25 focus:ring-2 focus:ring-violet/30" />
+                        <p className="text-xs text-ink/75 mb-1">¿Qué variable no estás considerando que podría mejorar la predicción?</p>
+                        <textarea rows={2} value={reflection3} onChange={e => setReflection3(e.target.value)} placeholder="Responde aquí..." className="w-full resize-none rounded-lg border border-ink/12 bg-white px-3 py-2 text-sm text-ink outline-none placeholder:text-ink/70 focus:ring-2 focus:ring-violet/30" />
                       </div>
                     </div>
                   </div>
@@ -1666,7 +1666,7 @@ export function ModelingSpace() {
       </div>
 
       {!hasData ? (
-        <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-ink/15 text-sm text-ink/35">
+        <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-ink/15 text-sm text-ink/75">
           Ingresa al menos 2 pares de datos para comenzar
         </div>
       ) : (
@@ -1678,7 +1678,7 @@ export function ModelingSpace() {
                 {sectionKicker('Gráfica')}
                 <button
                   onClick={() => setShowAllCurves(v => !v)}
-                  className={`rounded-full px-3 py-1 text-[0.65rem] font-medium transition ${showAllCurves ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/40 hover:bg-ink/10'}`}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${showAllCurves ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'}`}
                 >
                   {showAllCurves ? 'Todas las curvas' : 'Comparar'}
                 </button>
@@ -1730,7 +1730,7 @@ export function ModelingSpace() {
           <button
             onClick={() => { setViewMode('guided'); setStep(0) }}
             className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
-              viewMode === 'guided' ? 'bg-signal text-white shadow-md' : 'text-ink/50 hover:text-ink/70'
+              viewMode === 'guided' ? 'bg-signal text-white shadow-md' : 'text-ink/75 hover:text-ink/70'
             }`}
           >
             Guiado
@@ -1741,8 +1741,8 @@ export function ModelingSpace() {
             title={isCustomData ? 'Con datos propios, usa el modo Guiado para aprender modelando' : ''}
             className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
               viewMode === 'direct' ? 'bg-signal text-white shadow-md'
-              : isCustomData ? 'text-ink/25 cursor-not-allowed'
-              : 'text-ink/50 hover:text-ink/70'
+              : isCustomData ? 'text-ink/70 cursor-not-allowed'
+              : 'text-ink/75 hover:text-ink/70'
             }`}
           >
             Directo
@@ -1751,12 +1751,12 @@ export function ModelingSpace() {
         {hasData && (
           <button
             onClick={resetAll}
-            className="rounded-full border border-ink/12 px-4 py-2 text-xs font-medium text-ink/50 transition hover:bg-ink/5 hover:text-ink/70"
+            className="rounded-full border border-ink/12 px-4 py-2 text-xs font-medium text-ink/75 transition hover:bg-ink/5 hover:text-ink/70"
           >
             Nueva modelación
           </button>
         )}
-        <p className="text-xs text-ink/40 hidden md:block">
+        <p className="text-xs text-ink/75 hidden md:block">
           {viewMode === 'guided'
             ? 'Ciclo completo de modelación: observar, conjeturar, ajustar, evaluar, justificar'
             : 'Todos los modelos y herramientas visibles — para usuarios con experiencia'}

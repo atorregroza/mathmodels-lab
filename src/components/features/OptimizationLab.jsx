@@ -637,7 +637,7 @@ export const OptimizationLab = () => {
         {/* RIGHT: function graph */}
         <div className="space-y-3 xl:sticky xl:top-4 xl:self-start">
           <div className="rounded-[1.4rem] border border-white/10 bg-ink p-4">
-            <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/45">Función objetivo</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-paper/80">Función objetivo</p>
             <p className="mb-3 font-mono text-xs text-paper/60">{sc.objectiveLabel}</p>
             <CartesianFrame
               width={540}

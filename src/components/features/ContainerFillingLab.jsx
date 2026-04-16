@@ -574,7 +574,7 @@ export const ContainerFillingLab = () => {
         {/* RIGHT: V(h) graph */}
         <div className="space-y-3 xl:sticky xl:top-4 xl:self-start">
           <div className="rounded-[1.4rem] border border-white/10 bg-ink p-4">
-            <p className="mb-2 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-paper/45">Volumen vs Altura — {container.family}</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-paper/80">Volumen vs Altura — {container.family}</p>
             <CartesianFrame
               width={540}
               height={280}
@@ -635,7 +635,7 @@ export const ContainerFillingLab = () => {
           {/* model card */}
           <LabCard title="Modelo algebraico">
             <p className="mt-2 font-mono text-sm text-ink/80">{container.model}</p>
-            <p className="mt-1 text-sm text-ink/55">Familia: <span className="font-semibold text-ink/70">{container.family}</span></p>
+            <p className="mt-1 text-sm text-ink/75">Familia: <span className="font-semibold text-ink/70">{container.family}</span></p>
           </LabCard>
         </div>
       </div>

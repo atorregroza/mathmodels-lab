@@ -210,7 +210,7 @@ export const CentralLimitLab = () => {
                 <button
                   key={id}
                   onClick={() => changePop(id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${popId === id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/45 hover:bg-ink/10'}`}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${popId === id ? 'bg-aqua/15 text-aqua' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'}`}
                 >
                   {pop.label}
                 </button>
@@ -294,7 +294,7 @@ export const CentralLimitLab = () => {
 
           <button
             onClick={handleExport}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/50 transition-colors hover:bg-ink/10 hover:text-ink/70"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink/5 py-3 text-sm font-medium text-ink/75 transition-colors hover:bg-ink/10 hover:text-ink/70"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />

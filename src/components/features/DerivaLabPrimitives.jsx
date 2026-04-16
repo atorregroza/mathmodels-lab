@@ -4,7 +4,7 @@ import { Math as MathRender } from '../ui/Math'
 export const LabCard = ({ title, children, dark = false, className = '' }) => (
   <div className={`${dark ? 'border-white/10 bg-ink text-paper' : 'border-ink/10 bg-white text-ink'} rounded-[1.6rem] border p-5 ${className}`}>
     {title && (
-      <p className={`text-[0.72rem] uppercase tracking-[0.22em] font-semibold ${dark ? 'text-paper/60' : 'text-ink/55'}`}>
+      <p className={`text-xs uppercase tracking-[0.22em] font-semibold ${dark ? 'text-paper/80' : 'text-ink/75'}`}>
         {title}
       </p>
     )}
@@ -20,15 +20,15 @@ export const ModelCard = ({
   dark = false,
   className = '',
 }) => (
-  <div className={`${dark ? 'border-white/10 bg-white/6 text-paper' : 'border-ink/10 bg-paper text-ink'} overflow-x-auto rounded-[1.2rem] border px-4 py-4 ${className}`}>
-    <p className={`text-[0.72rem] uppercase tracking-[0.2em] font-semibold ${dark ? 'text-paper/60' : 'text-ink/55'}`}>{title}</p>
+  <div className={`${dark ? 'border-white/12 bg-white/8 text-paper' : 'border-ink/12 bg-paper text-ink'} overflow-x-auto rounded-[1.2rem] border px-4 py-4 ${className}`}>
+    <p className={`text-xs uppercase tracking-[0.2em] font-semibold ${dark ? 'text-paper/80' : 'text-ink/75'}`}>{title}</p>
     <div className={`mt-2 min-w-max whitespace-nowrap ${dark ? 'text-paper' : 'text-ink'}`}>
-      <div className="text-[1.02rem] font-semibold md:text-[1.1rem]">
+      <div className="text-[1.08rem] font-semibold md:text-[1.18rem]">
         <MathRender>{expression}</MathRender>
       </div>
     </div>
     {(parameters || conditions) && (
-      <div className={`mt-3 space-y-1 text-sm leading-6 ${dark ? 'text-paper/72' : 'text-ink/66'}`}>
+      <div className={`mt-3 space-y-1 text-sm leading-6 ${dark ? 'text-paper/85' : 'text-ink/80'}`}>
         {parameters ? <p><span className="font-semibold">Parámetros:</span> {parameters}</p> : null}
         {conditions ? <p><span className="font-semibold">Condición:</span> {conditions}</p> : null}
       </div>
@@ -48,7 +48,7 @@ export const SliderField = ({ id, label, value, min, max, step, suffix = '', nat
       <label htmlFor={id} className="flex items-center gap-2 text-[0.9rem] font-semibold text-ink">
         {label}
         {natural && (
-          <span className="rounded-full border border-ink/14 bg-ink/6 px-2 py-0.5 font-mono text-[0.62rem] font-normal text-ink/55 tracking-wide">
+          <span className="rounded-full border border-ink/14 bg-ink/6 px-2 py-0.5 font-mono text-xs font-normal text-ink/75 tracking-wide">
             ℕ
           </span>
         )}
@@ -75,8 +75,8 @@ export const MetricCard = ({ label, value, detail, className = '', valueClassNam
   const isTextualValue = /[A-Za-z=]/.test(displayValue) || displayValue.length > 10
 
   return (
-    <div className={`rounded-[1.3rem] border p-4 ${dark ? 'border-white/10 bg-white/6' : 'border-ink/10 bg-white'} ${className}`}>
-      <p className={`text-[0.7rem] uppercase leading-5 tracking-[0.16em] font-semibold ${dark ? 'text-paper/60' : 'text-ink/55'}`}>{label}</p>
+    <div className={`rounded-[1.3rem] border p-4 ${dark ? 'border-white/12 bg-white/8' : 'border-ink/12 bg-white'} ${className}`}>
+      <p className={`text-xs uppercase leading-5 tracking-[0.16em] font-semibold ${dark ? 'text-paper/80' : 'text-ink/75'}`}>{label}</p>
       <div className="mt-3">
         <p
           className={`font-display tabular-nums ${dark ? 'text-paper' : 'text-ink'} ${
@@ -88,7 +88,7 @@ export const MetricCard = ({ label, value, detail, className = '', valueClassNam
           {displayValue}
         </p>
       </div>
-      <p className={`mt-3 text-sm leading-7 ${dark ? 'text-paper/75' : 'text-ink/70'}`}>{detail}</p>
+      <p className={`mt-3 text-sm leading-7 ${dark ? 'text-paper/85' : 'text-ink/80'}`}>{detail}</p>
     </div>
   )
 }
@@ -108,7 +108,7 @@ const AxisInput = ({ label, value, onChange }) => {
 
   return (
     <label className="flex items-center gap-1.5">
-      <span className="text-[0.6rem] font-semibold uppercase tracking-wider text-paper/45">{label}</span>
+      <span className="text-xs font-semibold uppercase tracking-wider text-paper/80">{label}</span>
       <input
         type="number"
         value={display}
@@ -130,8 +130,8 @@ export const AxisRangePanel = ({ xMin, xMax, yMin, yMax, setRange, resetRange, i
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[0.65rem] font-semibold transition-colors ${
-          open ? 'bg-white/12 text-paper/80' : 'text-paper/40 hover:text-paper/60'
+        className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors ${
+          open ? 'bg-white/12 text-paper/80' : 'text-paper/80 hover:text-paper/60'
         }`}
       >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
@@ -147,12 +147,12 @@ export const AxisRangePanel = ({ xMin, xMax, yMin, yMax, setRange, resetRange, i
       {open && (
         <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
           <div className="flex items-center gap-3">
-            <span className="text-[0.6rem] font-bold uppercase tracking-widest text-paper/35">X</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-paper/75">X</span>
             <AxisInput label="mín" value={xMin} onChange={(v) => setRange('xMin', v)} />
             <AxisInput label="máx" value={xMax} onChange={(v) => setRange('xMax', v)} />
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[0.6rem] font-bold uppercase tracking-widest text-paper/35">Y</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-paper/75">Y</span>
             <AxisInput label="mín" value={yMin} onChange={(v) => setRange('yMin', v)} />
             <AxisInput label="máx" value={yMax} onChange={(v) => setRange('yMax', v)} />
           </div>
@@ -160,7 +160,7 @@ export const AxisRangePanel = ({ xMin, xMax, yMin, yMax, setRange, resetRange, i
             <button
               type="button"
               onClick={resetRange}
-              className="flex items-center gap-1 rounded-md bg-white/10 px-2 py-1 text-[0.6rem] font-semibold text-paper/60 transition-colors hover:bg-white/18 hover:text-paper/80"
+              className="flex items-center gap-1 rounded-md bg-white/10 px-2 py-1 text-xs font-semibold text-paper/60 transition-colors hover:bg-white/18 hover:text-paper/80"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                 <path d="M3 12a9 9 0 1 1 3 6.7" /><path d="M3 22v-6h6" />

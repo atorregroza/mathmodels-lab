@@ -874,17 +874,17 @@ export const MotionTrackingLab = () => {
                 <h3 className="font-display text-[clamp(1.9rem,4vw,3rem)] font-semibold tracking-[-0.04em] text-ink">{scenario.label}</h3>
                 <p className="mt-3 max-w-3xl text-base leading-7 text-ink/70">{scenario.context}</p>
               </div>
-              <span className="rounded-full border border-ink/10 bg-paper px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-ink/55">
+              <span className="rounded-full border border-ink/10 bg-paper px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-ink/75">
                 {scenario.frameCount} fotogramas
               </span>
             </div>
             <div className="mt-5 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="rounded-[1.2rem] border border-ink/10 bg-paper px-4 py-4">
-                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-ink/46">Pregunta guía</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/46">Pregunta guía</p>
                 <p className="mt-3 text-sm leading-6 text-ink/68">{scenario.guideQuestion}</p>
               </div>
               <div className="rounded-[1.2rem] border border-ink/10 bg-white px-4 py-4">
-                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-ink/46">Modelos esperados</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-ink/46">Modelos esperados</p>
                 <div className="mt-3 space-y-2 text-sm leading-6 text-ink/68">
                   <p><span className="font-semibold text-ink">x(t):</span> {scenario.xModel.family}</p>
                   <p><span className="font-semibold text-ink">y(t):</span> {scenario.yModel.family}</p>
@@ -917,7 +917,7 @@ export const MotionTrackingLab = () => {
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-semibold">{item.label}</p>
                   {item.id === scenario.id ? (
-                    <span className="rounded-full border border-white/12 bg-white/10 px-2 py-1 text-[0.62rem] uppercase tracking-[0.18em] text-paper/72">
+                    <span className="rounded-full border border-white/12 bg-white/10 px-2 py-1 text-xs uppercase tracking-[0.18em] text-paper/72">
                       Activo
                     </span>
                   ) : null}
@@ -934,7 +934,7 @@ export const MotionTrackingLab = () => {
           <LabCard dark className="rounded-[1.9rem] shadow-[0_22px_65px_rgba(18,23,35,0.18)]">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="text-[0.65rem] uppercase tracking-[0.28em] text-paper/45">Escena observada</p>
+                <p className="text-xs uppercase tracking-[0.28em] text-paper/80">Escena observada</p>
                 <h3 className="mt-3 font-display text-3xl">Fotograma, seguimiento y modelo en una sola lectura</h3>
               </div>
               <span className="rounded-full border border-graph/30 bg-graph/12 px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-graph">
@@ -995,7 +995,7 @@ export const MotionTrackingLab = () => {
               <div className="rounded-[1.5rem] border border-white/10 bg-white/6 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <p className="text-[0.68rem] uppercase tracking-[0.2em] text-paper/45">Control temporal</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-paper/80">Control temporal</p>
                     <p className="mt-2 text-sm leading-6 text-paper/72">Mueve el clip como si recorrieras fotogramas de un video corto.</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -1063,7 +1063,7 @@ export const MotionTrackingLab = () => {
                     }}
                     className="h-2 w-full cursor-pointer accent-[#ff6b35]"
                   />
-                  <div className="mt-2 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-paper/48">
+                  <div className="mt-2 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-paper/80">
                     <span>Fotograma 0</span>
                     <span>Fotograma {frame}</span>
                     <span>Fotograma {scenario.frameCount - 1}</span>
@@ -1079,7 +1079,7 @@ export const MotionTrackingLab = () => {
                         setPlaying(false)
                         setFrame(index)
                       }}
-                      className={`h-8 w-8 rounded-full text-[0.68rem] font-semibold transition-colors ${
+                      className={`h-8 w-8 rounded-full text-xs font-semibold transition-colors ${
                         index === frame
                           ? 'bg-signal text-white'
                           : trackedFrames.includes(index)
@@ -1094,7 +1094,7 @@ export const MotionTrackingLab = () => {
               </div>
 
               <div className="rounded-[1.5rem] border border-white/10 bg-[#151b26] p-4">
-                <p className="text-[0.68rem] uppercase tracking-[0.2em] text-paper/45">Acciones de seguimiento</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-paper/80">Acciones de seguimiento</p>
                 <p className="mt-2 text-sm leading-6 text-paper/72">
                   Registra el fotograma que estás viendo o genera una primera muestra para empezar a modelar.
                 </p>

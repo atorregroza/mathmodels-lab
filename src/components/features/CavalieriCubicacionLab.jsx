@@ -437,7 +437,7 @@ export const CavalieriCubicacionLab = () => {
                   ? 'bg-ink text-paper'
                   : enabled
                     ? 'border border-ink/12 bg-white text-ink/65 hover:bg-ink/5'
-                    : 'border border-ink/8 bg-ink/3 text-ink/25 cursor-not-allowed'
+                    : 'border border-ink/8 bg-ink/3 text-ink/70 cursor-not-allowed'
               }`}
             >{v.label}</button>
           )
@@ -485,14 +485,14 @@ export const CavalieriCubicacionLab = () => {
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-ink/10 p-4" style={{ borderLeftWidth: 4, borderLeftColor: '#3F9E6A' }}>
                 <p className="text-sm font-semibold">🌲 Caso central — Trozas de madera (Pacífico colombiano)</p>
-                <p className="text-xs text-ink/55 mt-2 leading-relaxed">
+                <p className="text-xs text-ink/75 mt-2 leading-relaxed">
                   Tres trozas reales: <strong>sajo</strong> industrial (paraboloide suave), <strong>chanul</strong> cuasi-cilíndrico
                   y un <strong>tocón basal</strong> con ahusamiento neiloide. Verdad medible por xilómetro (desplazamiento de agua).
                 </p>
               </div>
               <div className="rounded-xl border border-ink/10 p-4" style={{ borderLeftWidth: 4, borderLeftColor: '#3B82F6' }}>
                 <p className="text-sm font-semibold">💧 Caso comparativo — Embalse Peñol-Guatapé</p>
-                <p className="text-xs text-ink/55 mt-2 leading-relaxed">
+                <p className="text-xs text-ink/75 mt-2 leading-relaxed">
                   Misma matemática, escala 10⁹ veces mayor. Batimetría <strong>1978</strong> vs <strong>2022</strong> → mide la
                   <strong> sedimentación</strong> (en hm³ perdidos por año). Los datos vienen de CNO/EPM.
                 </p>
@@ -501,7 +501,7 @@ export const CavalieriCubicacionLab = () => {
           </LabCard>
 
           <LabCard title="Cómo funcionan los tres modelos">
-            <div className="mt-2 flex items-baseline flex-wrap gap-x-2 text-xs text-ink/50 leading-relaxed">
+            <div className="mt-2 flex items-baseline flex-wrap gap-x-2 text-xs text-ink/75 leading-relaxed">
               <span>Todos son aproximaciones de</span>
               <MathRender raw>{String.raw`V = \int_{0}^{L} A(x)\,dx`}</MathRender>
               <span>— <strong>reglas de cuadratura</strong>, cada una asume cómo varía A(x) entre puntos medidos.</span>
@@ -515,7 +515,7 @@ export const CavalieriCubicacionLab = () => {
                   Exacta para cilindros y conos. En paraboloides <em>sobreestima</em> 2–8%;
                   en neiloides (base de árbol) sobreestima hasta <strong>15%</strong>.
                 </p>
-                <p className="mt-2 text-[0.7rem] italic text-ink/45">La que usa la industria forestal colombiana.</p>
+                <p className="mt-2 text-[0.7rem] italic text-ink/75">La que usa la industria forestal colombiana.</p>
               </div>
               <div className="rounded-xl p-4" style={{ background: 'rgba(139,92,246,0.08)', borderLeft: `4px solid ${MODEL_COLORS.huber}` }}>
                 <p className="text-sm font-semibold" style={{ color: MODEL_COLORS.huber }}>Huber (punto medio)</p>
@@ -525,7 +525,7 @@ export const CavalieriCubicacionLab = () => {
                   es <strong>exactamente la mitad del de Smalian</strong>, con signo opuesto (Patterson 2000).
                   Subestima en paraboloides el mismo 2–8% que Smalian sobreestima.
                 </p>
-                <p className="mt-2 text-[0.7rem] italic text-ink/45">Difícil de aplicar en pilas de madera apiladas.</p>
+                <p className="mt-2 text-[0.7rem] italic text-ink/75">Difícil de aplicar en pilas de madera apiladas.</p>
               </div>
               <div className="rounded-xl p-4" style={{ background: 'rgba(16,185,129,0.08)', borderLeft: `4px solid ${MODEL_COLORS.newton}` }}>
                 <p className="text-sm font-semibold" style={{ color: MODEL_COLORS.newton }}>Newton-Simpson</p>
@@ -535,7 +535,7 @@ export const CavalieriCubicacionLab = () => {
                   polinomial hasta grado 3 — incluyendo conos, paraboloides y neiloides.
                   Costo: 3 mediciones por troza.
                 </p>
-                <p className="mt-2 text-[0.7rem] italic text-ink/45">La que usan cuando se puede elegir.</p>
+                <p className="mt-2 text-[0.7rem] italic text-ink/75">La que usan cuando se puede elegir.</p>
               </div>
             </div>
           </LabCard>
@@ -582,7 +582,7 @@ export const CavalieriCubicacionLab = () => {
           <div className="flex flex-wrap gap-2">
             <button onClick={() => setMode('forestal')}
               className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
-                mode === 'forestal' ? 'bg-graph text-white shadow-md' : 'bg-ink/5 text-ink/50 hover:bg-ink/10'
+                mode === 'forestal' ? 'bg-graph text-white shadow-md' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'
               }`}
             >🌲 Modo forestal</button>
             <button onClick={() => {
@@ -592,7 +592,7 @@ export const CavalieriCubicacionLab = () => {
                 if (!currentViewDef?.modes.includes('embalse')) setView('solid')
               }}
               className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
-                mode === 'embalse' ? 'bg-aqua text-white shadow-md' : 'bg-ink/5 text-ink/50 hover:bg-ink/10'
+                mode === 'embalse' ? 'bg-aqua text-white shadow-md' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'
               }`}
             >💧 Modo embalse</button>
           </div>
@@ -604,13 +604,13 @@ export const CavalieriCubicacionLab = () => {
                 {FORESTAL_CASES.map((c) => (
                   <button key={c.id} onClick={() => applyForestal(c.id)}
                     className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
-                      caseId === c.id ? 'text-white shadow-md scale-105' : 'bg-ink/5 text-ink/50 hover:bg-ink/10'
+                      caseId === c.id ? 'text-white shadow-md scale-105' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'
                     }`}
                     style={caseId === c.id ? { backgroundColor: c.color } : undefined}
                   >{c.emoji} {c.name}</button>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-ink/50 leading-relaxed">{selected.ctx}</p>
+              <p className="mt-3 text-xs text-ink/75 leading-relaxed">{selected.ctx}</p>
             </LabCard>
           )}
 
@@ -620,14 +620,14 @@ export const CavalieriCubicacionLab = () => {
                 {EMBALSE_CASES.map((e) => (
                   <button key={e.id} onClick={() => setEmbalseId(e.id)}
                     className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
-                      embalseId === e.id ? 'text-white shadow-md scale-105' : 'bg-ink/5 text-ink/50 hover:bg-ink/10'
+                      embalseId === e.id ? 'text-white shadow-md scale-105' : 'bg-ink/5 text-ink/75 hover:bg-ink/10'
                     }`}
                     style={embalseId === e.id ? { backgroundColor: e.color } : undefined}
                   >{e.emoji} {e.name}</button>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-ink/50 leading-relaxed">{selectedEmb.ctx}</p>
-              <p className="mt-2 text-[0.7rem] italic text-ink/35 leading-relaxed">
+              <p className="mt-3 text-xs text-ink/75 leading-relaxed">{selectedEmb.ctx}</p>
+              <p className="mt-2 text-[0.7rem] italic text-ink/75 leading-relaxed">
                 Nota honesta: la simulación usa A(z) = A_max·(z/H)^p calibrado para reproducir V_total público.
                 La batimetría real es tabular y no siempre pública en detalle — esto es una aproximación pedagógica
                 fiel a los parámetros oficiales (CNO 1594/2022).
@@ -648,7 +648,7 @@ export const CavalieriCubicacionLab = () => {
           {/* Selector de forma */}
           {mode === 'forestal' && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-ink/35">Forma del fuste</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-ink/75">Forma del fuste</span>
               {[
                 { id: 'cilindro',    label: 'Cilindro',    note: 'A const' },
                 { id: 'cono',        label: 'Cono',        note: 'A cuadrática' },
@@ -658,7 +658,7 @@ export const CavalieriCubicacionLab = () => {
               ].map((s) => (
                 <button key={s.id} onClick={() => { setShape(s.id); setCaseId('libre') }}
                   className={`rounded-xl px-3 py-1.5 text-xs font-semibold transition-colors ${
-                    shape === s.id ? 'bg-ink text-paper' : 'border border-ink/12 bg-white text-ink/55 hover:bg-ink/5'
+                    shape === s.id ? 'bg-ink text-paper' : 'border border-ink/12 bg-white text-ink/75 hover:bg-ink/5'
                   }`}
                   title={s.note}
                 >{s.label}</button>
@@ -677,7 +677,7 @@ export const CavalieriCubicacionLab = () => {
                   {['trapecio', 'simpson', 'spline'].map((m) => (
                     <button key={m} onClick={() => setMethod(m)}
                       className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                        method === m ? 'bg-aqua text-white' : 'border border-ink/12 bg-white text-ink/55 hover:bg-ink/5'
+                        method === m ? 'bg-aqua text-white' : 'border border-ink/12 bg-white text-ink/75 hover:bg-ink/5'
                       }`}
                     >{m}</button>
                   ))}
@@ -689,7 +689,7 @@ export const CavalieriCubicacionLab = () => {
           {/* Toggles de modelos (solo modo forestal) */}
           {mode === 'forestal' && (
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-xs text-ink/35 font-semibold uppercase tracking-wide">Modelos visibles:</span>
+              <span className="text-xs text-ink/75 font-semibold uppercase tracking-wide">Modelos visibles:</span>
               {[
                 { on: showSmalian, set: setShowSmalian, label: MODEL_LABEL.smalian, color: MODEL_COLORS.smalian },
                 { on: showHuber,   set: setShowHuber,   label: MODEL_LABEL.huber,   color: MODEL_COLORS.huber },
@@ -697,7 +697,7 @@ export const CavalieriCubicacionLab = () => {
               ].map((m) => (
                 <button key={m.label} onClick={() => m.set(!m.on)}
                   className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all border ${
-                    m.on ? 'text-white shadow border-transparent' : 'border-ink/12 bg-white text-ink/40 hover:bg-ink/5'
+                    m.on ? 'text-white shadow border-transparent' : 'border-ink/12 bg-white text-ink/75 hover:bg-ink/5'
                   }`}
                   style={m.on ? { backgroundColor: m.color } : undefined}
                 >{m.on ? '✓ ' : '+ '}{m.label}</button>
@@ -707,26 +707,26 @@ export const CavalieriCubicacionLab = () => {
 
           {/* Recordatorio compacto de parámetros */}
           <details className="rounded-2xl border border-ink/10 bg-white/70 px-4 py-3 group">
-            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-ink/55 hover:text-ink list-none flex items-center gap-2">
+            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-ink/75 hover:text-ink list-none flex items-center gap-2">
               <span className="transition-transform group-open:rotate-90">▶</span>
               💡 ¿Qué significa cada parámetro? (recordatorio)
             </summary>
             <div className="mt-3 grid gap-3 text-xs text-ink/65 leading-relaxed sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-lg p-2 border-l-4" style={{ borderColor: MODEL_COLORS.smalian }}>
                 <MathRender raw>{String.raw`L \cdot \tfrac{A_1 + A_2}{2}`}</MathRender>
-                <p className="mt-1 text-ink/55">Smalian = <em>trapecio</em>: solo extremos.</p>
+                <p className="mt-1 text-ink/75">Smalian = <em>trapecio</em>: solo extremos.</p>
               </div>
               <div className="rounded-lg p-2 border-l-4" style={{ borderColor: MODEL_COLORS.huber }}>
                 <MathRender raw>{String.raw`L \cdot A\!\left(\tfrac{L}{2}\right)`}</MathRender>
-                <p className="mt-1 text-ink/55">Huber = <em>punto medio</em>: solo centro.</p>
+                <p className="mt-1 text-ink/75">Huber = <em>punto medio</em>: solo centro.</p>
               </div>
               <div className="rounded-lg p-2 border-l-4" style={{ borderColor: MODEL_COLORS.newton }}>
                 <MathRender raw>{String.raw`L \cdot \tfrac{A_1 + 4\,A_m + A_2}{6}`}</MathRender>
-                <p className="mt-1 text-ink/55">Newton = <em>Simpson</em>: tres puntos.</p>
+                <p className="mt-1 text-ink/75">Newton = <em>Simpson</em>: tres puntos.</p>
               </div>
               <div className="rounded-lg p-2 border-l-4 border-gray-400">
                 <MathRender raw>{String.raw`\sigma = \text{ruido}`}</MathRender>
-                <p className="mt-1 text-ink/55">Calibrador industrial ≈ 2mm, cinta diamétrica ≈ 5mm.</p>
+                <p className="mt-1 text-ink/75">Calibrador industrial ≈ 2mm, cinta diamétrica ≈ 5mm.</p>
               </div>
             </div>
           </details>
@@ -765,10 +765,10 @@ export const CavalieriCubicacionLab = () => {
                 <p className="text-xs uppercase tracking-wider text-paper/60 font-semibold">Volumen total buscado</p>
                 <div className="mt-2 flex items-baseline flex-wrap gap-3 text-paper">
                   <MathRender display raw>{String.raw`V = \int_{0}^{${L}} A(x)\,dx = ${format(forestal.V_truth)}\ \text{m}^3`}</MathRender>
-                  <span className="text-xs text-paper/50">(Simpson compuesto n={nTruth})</span>
+                  <span className="text-xs text-paper/80">(Simpson compuesto n={nTruth})</span>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-paper/55 leading-relaxed">
+              <p className="mt-3 text-xs text-paper/80 leading-relaxed">
                 Cavalieri dice: si conozco <strong>A(x)</strong> para todo x ∈ [0, L], el volumen es la integral.
                 Pero en la práctica solo podemos medir A en 1, 2 o 3 puntos — y ahí entran las reglas de cuadratura.
               </p>
@@ -913,7 +913,7 @@ export const CavalieriCubicacionLab = () => {
                     })()}
                   </svg>
                 </div>
-                <p className="mt-2 text-xs text-paper/55 leading-relaxed">
+                <p className="mt-2 text-xs text-paper/80 leading-relaxed">
                   Vista isométrica del tronco. Cada <strong>elipse</strong> es una <strong>sección transversal circular</strong> vista en perspectiva
                   — exactamente los A(x) que Cavalieri pide apilar. Las elipses de colores resaltan qué secciones mide cada fórmula.
                 </p>
@@ -1003,7 +1003,7 @@ export const CavalieriCubicacionLab = () => {
                     })()}
                   </svg>
                 </div>
-                <p className="mt-2 text-xs text-paper/55 leading-relaxed">
+                <p className="mt-2 text-xs text-paper/80 leading-relaxed">
                   Aquí ves el <strong>integrando</strong>. El área sombreada <span className="text-aqua">(azul)</span> bajo A(x) <em>es</em> el volumen.
                   Líneas punteadas muestran cómo cada fórmula aproxima esa área: <span style={{color:MODEL_COLORS.smalian}}>trapecio</span>,
                   <span style={{color:MODEL_COLORS.huber}}> rectángulo</span>, <span style={{color:MODEL_COLORS.newton}}>parábola por 3 puntos</span>.
@@ -1026,7 +1026,7 @@ export const CavalieriCubicacionLab = () => {
                 <div className="mt-2 text-paper">
                   <MathRender display raw>{String.raw`A(z) = A_{\max}\left(\tfrac{z}{H}\right)^{p} ${selectedEmb.sediment ? String.raw`\;-\;0{,}35\,A_{\max}\,e^{-z/6}` : ''},\quad z \in [0,\,${Hmax}\,\text{m}]`}</MathRender>
                 </div>
-                <p className="mt-2 text-[0.72rem] text-paper/50 leading-relaxed">
+                <p className="mt-2 text-[0.72rem] text-paper/80 leading-relaxed">
                   <MathRender raw>{String.raw`A_{\max}=${selectedEmb.Amax_km2}\,\text{km}^2`}</MathRender>
                   {' = área máxima a cota llena · '}
                   <MathRender raw>{String.raw`p=${selectedEmb.p}`}</MathRender>
@@ -1044,7 +1044,7 @@ export const CavalieriCubicacionLab = () => {
                   <MathRender display raw>{String.raw`V(\text{cota}) = \int_{0}^{${cota.toFixed(1)}} A(z)\,dz = ${format(embalse.Vspline_hm3)}\ \text{hm}^3`}</MathRender>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-paper/55 leading-relaxed">
+              <p className="mt-3 text-xs text-paper/80 leading-relaxed">
                 Mismo principio de Cavalieri: <strong>apila secciones horizontales</strong> (en vez de circulares como en el tronco)
                 y súmales. Cada sección es la superficie del agua a esa profundidad.
               </p>
@@ -1173,7 +1173,7 @@ export const CavalieriCubicacionLab = () => {
                     })()}
                   </svg>
                 </div>
-                <p className="mt-2 text-xs text-paper/55 leading-relaxed">
+                <p className="mt-2 text-xs text-paper/80 leading-relaxed">
                   Vista isométrica del <strong>{selectedEmb.name}</strong>. Cada <strong>elipse horizontal</strong> es una sección a cota z
                   — su área es A(z), exactamente el integrando. La parte <span className="text-aqua">azul</span> es el agua bajo la cota actual.
                   Al mover el slider de cota ves cómo crece el volumen llenando el embalse.
@@ -1232,7 +1232,7 @@ export const CavalieriCubicacionLab = () => {
                     })()}
                   </svg>
                 </div>
-                <p className="mt-2 text-xs text-paper/55 leading-relaxed">
+                <p className="mt-2 text-xs text-paper/80 leading-relaxed">
                   Integrando <strong>A(z)</strong>. El área sombreada <span className="text-aqua">(azul)</span> es el volumen
                   <MathRender raw>{String.raw`V(\text{cota}) = \int_{0}^{\text{cota}} A(z)\,dz`}</MathRender>.
                   A diferencia del tronco, aquí el integrando es <em>cóncavo</em> (crece más rápido cerca de la superficie).
@@ -1251,12 +1251,12 @@ export const CavalieriCubicacionLab = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-ink/10">
-                    <th className="pb-2 text-left text-[0.66rem] uppercase text-ink/44">Modelo</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase text-ink/44">V (m³)</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase text-ink/44">Error (%)</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase text-ink/44">V sin ruido (m³)</th>
-                    <th className="pb-2 text-right text-[0.66rem] uppercase text-ink/44">Error puro (%)</th>
-                    <th className="pb-2 text-center text-[0.66rem] uppercase text-ink/44"># med.</th>
+                    <th className="pb-2 text-left text-xs uppercase text-ink/75">Modelo</th>
+                    <th className="pb-2 text-right text-xs uppercase text-ink/75">V (m³)</th>
+                    <th className="pb-2 text-right text-xs uppercase text-ink/75">Error (%)</th>
+                    <th className="pb-2 text-right text-xs uppercase text-ink/75">V sin ruido (m³)</th>
+                    <th className="pb-2 text-right text-xs uppercase text-ink/75">Error puro (%)</th>
+                    <th className="pb-2 text-center text-xs uppercase text-ink/75"># med.</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1268,24 +1268,24 @@ export const CavalieriCubicacionLab = () => {
                     <tr key={row.k} className="border-b border-ink/6">
                       <td className="py-2.5 font-medium" style={{ color: MODEL_COLORS[row.k] }}>{MODEL_LABEL[row.k]}</td>
                       <td className="py-2.5 text-right font-mono text-xs text-ink/70">{row.V.toFixed(4)}</td>
-                      <td className={`py-2.5 text-right font-mono text-xs ${Math.abs(row.e) < 2 ? 'text-graph font-bold' : 'text-ink/55'}`}>{row.e >= 0 ? '+' : ''}{row.e.toFixed(2)}%</td>
-                      <td className="py-2.5 text-right font-mono text-xs text-ink/55">{row.Vc.toFixed(4)}</td>
-                      <td className="py-2.5 text-right font-mono text-xs text-ink/55">{row.ec >= 0 ? '+' : ''}{row.ec.toFixed(2)}%</td>
-                      <td className="py-2.5 text-center font-mono text-xs text-ink/50">{row.n}</td>
+                      <td className={`py-2.5 text-right font-mono text-xs ${Math.abs(row.e) < 2 ? 'text-graph font-bold' : 'text-ink/75'}`}>{row.e >= 0 ? '+' : ''}{row.e.toFixed(2)}%</td>
+                      <td className="py-2.5 text-right font-mono text-xs text-ink/75">{row.Vc.toFixed(4)}</td>
+                      <td className="py-2.5 text-right font-mono text-xs text-ink/75">{row.ec >= 0 ? '+' : ''}{row.ec.toFixed(2)}%</td>
+                      <td className="py-2.5 text-center font-mono text-xs text-ink/75">{row.n}</td>
                     </tr>
                   ))}
                   <tr className="border-b-2 border-ink/12 bg-ink/3">
                     <td className="py-2.5 font-semibold text-ink/75">Verdad (Simpson compuesto n={nTruth})</td>
                     <td className="py-2.5 text-right font-mono text-xs font-bold text-ink/80">{forestal.V_truth.toFixed(4)}</td>
-                    <td className="py-2.5 text-right font-mono text-xs text-ink/45">— ref —</td>
-                    <td className="py-2.5 text-right font-mono text-xs text-ink/45">—</td>
-                    <td className="py-2.5 text-right font-mono text-xs text-ink/45">—</td>
-                    <td className="py-2.5 text-center font-mono text-xs text-ink/50">{nTruth}</td>
+                    <td className="py-2.5 text-right font-mono text-xs text-ink/75">— ref —</td>
+                    <td className="py-2.5 text-right font-mono text-xs text-ink/75">—</td>
+                    <td className="py-2.5 text-right font-mono text-xs text-ink/75">—</td>
+                    <td className="py-2.5 text-center font-mono text-xs text-ink/75">{nTruth}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p className="mt-4 text-xs text-ink/50 leading-relaxed">
+            <p className="mt-4 text-xs text-ink/75 leading-relaxed">
               <strong>σ = ±{sigmaMm} mm</strong> es la imprecisión real de un calibrador forestal. La columna <strong>Error (obs)</strong>
               incluye cuadratura + ruido; <strong>Error puro</strong> deja solo el error geométrico. Mueve σ y observa:
               Newton pierde su ventaja sobre Smalian cuando σ domina — porque usa 3 mediciones ruidosas en vez de 2.
@@ -1387,7 +1387,7 @@ export const CavalieriCubicacionLab = () => {
       {view === 'solid' && mode === 'embalse' && (
         <div className="space-y-4">
           <LabCard title={`Volumen aproximado por las 3 reglas de cuadratura — ${selectedEmb.name}`}>
-            <p className="mt-2 text-xs text-ink/50 leading-relaxed">
+            <p className="mt-2 text-xs text-ink/75 leading-relaxed">
               Con Δz = {dz} m entre secciones (resolución batimétrica), comparamos trapecio, Simpson y spline cúbico contra la "verdad" fina.
               Para embalses con perfil suave las 3 reglas coinciden hasta 0.1% — el error <em>real</em> está en medir A(z), no en la cuadratura.
             </p>
@@ -1405,7 +1405,7 @@ export const CavalieriCubicacionLab = () => {
               <MetricCard dark={false} label="V 2022 (multihaz)"            value={`${format(embalse.V2022)} hm³`} detail="CNO 1594/2022" />
               <MetricCard dark={false} label="Tasa de sedimentación"         value={`${format(embalse.tasa)} hm³/año`} detail={`ΔV = ${format(embalse.dV)} hm³ en 44 años`} />
             </div>
-            <p className="mt-4 text-xs text-ink/50 leading-relaxed">
+            <p className="mt-4 text-xs text-ink/75 leading-relaxed">
               La sedimentación <strong>no es uniforme</strong> — se concentra cerca del fondo y donde entran los afluentes (río Nare).
               Por eso la curva cota-volumen 2022 <em>no se puede obtener</em> desplazando la de 1978; hay que
               recalcular punto a punto. Esto es lo que justificó la inversión de EPM en batimetría multihaz.
@@ -1522,12 +1522,12 @@ export const CavalieriCubicacionLab = () => {
             </div>
 
             <div className="rounded-xl border border-ink/10 bg-ink/[0.04] p-4">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink/55 mb-2">Cita esta simulación</p>
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-ink/75 mb-2">Cita esta simulación</p>
               <p className="text-xs text-ink/60 leading-relaxed font-mono">
                 MathModels Lab (2026). <em>De la troza al embalse: Cavalieri aplicado al mundo real</em>{' '}
                 [software interactivo]. Simulación web en mathmodels.lab/monografias/cavalieri-cubicacion
               </p>
-              <p className="mt-3 text-[0.7rem] italic text-ink/45 leading-relaxed">
+              <p className="mt-3 text-[0.7rem] italic text-ink/75 leading-relaxed">
                 Honestidad académica IB: verifica cada cita en Google Scholar antes de pegarla, y asegúrate de poder
                 defender cada número con su fuente primaria. El examinador puede preguntarlo.
               </p>
@@ -1547,7 +1547,7 @@ export const CavalieriCubicacionLab = () => {
           </div>
 
           <LabCard title="Descargar datos">
-            <p className="mt-2 text-xs text-ink/50">
+            <p className="mt-2 text-xs text-ink/75">
               CSV con secciones (x, r teórico, A teórica, A observada con ruido) y tabla resumen de volúmenes y errores
               de los tres modelos. Compatible con Excel, R, Python (encoding UTF-8 con BOM).
             </p>
@@ -1565,7 +1565,7 @@ export const CavalieriCubicacionLab = () => {
 
       {view === 'solid' && mode === 'embalse' && (
         <LabCard title="Descargar datos del embalse">
-          <p className="mt-2 text-xs text-ink/50">
+          <p className="mt-2 text-xs text-ink/75">
             CSV con el perfil A(z), volumen acumulado por trapecio y Simpson, y resumen de sedimentación Peñol 1978→2022.
           </p>
           <button onClick={handleDownload}
