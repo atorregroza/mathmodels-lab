@@ -27,7 +27,14 @@
       "Bash(grep -n \"newtonCooling\\\\|slug\\\\|path\" src/content/labs.*)",
       "Bash(node -e \"console.log\\(Object.keys\\(require\\('./package.json'\\).scripts\\).join\\(' '\\)\\)\")",
       "Skill(listo)",
-      "Skill(listo:*)"
+      "Skill(listo:*)",
+      "Bash(xargs -I {} wc -l {})",
+      "Bash(xargs wc:*)",
+      "Bash(ls -lh /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
+      "Bash(grep -c \"export const.*Lab\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
+      "Bash(npm list:*)",
+      "Bash(npm run:*)",
+      "Bash(grep -A 3 \"ExportPDFModal.jsx$\")"
     ]
   }
 }
