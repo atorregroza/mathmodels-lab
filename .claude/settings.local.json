@@ -34,7 +34,9 @@
       "Bash(grep -c \"export const.*Lab\" /c/proyectos/mathmodels-lab/src/components/features/*.jsx)",
       "Bash(npm list:*)",
       "Bash(npm run:*)",
-      "Bash(grep -A 3 \"ExportPDFModal.jsx$\")"
+      "Bash(grep -A 3 \"ExportPDFModal.jsx$\")",
+      "Bash(node -e ':*)",
+      "Bash(npx eslint:*)"
     ]
   }
 }

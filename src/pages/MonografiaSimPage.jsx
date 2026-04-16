@@ -7,6 +7,7 @@ const simComponentMap = {
   newtonCooling: lazy(() => import('../components/features/NewtonCoolingLab').then(m => ({ default: m.NewtonCoolingLab }))),
   thermalInsulation: lazy(() => import('../components/features/ThermalInsulationLab').then(m => ({ default: m.ThermalInsulationLab }))),
   hipoGrowth: lazy(() => import('../components/features/HipoGrowthLab').then(m => ({ default: m.HipoGrowthLab }))),
+  cavalieriCubicacion: lazy(() => import('../components/features/CavalieriCubicacionLab').then(m => ({ default: m.CavalieriCubicacionLab }))),
 }
 
 function PlanContent({ planeacion }) {
